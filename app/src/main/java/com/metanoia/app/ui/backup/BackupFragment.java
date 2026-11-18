@@ -17,15 +17,22 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.metanoia.app.MainActivity;
+import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.backup.BackupFolderAccess.FolderState;
 import com.metanoia.app.data.backup.BackupFolderAccess.FolderStatus;
+import com.metanoia.app.data.backup.RestoreManager.ValidatedBackup;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.databinding.FragmentBackupBinding;
 import com.metanoia.app.ui.backup.BackupViewModel.BackupUiState;
 import com.metanoia.app.util.Formats;
+import com.metanoia.domain.model.BackupManifest;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 /**
  * Pantalla de administración de backups, carpeta de destino SAF, exportación y restauración.
@@ -52,6 +59,15 @@ public class BackupFragment extends Fragment {
                         }
                     });
 
+    private final ActivityResultLauncher<String[]> pickRestoreFileLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.OpenDocument(),
+                    uri -> {
+                        if (uri != null) {
+                            viewModel.inspectBackupForRestore(uri);
+                        }
+                    });
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -70,6 +86,12 @@ public class BackupFragment extends Fragment {
         binding.btnExportBackup.setOnClickListener(
                 v -> exportBackupLauncher.launch(viewModel.suggestExportFileName()));
         binding.btnShareBackup.setOnClickListener(v -> viewModel.prepareShareBackup());
+        binding.btnRestoreBackup.setOnClickListener(
+                v -> pickRestoreFileLauncher.launch(new String[]{
+                        "application/zip",
+                        "application/x-zip-compressed",
+                        "application/octet-stream"
+                }));
         binding.btnSaveBackupSettings.setOnClickListener(v -> submitSettings());
 
         viewModel.observeUiState().observe(getViewLifecycleOwner(), this::bindState);
@@ -83,6 +105,35 @@ public class BackupFragment extends Fragment {
             File file = event.getContentIfNotHandled();
             if (file != null) {
                 shareBackupFile(file);
+            }
+        });
+        viewModel.observeRestorePreview().observe(getViewLifecycleOwner(), event -> {
+            ValidatedBackup validated = event.getContentIfNotHandled();
+            if (validated != null) {
+                showRestoreConfirmationDialog(validated);
+            }
+        });
+        viewModel.observeRestoreError().observe(getViewLifecycleOwner(), event -> {
+            String error = event.getContentIfNotHandled();
+            if (error != null) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.backup_restore_invalid_title)
+                        .setMessage(error.isEmpty()
+                                ? getString(R.string.backup_restore_invalid_default)
+                                : error)
+                        .setPositiveButton(R.string.common_ok, null)
+                        .show();
+            }
+        });
+        viewModel.observeRestoreCompleted().observe(getViewLifecycleOwner(), event -> {
+            if (Boolean.TRUE.equals(event.getContentIfNotHandled())) {
+                Toast.makeText(requireContext(), R.string.backup_restore_success, Toast.LENGTH_LONG)
+                        .show();
+                MetanoiaApp.resetContainer(requireContext());
+                Intent restart = new Intent(requireContext(), MainActivity.class);
+                restart.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(restart);
+                requireActivity().finish();
             }
         });
     }
@@ -145,6 +196,7 @@ public class BackupFragment extends Fragment {
         binding.btnBackupNow.setEnabled(folder.state == FolderState.READY && !state.busy);
         binding.btnExportBackup.setEnabled(!state.busy);
         binding.btnShareBackup.setEnabled(!state.busy);
+        binding.btnRestoreBackup.setEnabled(!state.busy);
         binding.btnChooseBackupFolder.setEnabled(!state.busy);
         binding.btnSaveBackupSettings.setEnabled(!state.busy);
 
@@ -207,6 +259,37 @@ public class BackupFragment extends Fragment {
         } catch (ActivityNotFoundException ex) {
             Toast.makeText(requireContext(), R.string.backup_share_no_app, Toast.LENGTH_SHORT)
                     .show();
+        }
+    }
+
+    private void showRestoreConfirmationDialog(@NonNull ValidatedBackup validated) {
+        BackupManifest m = validated.manifest;
+        String dateDisplay = formatManifestTimestamp(m.createdAt());
+        String summary = getString(
+                R.string.backup_restore_confirm_summary,
+                dateDisplay,
+                m.trigger().name(),
+                m.schemaVersion(),
+                m.clientsCount(),
+                m.appointmentsCount());
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.backup_restore_confirm_title)
+                .setMessage(summary)
+                .setNegativeButton(R.string.common_cancel,
+                        (dialog, which) -> viewModel.discardPendingRestore(validated))
+                .setOnCancelListener(dialog -> viewModel.discardPendingRestore(validated))
+                .setPositiveButton(R.string.backup_restore_confirm_positive,
+                        (dialog, which) -> viewModel.confirmRestore(validated))
+                .show();
+    }
+
+    @NonNull
+    private static String formatManifestTimestamp(@NonNull String createdAtIso) {
+        try {
+            long millis = Instant.parse(createdAtIso).toEpochMilli();
+            return Formats.formatDateTime(millis);
+        } catch (DateTimeParseException ex) {
+            return createdAtIso;
         }
     }
 

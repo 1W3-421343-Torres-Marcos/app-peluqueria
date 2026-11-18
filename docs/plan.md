@@ -10,7 +10,7 @@
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
-| F4 | Backup y restauración | [~] | 5/8 | 63 % |
+| F4 | Backup y restauración | [~] | 6/8 | 75 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **35/86** | **41 %** |
+| **Total** | | | **36/86** | **42 %** |
 
 ---
 
@@ -140,7 +140,7 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 5. [x] **F4.5 Validador y restaurador**
    - Archivos: `domain/rules/BackupValidator`, `data/backup/RestoreManager`
    - Hecho: rechaza ZIP inválido, hash incorrecto, esquema más nuevo, `PRAGMA integrity_check` fallido; tests.
-6. [ ] **F4.6 Flujo de restauración**
+6. [x] **F4.6 Flujo de restauración**
    - Archivos: `ui/backup/restore/`
    - Hecho: `ACTION_OPEN_DOCUMENT` → resumen → confirmación → backup previo automático → reemplazo → reinicio.
 7. [ ] **F4.7 Aviso de backup vencido**
@@ -358,3 +358,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F4.3 | `FileProvider` (`file_paths.xml`) en manifiesto, exportación manual con `ACTION_CREATE_DOCUMENT` y acción Compartir (`ACTION_SEND`) con ZIP en caché en `BackupFragment`/`BackupViewModel`. | F4.4 |
 | 18/11/2026 | F4.4 | `BackupRetentionPolicy` (más reciente por cada uno de los últimos N días con backup, últimos 3 `PRE_RESTORE` aparte, umbral `ON_BACKGROUND` y protección de archivos propios/nuevos) + `BackupRetentionPolicyTest` (5/5 OK), `BackupWorker`, `BackupScheduler` (`AUTO` periódico, `ON_BACKGROUND` y `CASH_CLOSE` únicos con `KEEP`) y observer `ProcessLifecycleOwner` en `MetanoiaApp`. | F4.5 |
 | 18/11/2026 | F4.5 | `BackupValidator` + `BackupValidatorTest` (3/3 OK: esquema igual/menor vs mayor, formato y SHA-256) y `RestoreManager` (extracción ZIP segura, validación de hash, `PRAGMA integrity_check`, backup previo `PRE_RESTORE` automático, rollback ante fallos y `MetanoiaApp.resetContainer`). | F4.6 |
+| 18/11/2026 | F4.6 | Flujo completo de restauración en `BackupFragment`/`BackupViewModel` (`OpenDocument`, inspección previa, diálogo de resumen y confirmación, `PRE_RESTORE` automático, reinicio de `AppContainer` y `MainActivity`). | F4.7 |

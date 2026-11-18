@@ -16,10 +16,12 @@ import com.metanoia.app.data.backup.BackupFolderAccess.FolderStatus;
 import com.metanoia.app.data.backup.BackupManager;
 import com.metanoia.app.data.backup.BackupManager.BackupCreated;
 import com.metanoia.app.data.backup.BackupScheduler;
+import com.metanoia.app.data.backup.RestoreManager.ValidatedBackup;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.ui.common.Event;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
+import com.metanoia.domain.model.BackupManifest;
 import com.metanoia.domain.model.BackupTrigger;
 
 import java.io.File;
@@ -70,6 +72,10 @@ public class BackupViewModel extends AndroidViewModel {
     private final MutableLiveData<BackupUiState> uiState = new MutableLiveData<>();
     private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
     private final MutableLiveData<Event<File>> shareFileEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<ValidatedBackup>> restorePreviewEvent =
+            new MutableLiveData<>();
+    private final MutableLiveData<Event<String>> restoreErrorEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<Boolean>> restoreCompletedEvent = new MutableLiveData<>();
     private boolean busy;
 
     public BackupViewModel(@NonNull Application application) {
@@ -88,6 +94,18 @@ public class BackupViewModel extends AndroidViewModel {
 
     public LiveData<Event<File>> observeShareFile() {
         return shareFileEvent;
+    }
+
+    public LiveData<Event<ValidatedBackup>> observeRestorePreview() {
+        return restorePreviewEvent;
+    }
+
+    public LiveData<Event<String>> observeRestoreError() {
+        return restoreErrorEvent;
+    }
+
+    public LiveData<Event<Boolean>> observeRestoreCompleted() {
+        return restoreCompletedEvent;
     }
 
     @NonNull
@@ -206,6 +224,49 @@ public class BackupViewModel extends AndroidViewModel {
                 f.delete();
             }
         }
+    }
+
+    public void inspectBackupForRestore(@NonNull Uri sourceUri) {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_restore_inspecting);
+        container.executors().io().execute(() -> {
+            Result<ValidatedBackup> result = container.restoreManager().inspectBackup(sourceUri);
+            if (result.isSuccess()) {
+                restorePreviewEvent.postValue(new Event<>(result.getValue()));
+            } else {
+                String msg = result.getErrorMessage();
+                restoreErrorEvent.postValue(new Event<>(msg == null ? "" : msg));
+            }
+            setBusy(false);
+        });
+    }
+
+    public void confirmRestore(@NonNull ValidatedBackup validated) {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_restore_running);
+        container.executors().io().execute(() -> {
+            Result<BackupManifest> result = container.restoreManager().performRestore(validated);
+            if (result.isSuccess()) {
+                restoreCompletedEvent.postValue(new Event<>(true));
+            } else {
+                postFeedback(R.string.backup_restore_failed);
+            }
+            setBusy(false);
+        });
+    }
+
+    public void discardPendingRestore(@NonNull ValidatedBackup validated) {
+        container.executors().io().execute(() -> {
+            if (validated.extractedDbFile.exists()) {
+                validated.extractedDbFile.delete();
+            }
+        });
     }
 
     protected void setBusy(boolean busy) {

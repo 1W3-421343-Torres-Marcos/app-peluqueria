@@ -416,4 +416,13 @@
     <string name="backup_share_chooser_title">Compartir copia de seguridad</string>
     <string name="backup_share_failed">No se pudo preparar la copia para compartir.</string>
     <string name="backup_share_no_app">No se encontró una app disponible para compartir.</string>
+    <string name="backup_restore_inspecting">Verificando integridad del backup…</string>
+    <string name="backup_restore_invalid_title">Archivo de backup inválido</string>
+    <string name="backup_restore_invalid_default">El archivo seleccionado no es un backup válido de Metanoia.</string>
+    <string name="backup_restore_confirm_title">¿Restaurar esta copia?</string>
+    <string name="backup_restore_confirm_summary">Fecha del backup: %1$s\nOrigen: %2$s\nEsquema: %3$d\nClientes: %4$d\nTurnos: %5$d\n\nSe guardará un backup previo automático (PRE_RESTORE) y la aplicación se reiniciará.</string>
+    <string name="backup_restore_confirm_positive">Restaurar ahora</string>
+    <string name="backup_restore_running">Restaurando base de datos…</string>
+    <string name="backup_restore_success">Restauración completa. Reiniciando Metanoia…</string>
+    <string name="backup_restore_failed">No se pudo restaurar el backup. Tus datos actuales siguen intactos.</string>
 </resources>
