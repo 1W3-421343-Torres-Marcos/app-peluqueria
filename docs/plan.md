@@ -14,12 +14,12 @@
 | F5 | Caja | [x] | 10/10 | 100 % |
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
-| F8 | Lista de espera | [~] | 3/4 | 75 % |
+| F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **62/86** | **72 %** |
+| **Total** | | | **63/86** | **73 %** |
 
 ---
 
@@ -221,7 +221,7 @@ Módulo: `ficha-color`.
 4. [x] **F7.4 Verificación de fase**
    - Hecho: criterios de `ficha-color/skills.md` OK; `versionName 0.7.0`; merge de `fase/F7` a `main`, tag `fase-F7` y entrada en `docs/changelog.md`.
 
-## F8 — Lista de espera `[~]`
+## F8 — Lista de espera `[x]`
 Módulo: `lista-espera`.
 
 1. [x] **F8.1 Modelo y persistencia**
@@ -233,7 +233,7 @@ Módulo: `lista-espera`.
 3. [x] **F8.3 Sugerencias al cancelar**
    - Archivos: `WaitlistMatcher`, diálogo post-cancelación
    - Hecho: al cancelar, sugiere candidatos ordenados; ofrecer por WhatsApp o asignar el turno; tests del matcher.
-4. [ ] **F8.4 Verificación de fase**
+4. [x] **F8.4 Verificación de fase**
    - Hecho: criterios de `lista-espera/skills.md` OK; `versionName 0.8.0`; merge de `fase/F8` a `main`, tag `fase-F8` y entrada en `docs/changelog.md`.
 
 ## F9 — Stock `[ ]`
@@ -385,3 +385,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F8.1 | Modelos `WaitlistStatus` y `WaitlistEntry`, `SaveWaitlistEntryUseCase`, `CancelWaitlistEntryUseCase`, `ExpireWaitlistEntriesUseCase` + `SaveWaitlistEntryUseCaseTest` (3/3 OK), Room v11 (`WaitlistEntryEntity`, `WaitlistEntryServiceCrossRef`, `WaitlistDao`, `Migration_10_11`, `11.json`, `BackupManager` v11, auto-vencimiento en `MetanoiaApp`), `SchemaExportTest` (11/11 OK) y `MigrationTest` v11 compilado. | F8.2 |
 | 18/11/2026 | F8.2 | UI de lista de espera (`WaitlistFragment`, `WaitlistViewModel`, `WaitlistAdapter`, `WaitlistFormDialogFragment` reutilizable con prefills, `ClientDao.observeSummariesByIds`, `nav_waitlist`) y accesos desde `AgendaFragment`, `AppointmentCreateFragment` (al no haber horarios libres), `ClientDetailFragment` y `MoreFragment`; `./gradlew.bat test assembleDebug` OK. | F8.3 |
 | 18/11/2026 | F8.3 | `WaitlistMatcher` + `WaitlistMatcherTest` (2/2 OK), `FindWaitlistCandidatesUseCase`, `OfferWaitlistEntryUseCase`, `AssignWaitlistEntryUseCase` + `WaitlistActionsUseCaseTest` (2/2 OK), diálogo `WaitlistSuggestionsDialogFragment` con Ofrecer (WhatsApp)/Asignar (turno con revalidación)/Ignorar disparado al cancelar o reprogramar desde `AppointmentDetailFragment`; `./gradlew.bat test assembleDebug` OK. | F8.4 |
+| 18/11/2026 | F8.4 | Verificación de fase F8: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 147 tests unitarios: 125 en `:domain` + 22 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `lista-espera/skills.md` (5/5) marcados `[x]`, `versionCode 8` / `versionName "0.8.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F8` y `v0.8.0`. | F9.1 |

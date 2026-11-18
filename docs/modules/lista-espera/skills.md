@@ -26,8 +26,8 @@ Registrar clientes que quieren un turno en un día/horario sin disponibilidad y 
 Matcher: compatibilidad de franja, duración, profesional, orden de prioridad, exclusión de vencidas.
 
 ## Criterios de aceptación
-- [ ] Alta, edición y cancelación de entradas.
-- [ ] Al cancelar un turno se sugieren candidatos compatibles y ordenados.
-- [ ] Ofrecer por WhatsApp y asignar turno desde la sugerencia.
-- [ ] Vencimiento automático de entradas.
-- [ ] Tests del matcher verdes.
+- [x] Alta, edición y cancelación de entradas.
+- [x] Al cancelar un turno se sugieren candidatos compatibles y ordenados.
+- [x] Ofrecer por WhatsApp y asignar turno desde la sugerencia.
+- [x] Vencimiento automático de entradas.
+- [x] Tests del matcher verdes.
