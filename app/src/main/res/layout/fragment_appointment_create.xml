@@ -138,6 +138,49 @@
                     android:textColor="?attr/colorOnSurface" />
             </LinearLayout>
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/aptColorFormulaRepeatCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:visibility="gone"
+                app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                app:cardCornerRadius="@dimen/radius_m"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="@dimen/stroke_width">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_m">
+
+                    <TextView
+                        android:id="@+id/txtLatestFormulaPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_xs"
+                        android:text="@string/appointment_repeat_formula_helper"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipRepeatLastFormula"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_s"
+                        android:text="@string/appointment_repeat_formula_chip" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- 3. Profesional y 4. Horario (ocultos al editar solo servicios/notas si fuera edición) -->
             <LinearLayout
                 android:id="@+id/sectionProAndSchedule"

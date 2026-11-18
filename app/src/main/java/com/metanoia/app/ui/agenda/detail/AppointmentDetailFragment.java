@@ -302,6 +302,14 @@ public class AppointmentDetailFragment extends Fragment {
                         Formats.formatPercent(item.commissionBasisPointsSnapshot().get())));
                 row.addView(commView);
             }
+            if (item.colorFormulaId().isPresent()) {
+                TextView formulaView = new TextView(requireContext());
+                TextViewCompat.setTextAppearance(
+                        formulaView, R.style.TextAppearance_Metanoia_Caption);
+                formulaView.setTextColor(ContextCompat.getColor(requireContext(), R.color.accent));
+                formulaView.setText(R.string.appointment_detail_color_formula_linked);
+                row.addView(formulaView);
+            }
             binding.detailItemsContainer.addView(row);
         }
     }

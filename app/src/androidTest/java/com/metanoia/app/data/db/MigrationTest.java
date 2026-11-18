@@ -19,6 +19,7 @@ import com.metanoia.app.data.db.migration.Migration_5_6;
 import com.metanoia.app.data.db.migration.Migration_6_7;
 import com.metanoia.app.data.db.migration.Migration_7_8;
 import com.metanoia.app.data.db.migration.Migration_8_9;
+import com.metanoia.app.data.db.migration.Migration_9_10;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -272,21 +273,55 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To9_allMigrations_passValidation() throws IOException {
+    public void migrate9To10_createsColorFormulaTablesWithIndices() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 9)) {
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '', '', 4000, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'Sofía', 'sofia', '5491122334455', 18, 11, 1995, "
+                    + "'', 0, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO appointments VALUES ("
+                    + "'apt-1', 'cli-1', 'pro-1', 20501, 540, 570, 'CONFIRMED', 0, '', "
+                    + "NULL, NULL, 1000, 1000, 'Dueño')");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 10, true, Migration_9_10.INSTANCE)) {
+            migrated.execSQL("INSERT INTO color_formulas VALUES ("
+                    + "'cf-1', 'cli-1', 'apt-1', 'pro-1', 20501, 35, '20 vol', "
+                    + "'Raíces', 'Parejo', NULL, 2000)");
+            migrated.execSQL("INSERT INTO color_formula_components VALUES ("
+                    + "'cfc-1', 'cf-1', 'Wella', 'Koleston', '7.1', 300, 'GRAMS', 0)");
+            try (Cursor cursor = migrated.query(
+                    "SELECT shade, amount_tenths FROM color_formula_components WHERE formula_id = 'cf-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("7.1", cursor.getString(0));
+                assertEquals(300, cursor.getInt(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To10_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                9,
+                10,
                 true,
                 AppDatabase.allMigrations()
         )) {
             migrated.execSQL("INSERT INTO clients VALUES ("
                     + "'cli-all', 'Sofía Gómez', 'sofia gomez', '5491144556677', NULL, NULL, NULL, "
                     + "'Notas', 1, 1, 1000, 1000)");
-            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM clients")) {
+            migrated.execSQL("INSERT INTO color_formulas VALUES ("
+                    + "'cf-all', 'cli-all', NULL, NULL, 20501, 35, '20 vol', '', NULL, NULL, 1000)");
+            migrated.execSQL("INSERT INTO color_formula_components VALUES ("
+                    + "'cfc-all', 'cf-all', 'Wella', NULL, '7.1', 300, 'GRAMS', 0)");
+            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM color_formulas")) {
                 cursor.moveToFirst();
                 assertEquals(1, cursor.getInt(0));
             }

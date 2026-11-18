@@ -11,10 +11,12 @@ import com.metanoia.domain.repository.SalonServiceRepository;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * Helpers compartidos entre casos de uso de agenda para validar servicios y mensajes de disponibilidad.
@@ -84,6 +86,39 @@ public final class AppointmentSupport {
                     .build());
         }
         return Result.success(built);
+    }
+
+    public static Set<String> collectColorServiceIds(
+            List<AppointmentItem> items,
+            SalonServiceRepository serviceRepository
+    ) {
+        Set<String> colorIds = new HashSet<>();
+        if (items == null) {
+            return colorIds;
+        }
+        for (AppointmentItem item : items) {
+            Optional<SalonService> found = serviceRepository.findById(item.serviceId());
+            if (found.isPresent() && found.get().isColorService()) {
+                colorIds.add(item.serviceId());
+            }
+        }
+        return colorIds;
+    }
+
+    public static List<AppointmentItem> attachColorFormulaToColorItems(
+            List<AppointmentItem> items,
+            Set<String> colorServiceIds,
+            String colorFormulaId
+    ) {
+        List<AppointmentItem> updated = new ArrayList<>(items.size());
+        for (AppointmentItem item : items) {
+            if (colorServiceIds.contains(item.serviceId())) {
+                updated.add(item.toBuilder().colorFormulaId(colorFormulaId).build());
+            } else {
+                updated.add(item);
+            }
+        }
+        return updated;
     }
 
     public static String unavailabilityMessage(AvailabilityChecker.UnavailabilityReason reason) {

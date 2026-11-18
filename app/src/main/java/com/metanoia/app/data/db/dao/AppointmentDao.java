@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import com.metanoia.app.data.db.entity.AppointmentEntity;
 import com.metanoia.app.data.db.entity.AppointmentItemEntity;
@@ -136,8 +137,18 @@ public interface AppointmentDao {
             + "AND status IN ('PENDING', 'CONFIRMED', 'COMPLETED', 'PAID'))")
     boolean existsFutureOccupyingForProfessionalSync(String professionalId, long fromDayEpoch);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void upsertAppointment(AppointmentEntity entity);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insertAppointmentIgnore(AppointmentEntity entity);
+
+    @Update
+    void updateAppointment(AppointmentEntity entity);
+
+    @Transaction
+    default void upsertAppointment(AppointmentEntity entity) {
+        if (insertAppointmentIgnore(entity) == -1L) {
+            updateAppointment(entity);
+        }
+    }
 
     @Query("DELETE FROM appointment_items WHERE appointment_id = :appointmentId")
     void deleteItemsForAppointment(String appointmentId);

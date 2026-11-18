@@ -88,6 +88,17 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_reminders_type_client_id_year"));
     }
 
+    @Test
+    public void roomSchemaV10_isExportedWithColorFormulaTablesAndIndices() throws Exception {
+        String content = readSchema(10);
+        assertTrue(content.contains("\"tableName\": \"color_formulas\""));
+        assertTrue(content.contains("\"tableName\": \"color_formula_components\""));
+        assertTrue(content.contains("index_color_formulas_client_id_day"));
+        assertTrue(content.contains("index_color_formulas_appointment_id"));
+        assertTrue(content.contains("index_color_formulas_professional_id"));
+        assertTrue(content.contains("index_color_formula_components_formula_id_position"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");
