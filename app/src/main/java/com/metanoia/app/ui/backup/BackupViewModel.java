@@ -13,12 +13,15 @@ import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.backup.BackupFolderAccess;
 import com.metanoia.app.data.backup.BackupFolderAccess.FolderStatus;
+import com.metanoia.app.data.backup.BackupManager;
 import com.metanoia.app.data.backup.BackupManager.BackupCreated;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.ui.common.Event;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.BackupTrigger;
+
+import java.io.File;
 
 /**
  * ViewModel para configuración de carpeta SAF, parámetros automáticos y estado de backups.
@@ -65,6 +68,7 @@ public class BackupViewModel extends AndroidViewModel {
     protected final AppContainer container;
     private final MutableLiveData<BackupUiState> uiState = new MutableLiveData<>();
     private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<File>> shareFileEvent = new MutableLiveData<>();
     private boolean busy;
 
     public BackupViewModel(@NonNull Application application) {
@@ -79,6 +83,16 @@ public class BackupViewModel extends AndroidViewModel {
 
     public LiveData<Event<Integer>> observeFeedback() {
         return feedbackEvent;
+    }
+
+    public LiveData<Event<File>> observeShareFile() {
+        return shareFileEvent;
+    }
+
+    @NonNull
+    public String suggestExportFileName() {
+        return BackupManager.buildBackupFileName(
+                container.clock().nowMillis(), BackupTrigger.MANUAL);
     }
 
     public void refresh() {
@@ -146,6 +160,50 @@ public class BackupViewModel extends AndroidViewModel {
             }
             setBusy(false);
         });
+    }
+
+    public void exportBackupToUri(@NonNull Uri targetUri) {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_export_running);
+        container.executors().io().execute(() -> {
+            Result<BackupCreated> result = container.backupManager()
+                    .exportBackupToUri(targetUri, BackupTrigger.MANUAL);
+            postFeedback(result.isSuccess()
+                    ? R.string.backup_export_success
+                    : R.string.backup_export_failed);
+            setBusy(false);
+        });
+    }
+
+    public void prepareShareBackup() {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        container.executors().io().execute(() -> {
+            clearShareCacheDir();
+            Result<File> result = container.backupManager()
+                    .createBackupInCacheDir("shared_backups", BackupTrigger.MANUAL);
+            if (result.isSuccess()) {
+                shareFileEvent.postValue(new Event<>(result.getValue()));
+            } else {
+                postFeedback(R.string.backup_share_failed);
+            }
+            setBusy(false);
+        });
+    }
+
+    private void clearShareCacheDir() {
+        File dir = new File(getApplication().getCacheDir(), "shared_backups");
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                f.delete();
+            }
+        }
     }
 
     protected void setBusy(boolean busy) {

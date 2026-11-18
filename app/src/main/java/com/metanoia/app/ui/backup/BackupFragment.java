@@ -1,5 +1,7 @@
 package com.metanoia.app.ui.backup;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +24,8 @@ import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.databinding.FragmentBackupBinding;
 import com.metanoia.app.ui.backup.BackupViewModel.BackupUiState;
 import com.metanoia.app.util.Formats;
+
+import java.io.File;
 
 /**
  * Pantalla de administración de backups, carpeta de destino SAF, exportación y restauración.
@@ -38,6 +43,15 @@ public class BackupFragment extends Fragment {
                 }
             });
 
+    private final ActivityResultLauncher<String> exportBackupLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.CreateDocument("application/zip"),
+                    uri -> {
+                        if (uri != null) {
+                            viewModel.exportBackupToUri(uri);
+                        }
+                    });
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -53,6 +67,9 @@ public class BackupFragment extends Fragment {
 
         binding.btnChooseBackupFolder.setOnClickListener(v -> pickFolderLauncher.launch(null));
         binding.btnBackupNow.setOnClickListener(v -> viewModel.runManualBackup());
+        binding.btnExportBackup.setOnClickListener(
+                v -> exportBackupLauncher.launch(viewModel.suggestExportFileName()));
+        binding.btnShareBackup.setOnClickListener(v -> viewModel.prepareShareBackup());
         binding.btnSaveBackupSettings.setOnClickListener(v -> submitSettings());
 
         viewModel.observeUiState().observe(getViewLifecycleOwner(), this::bindState);
@@ -60,6 +77,12 @@ public class BackupFragment extends Fragment {
             Integer resId = event.getContentIfNotHandled();
             if (resId != null) {
                 Toast.makeText(requireContext(), resId, Toast.LENGTH_SHORT).show();
+            }
+        });
+        viewModel.observeShareFile().observe(getViewLifecycleOwner(), event -> {
+            File file = event.getContentIfNotHandled();
+            if (file != null) {
+                shareBackupFile(file);
             }
         });
     }
@@ -120,6 +143,8 @@ public class BackupFragment extends Fragment {
         }
 
         binding.btnBackupNow.setEnabled(folder.state == FolderState.READY && !state.busy);
+        binding.btnExportBackup.setEnabled(!state.busy);
+        binding.btnShareBackup.setEnabled(!state.busy);
         binding.btnChooseBackupFolder.setEnabled(!state.busy);
         binding.btnSaveBackupSettings.setEnabled(!state.busy);
 
@@ -164,6 +189,24 @@ public class BackupFragment extends Fragment {
             return Integer.parseInt(raw.toString().trim());
         } catch (NumberFormatException ex) {
             return 0;
+        }
+    }
+
+    private void shareBackupFile(@NonNull File file) {
+        Uri contentUri = FileProvider.getUriForFile(
+                requireContext(),
+                requireContext().getPackageName() + ".fileprovider",
+                file);
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("application/zip");
+        sendIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(Intent.createChooser(
+                    sendIntent, getString(R.string.backup_share_chooser_title)));
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(requireContext(), R.string.backup_share_no_app, Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 

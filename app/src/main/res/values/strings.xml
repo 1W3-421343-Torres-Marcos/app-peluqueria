@@ -410,4 +410,10 @@
     <string name="backup_now_success">Backup generado correctamente</string>
     <string name="backup_now_folder_required">Elegí una carpeta válida antes de hacer el backup.</string>
     <string name="backup_now_failed">No se pudo generar el backup.</string>
+    <string name="backup_export_running">Exportando copia de seguridad…</string>
+    <string name="backup_export_success">Backup exportado correctamente</string>
+    <string name="backup_export_failed">No se pudo exportar el backup.</string>
+    <string name="backup_share_chooser_title">Compartir copia de seguridad</string>
+    <string name="backup_share_failed">No se pudo preparar la copia para compartir.</string>
+    <string name="backup_share_no_app">No se encontró una app disponible para compartir.</string>
 </resources>
