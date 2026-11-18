@@ -67,6 +67,9 @@ public class MoreFragment extends Fragment {
         binding.rowWaitlist.setOnClickListener(v -> NavHostFragment
                 .findNavController(this)
                 .navigate(R.id.action_more_to_waitlist));
+        binding.rowStock.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_more_to_stock));
         binding.rowAbout.setOnClickListener(v -> NavHostFragment
                 .findNavController(this)
                 .navigate(R.id.action_more_to_about));

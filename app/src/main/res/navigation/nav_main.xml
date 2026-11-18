@@ -94,6 +94,9 @@
             android:id="@+id/action_more_to_waitlist"
             app:destination="@id/nav_waitlist" />
         <action
+            android:id="@+id/action_more_to_stock"
+            app:destination="@id/nav_stock" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -148,6 +151,11 @@
         android:id="@+id/nav_waitlist"
         android:name="com.metanoia.app.ui.waitlist.WaitlistFragment"
         android:label="@string/waitlist_title" />
+
+    <fragment
+        android:id="@+id/nav_stock"
+        android:name="com.metanoia.app.ui.stock.StockFragment"
+        android:label="@string/stock_title" />
 
     <fragment
         android:id="@+id/nav_about"

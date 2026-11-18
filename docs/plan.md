@@ -15,11 +15,11 @@
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
-| F9 | Stock | [~] | 1/6 | 17 % |
+| F9 | Stock | [~] | 2/6 | 33 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **64/86** | **74 %** |
+| **Total** | | | **65/86** | **76 %** |
 
 ---
 
@@ -242,7 +242,7 @@ Módulo: `stock`.
 1. [x] **F9.1 Modelo y persistencia**
    - Archivos: `Product`, `StockMovement`, DAOs, migración
    - Hecho: stock = suma de movimientos; tipos uso/venta; tests.
-2. [ ] **F9.2 UI de productos**
+2. [x] **F9.2 UI de productos**
    - Archivos: `ui/stock/`
    - Hecho: lista con filtro por tipo y búsqueda; alta/edición/desactivación.
 3. [ ] **F9.3 Movimientos**
@@ -387,3 +387,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F8.3 | `WaitlistMatcher` + `WaitlistMatcherTest` (2/2 OK), `FindWaitlistCandidatesUseCase`, `OfferWaitlistEntryUseCase`, `AssignWaitlistEntryUseCase` + `WaitlistActionsUseCaseTest` (2/2 OK), diálogo `WaitlistSuggestionsDialogFragment` con Ofrecer (WhatsApp)/Asignar (turno con revalidación)/Ignorar disparado al cancelar o reprogramar desde `AppointmentDetailFragment`; `./gradlew.bat test assembleDebug` OK. | F8.4 |
 | 18/11/2026 | F8.4 | Verificación de fase F8: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 147 tests unitarios: 125 en `:domain` + 22 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `lista-espera/skills.md` (5/5) marcados `[x]`, `versionCode 8` / `versionName "0.8.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F8` y `v0.8.0`. | F9.1 |
 | 18/11/2026 | F9.1 | Rama `fase/F9`; modelos `ProductType`, `ProductUnit`, `StockMovementType`, `Product` y `StockMovement`, regla `LowStockRule`, `StockRepository`, `SaveProductUseCase`, `SetProductActiveUseCase` + `SaveProductUseCaseTest` (3/3 OK), Room v12 (`ProductEntity`, `StockMovementEntity` FK RESTRICT, `StockDao`, `StockMapper`, `StockRepositoryImpl`, `Migration_11_12`, `12.json`, `BackupManager` v12), `SchemaExportTest` (12/12 OK) y `MigrationTest` v12 compilado. | F9.2 |
+| 18/11/2026 | F9.2 | UI de catálogo de stock (`StockFragment`, `StockViewModel`, `ProductsAdapter`, `ProductFormDialogFragment`, `StockUiLabels`, enlace `rowStock` en `MoreFragment` y `nav_stock`), filtro por tipo Todos/Uso/Venta/Inactivos, buscador con debounce 250 ms, orden con stock bajo primero y alta/edición/baja lógica; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.3 |
