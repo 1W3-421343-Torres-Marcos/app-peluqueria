@@ -5,6 +5,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/screen_margin"
+        android:paddingTop="@dimen/space_xs">
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchDigestEnabled"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="@dimen/touch_target_min"
+            android:text="@string/reminders_digest_toggle_label" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDigestTime"
+            style="@style/Widget.Metanoia.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/remindersTabs"
         android:layout_width="match_parent"

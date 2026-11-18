@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.metanoia.app.data.backup.BackupScheduler;
+import com.metanoia.app.data.reminders.ReminderDigestScheduler;
 
 /**
  * Punto de entrada de la aplicación; inicializa el contenedor de dependencias y aplica el tema.
@@ -23,6 +24,8 @@ public class MetanoiaApp extends Application {
         container = new AppContainer(this);
         container.devicePrefs().applySavedTheme();
         BackupScheduler.schedulePeriodicAuto(this, container.devicePrefs().getAutoFrequencyHours());
+        ReminderDigestScheduler.syncSchedule(
+                this, container.devicePrefs(), container.clock());
         registerBackgroundBackupObserver();
     }
 
@@ -61,5 +64,7 @@ public class MetanoiaApp extends Application {
         app.container = new AppContainer(app);
         app.container.devicePrefs().applySavedTheme();
         BackupScheduler.schedulePeriodicAuto(app, app.container.devicePrefs().getAutoFrequencyHours());
+        ReminderDigestScheduler.syncSchedule(
+                app, app.container.devicePrefs(), app.container.clock());
     }
 }

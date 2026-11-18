@@ -1,5 +1,6 @@
 package com.metanoia.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -17,7 +18,11 @@ import com.metanoia.app.databinding.ActivityMainBinding;
  */
 public class MainActivity extends AppCompatActivity {
 
+    public static final String EXTRA_OPEN_REMINDERS = "extra_open_reminders";
+
     private ActivityMainBinding binding;
+    @Nullable
+    private NavController navController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,6 +33,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setupNavigation();
+        handleNotificationIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(@Nullable Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleNotificationIntent(intent);
+    }
+
+    private void handleNotificationIntent(@Nullable Intent intent) {
+        if (intent == null || navController == null) {
+            return;
+        }
+        if (intent.getBooleanExtra(EXTRA_OPEN_REMINDERS, false)) {
+            intent.removeExtra(EXTRA_OPEN_REMINDERS);
+            if (navController.getCurrentDestination() == null
+                    || navController.getCurrentDestination().getId() != R.id.nav_reminders) {
+                navController.navigate(R.id.nav_reminders);
+            }
+        }
     }
 
     private void setupNavigation() {
@@ -36,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         if (navHost == null) {
             return;
         }
-        NavController navController = navHost.getNavController();
+        navController = navHost.getNavController();
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
         binding.topBarBack.setOnClickListener(v -> navController.navigateUp());
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {

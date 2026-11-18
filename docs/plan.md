@@ -12,14 +12,14 @@
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [x] | 10/10 | 100 % |
-| F6 | Recordatorios por WhatsApp | [~] | 5/7 | 71 % |
+| F6 | Recordatorios por WhatsApp | [~] | 6/7 | 86 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **53/86** | **62 %** |
+| **Total** | | | **54/86** | **63 %** |
 
 ---
 
@@ -200,7 +200,7 @@ Entregable: recordar turnos y saludar cumpleaños en pocos toques. Módulos: `re
 5. [x] **F6.5 Cumpleaños**
    - Archivos: `ui/reminders/birthdays`
    - Hecho: lista de cumpleaños del día con saludo por plantilla; marca enviado por año.
-6. [ ] **F6.6 Aviso diario local**
+6. [x] **F6.6 Aviso diario local**
    - Archivos: `ReminderDigestWorker`
    - Hecho: notificación local diaria (hora configurable) con cantidad de pendientes; sin red.
 7. [ ] **F6.7 Verificación de fase**
@@ -376,3 +376,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F6.3 | `ReminderType`, `Reminder`, `ReminderEligibility` + `ReminderEligibilityTest` (2/2 OK), `ReminderRepository`, `RecordReminderSentUseCase` + `RecordReminderSentUseCaseTest` (2/2 OK), Room v9 (`ReminderEntity` FK RESTRICT, `ReminderDao`, `Migration_8_9`, `9.json`, `BackupManager` v9, `SchemaExportTest` 9/9 OK, `MigrationTest` v9 compilado) y pantalla `RemindersFragment` con lista de pendientes de mañana y deshacer envío. | F6.4 |
 | 18/11/2026 | F6.4 | Acción `Recordar por WhatsApp` en un toque desde `AppointmentDetailFragment` / `AppointmentDetailViewModel` con plantilla renderizada, registro de envío, deshabilitación con aviso si falta teléfono y opción Deshacer. | F6.5 |
 | 18/11/2026 | F6.5 | `BirthdayRemindersAdapter` y pestaña Cumpleaños en `RemindersFragment` para saludar por WhatsApp con registro anual anti-duplicados, edad cuando hay año cargado y opción Deshacer. | F6.6 |
+| 18/11/2026 | F6.6 | `DigestScheduleCalculator` + `DigestScheduleCalculatorTest` (2/2 OK), `DevicePrefs` con hora/activación configurables, `POST_NOTIFICATIONS` con explicación previa en Android 13+, `ReminderNotificationHelper`, `ReminderDigestWorker` y `ReminderDigestScheduler` 100 % locales sin red más acceso directo desde notificación en `MainActivity`. | F6.7 |

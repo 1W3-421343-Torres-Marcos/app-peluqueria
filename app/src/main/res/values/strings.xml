@@ -574,4 +574,19 @@
     <string name="reminder_regreet_whatsapp_btn">Volver a saludar</string>
     <string name="reminder_greeted_badge_format">Saludado · %1$s</string>
     <string name="reminder_birthday_marked_sent">Saludo de cumpleaños registrado</string>
+    <string name="reminders_notification_channel_name">Recordatorios diarios</string>
+    <string name="reminders_notification_channel_desc">Aviso diario local con recordatorios y cumpleaños pendientes</string>
+    <string name="reminders_notification_title">Recordatorios pendientes</string>
+    <string name="reminders_notification_body_both">Tenés %1$d turno(s) para recordar mañana y %2$d cumpleaños hoy.</string>
+    <string name="reminders_notification_body_tomorrow">Tenés %1$d turno(s) de mañana sin recordar.</string>
+    <string name="reminders_notification_body_birthdays">Tenés %1$d cumpleaños de hoy sin saludar.</string>
+    <string name="reminders_digest_toggle_label">Aviso diario local</string>
+    <string name="reminders_digest_time_format">Hora: %1$02d:%2$02d</string>
+    <string name="reminders_digest_picker_title">Hora del aviso diario</string>
+    <string name="reminders_digest_saved">Aviso diario configurado a las %1$02d:%2$02d</string>
+    <string name="reminders_digest_disabled">Aviso diario desactivado</string>
+    <string name="reminders_permission_rationale_title">Permitir notificaciones</string>
+    <string name="reminders_permission_rationale_message">Metanoia te enviará un aviso diario 100 % local a la hora elegida cuando tengas turnos por recordar o cumpleaños.</string>
+    <string name="reminders_permission_allow">Permitir</string>
+    <string name="reminders_permission_denied">Podés activar las notificaciones más tarde desde los ajustes del teléfono.</string>
 </resources>
