@@ -295,12 +295,35 @@
                     app:emptyMessage="@string/client_detail_spending_empty" />
             </LinearLayout>
 
-            <com.metanoia.app.ui.common.EmptyStateView
-                android:id="@+id/clientTabColorEmpty"
+            <LinearLayout
+                android:id="@+id/clientTabColorPanel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:emptyMessage="@string/client_detail_color_empty" />
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNewColorFormula"
+                    style="@style/Widget.Metanoia.Button.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_s"
+                    android:text="@string/color_formula_new_btn"
+                    app:icon="@drawable/ic_add" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/clientColorRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <com.metanoia.app.ui.common.EmptyStateView
+                    android:id="@+id/clientTabColorEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:emptyMessage="@string/client_detail_color_empty" />
+            </LinearLayout>
         </FrameLayout>
     </LinearLayout>
 </ScrollView>
