@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -84,8 +83,8 @@ public class AgendaFragment extends Fragment {
         binding.btnAgendaPrevDate.setOnClickListener(v -> viewModel.shiftDate(-1));
         binding.btnAgendaNextDate.setOnClickListener(v -> viewModel.shiftDate(1));
         binding.btnAgendaToday.setOnClickListener(v -> viewModel.jumpToToday());
-        binding.btnAgendaBlocks.setOnClickListener(v -> Toast.makeText(
-                requireContext(), R.string.agenda_blocks_pending_step, Toast.LENGTH_SHORT).show());
+        binding.btnAgendaBlocks.setOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigate(R.id.action_agenda_to_blocks));
         binding.fabNewAppointment.setOnClickListener(v -> openCreateAppointment());
     }
 

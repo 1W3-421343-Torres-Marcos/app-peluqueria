@@ -313,4 +313,36 @@
     <string name="appointment_status_updated">Estado actualizado</string>
     <string name="appointment_rescheduled">Turno reprogramado</string>
     <string name="appointment_error_status_conflict">No se pudo cambiar el estado en la situación actual del turno.</string>
+
+    <!-- Bloqueos de agenda (F3.9) -->
+    <string name="common_ok">Entendido</string>
+    <string name="schedule_blocks_title">Bloqueos de agenda</string>
+    <string name="schedule_blocks_empty">Todavía no hay bloqueos activos en la agenda.</string>
+    <string name="schedule_blocks_new_fab">Nuevo bloqueo</string>
+    <string name="schedule_block_form_title">Nuevo bloqueo</string>
+    <string name="schedule_block_scope_label">Alcance</string>
+    <string name="schedule_block_type_label">Tipo de bloqueo</string>
+    <string name="block_type_vacation">Vacaciones</string>
+    <string name="block_type_lunch">Almuerzo</string>
+    <string name="block_type_holiday">Feriado</string>
+    <string name="block_type_other">Otro</string>
+    <string name="schedule_block_from_date">Desde: %1$s</string>
+    <string name="schedule_block_to_date">Hasta: %1$s</string>
+    <string name="schedule_block_full_day_switch">Todo el día</string>
+    <string name="schedule_block_from_time">Hora inicio</string>
+    <string name="schedule_block_to_time">Hora fin</string>
+    <string name="schedule_block_reason_label">Motivo</string>
+    <string name="schedule_block_save">Guardar bloqueo</string>
+    <string name="schedule_block_saved">Bloqueo guardado</string>
+    <string name="schedule_block_deactivated">Bloqueo desactivado</string>
+    <string name="schedule_block_deactivate_title">¿Quitar este bloqueo?</string>
+    <string name="schedule_block_deactivate_message">El rango volverá a quedar disponible para nuevos turnos.</string>
+    <string name="schedule_block_deactivate_btn">Quitar bloqueo</string>
+    <string name="schedule_block_affected_title">Turnos superpuestos</string>
+    <plurals name="schedule_block_affected_message">
+        <item quantity="one">El bloqueo se guardó, pero hay %1$d turno existente en esa franja horaria. Reprogramalo o cancelalo desde la agenda.</item>
+        <item quantity="other">El bloqueo se guardó, pero hay %1$d turnos existentes en esa franja horaria. Reprogramalos o cancelalos desde la agenda.</item>
+    </plurals>
+    <string name="schedule_block_date_range">%1$s al %2$s</string>
+    <string name="schedule_block_error_validation">Revisá fechas, rango horario (HH:mm) y motivo (2–120 caracteres).</string>
 </resources>

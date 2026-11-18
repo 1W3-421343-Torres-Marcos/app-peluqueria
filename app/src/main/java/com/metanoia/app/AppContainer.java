@@ -22,6 +22,8 @@ import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.ChangeAppointmentStatusUseCase;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
+import com.metanoia.domain.usecase.CreateScheduleBlockUseCase;
+import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
@@ -64,6 +66,8 @@ public final class AppContainer {
     private final UpdateAppointmentUseCase updateAppointmentUseCase;
     private final ChangeAppointmentStatusUseCase changeAppointmentStatusUseCase;
     private final RescheduleAppointmentUseCase rescheduleAppointmentUseCase;
+    private final CreateScheduleBlockUseCase createScheduleBlockUseCase;
+    private final DeactivateScheduleBlockUseCase deactivateScheduleBlockUseCase;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -113,6 +117,12 @@ public final class AppContainer {
         this.rescheduleAppointmentUseCase = new RescheduleAppointmentUseCase(
                 appointmentRepository, professionalRepository, scheduleBlockRepository,
                 settingsRepository, auditLogRepository, clock, idGenerator);
+        this.createScheduleBlockUseCase = new CreateScheduleBlockUseCase(
+                scheduleBlockRepository, appointmentRepository, professionalRepository,
+                settingsRepository, auditLogRepository, clock, idGenerator);
+        this.deactivateScheduleBlockUseCase = new DeactivateScheduleBlockUseCase(
+                scheduleBlockRepository, settingsRepository, auditLogRepository,
+                clock, idGenerator);
     }
 
     public AppExecutors executors() {
@@ -213,5 +223,13 @@ public final class AppContainer {
 
     public RescheduleAppointmentUseCase rescheduleAppointmentUseCase() {
         return rescheduleAppointmentUseCase;
+    }
+
+    public CreateScheduleBlockUseCase createScheduleBlockUseCase() {
+        return createScheduleBlockUseCase;
+    }
+
+    public DeactivateScheduleBlockUseCase deactivateScheduleBlockUseCase() {
+        return deactivateScheduleBlockUseCase;
     }
 }
