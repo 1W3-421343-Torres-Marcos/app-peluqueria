@@ -242,4 +242,16 @@
     <string name="agenda_detail_pending_step">El detalle de turno estará disponible en el siguiente paso.</string>
     <string name="agenda_create_pending_step">El alta de turno se habilitará en el paso F3.7.</string>
     <string name="agenda_blocks_pending_step">La gestión de bloqueos se habilitará en el paso F3.9.</string>
+
+    <!-- Agenda semanal (F3.6) -->
+    <string name="agenda_week_day_today">%1$s · Hoy</string>
+    <string name="agenda_week_no_appointments">Sin turnos</string>
+    <plurals name="agenda_week_appointments_count">
+        <item quantity="one">%1$d turno</item>
+        <item quantity="other">%1$d turnos</item>
+    </plurals>
+    <string name="agenda_week_occupied_hours">%1$d h %2$02d min ocupados</string>
+    <string name="agenda_week_occupied_minutes">%1$d min ocupados</string>
+    <string name="agenda_week_has_blocks">Con bloqueo activo</string>
+    <string name="agenda_week_summary_with_block">%1$s · %2$s</string>
 </resources>

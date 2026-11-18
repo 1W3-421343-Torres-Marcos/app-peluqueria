@@ -28,16 +28,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Pantalla principal de la agenda de turnos con navegación diaria y filtro por profesional.
+ * Pantalla principal de la agenda de turnos con vista diaria/semanal y filtro por profesional.
  */
 public class AgendaFragment extends Fragment {
 
     private FragmentAgendaBinding binding;
     private AgendaViewModel viewModel;
     private DayTimelineAdapter dayAdapter;
+    private WeekDaysAdapter weekAdapter;
     private final Map<String, String> professionalNames = new LinkedHashMap<>();
     private List<ScheduleBlockEntity> latestDayBlocks = Collections.emptyList();
     private List<AppointmentCardProjection> latestDayAppointments = Collections.emptyList();
+    private List<ScheduleBlockEntity> latestWeekBlocks = Collections.emptyList();
+    private List<AppointmentCardProjection> latestWeekAppointments = Collections.emptyList();
 
     @Nullable
     @Override
@@ -54,6 +57,8 @@ public class AgendaFragment extends Fragment {
 
         dayAdapter = new DayTimelineAdapter(card -> Toast.makeText(
                 requireContext(), R.string.agenda_detail_pending_step, Toast.LENGTH_SHORT).show());
+        weekAdapter = new WeekDaysAdapter(dayEpoch -> viewModel.selectDayAndOpenDayMode(dayEpoch));
+
         binding.agendaRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.agendaRecycler.setAdapter(dayAdapter);
 
@@ -92,7 +97,7 @@ public class AgendaFragment extends Fragment {
                 }
             }
             renderProfessionalChips(professionals);
-            renderTimeline();
+            renderCurrentMode();
         });
 
         viewModel.observeFilter().observe(getViewLifecycleOwner(), filter -> {
@@ -101,21 +106,38 @@ public class AgendaFragment extends Fragment {
             }
             renderFilterHeader(filter);
             syncProfessionalChipChecks(filter.professionalId);
-            renderTimeline();
+            renderCurrentMode();
         });
 
         viewModel.observeDayBlocks().observe(getViewLifecycleOwner(), blocks -> {
             latestDayBlocks = blocks == null ? Collections.emptyList() : blocks;
-            renderTimeline();
+            renderCurrentMode();
         });
 
         viewModel.observeDayAppointments().observe(getViewLifecycleOwner(), cards -> {
             latestDayAppointments = cards == null ? Collections.emptyList() : cards;
-            renderTimeline();
+            renderCurrentMode();
+        });
+
+        viewModel.observeWeekBlocks().observe(getViewLifecycleOwner(), blocks -> {
+            latestWeekBlocks = blocks == null ? Collections.emptyList() : blocks;
+            renderCurrentMode();
+        });
+
+        viewModel.observeWeekAppointments().observe(getViewLifecycleOwner(), cards -> {
+            latestWeekAppointments = cards == null ? Collections.emptyList() : cards;
+            renderCurrentMode();
         });
     }
 
     private void renderFilterHeader(@NonNull AgendaFilter filter) {
+        int desiredButtonId = filter.viewMode == ViewMode.WEEK
+                ? R.id.btnAgendaModeWeek
+                : R.id.btnAgendaModeDay;
+        if (binding.agendaViewModeGroup.getCheckedButtonId() != desiredButtonId) {
+            binding.agendaViewModeGroup.check(desiredButtonId);
+        }
+
         if (filter.viewMode == ViewMode.DAY) {
             binding.agendaDateLabel.setText(
                     Formats.formatDayWithShortWeekday(filter.selectedDayEpoch));
@@ -129,7 +151,9 @@ public class AgendaFragment extends Fragment {
                     R.string.agenda_time_inline,
                     Formats.formatWeekdayAndDayMonth(monday),
                     Formats.formatWeekdayAndDayMonth(monday + 6L)));
-            binding.btnAgendaToday.setVisibility(View.VISIBLE);
+            boolean inCurrentWeek = viewModel.todayEpochDay() >= monday
+                    && viewModel.todayEpochDay() <= monday + 6L;
+            binding.btnAgendaToday.setVisibility(inCurrentWeek ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -174,18 +198,43 @@ public class AgendaFragment extends Fragment {
         }
     }
 
-    private void renderTimeline() {
+    private void renderCurrentMode() {
+        AgendaFilter filter = viewModel.observeFilter().getValue();
+        if (filter == null) {
+            return;
+        }
+        if (filter.viewMode == ViewMode.WEEK) {
+            if (binding.agendaRecycler.getAdapter() != weekAdapter) {
+                binding.agendaRecycler.setAdapter(weekAdapter);
+            }
+            binding.agendaEmptyState.setVisibility(View.GONE);
+            binding.agendaRecycler.setVisibility(View.VISIBLE);
+            long monday = AgendaViewModel.mondayOf(filter.selectedDayEpoch);
+            weekAdapter.submitList(WeekDaysAdapter.buildWeek(
+                    monday,
+                    filter.selectedDayEpoch,
+                    viewModel.todayEpochDay(),
+                    latestWeekAppointments,
+                    latestWeekBlocks,
+                    filter.professionalId
+            ));
+            return;
+        }
+
+        if (binding.agendaRecycler.getAdapter() != dayAdapter) {
+            binding.agendaRecycler.setAdapter(dayAdapter);
+        }
         List<DayTimelineAdapter.TimelineRow> rows = DayTimelineAdapter.buildRows(
                 latestDayBlocks,
                 latestDayAppointments,
-                viewModel.currentProfessionalId(),
+                filter.professionalId,
                 professionalNames
         );
         boolean empty = rows.isEmpty();
         binding.agendaEmptyState.setVisibility(empty ? View.VISIBLE : View.GONE);
         binding.agendaRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
         if (empty) {
-            boolean filtered = viewModel.currentProfessionalId() != null;
+            boolean filtered = filter.professionalId != null;
             binding.agendaEmptyState.setMessage(filtered
                     ? R.string.agenda_empty_filtered
                     : R.string.empty_agenda_title);
