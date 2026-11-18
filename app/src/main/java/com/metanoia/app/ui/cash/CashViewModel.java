@@ -13,14 +13,17 @@ import com.metanoia.app.AppContainer;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.dao.CashDao;
+import com.metanoia.app.data.db.entity.CashClosingEntity;
 import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.ui.common.Event;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
+import com.metanoia.domain.model.CashClosing;
 import com.metanoia.domain.model.CashMovement;
 import com.metanoia.domain.model.CashMovementType;
 import com.metanoia.domain.model.Money;
 import com.metanoia.domain.model.PaymentMethod;
+import com.metanoia.domain.usecase.CloseCashDayUseCase;
 import com.metanoia.domain.usecase.RecordCashMovementUseCase.Request;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ import java.util.function.Consumer;
 
 /**
  * ViewModel principal de la pestaña Caja: movimientos diarios, totales por medio,
- * cobros pendientes y acciones de registro/reverso.
+ * cobros pendientes, cierre diario y alertas de días anteriores sin cerrar.
  */
 public class CashViewModel extends AndroidViewModel {
 
@@ -59,6 +62,9 @@ public class CashViewModel extends AndroidViewModel {
     }
 
     public static final class CashDayState {
+        public final long dayEpoch;
+        public final boolean dayClosed;
+        public final boolean todayClosed;
         public final long cashCents;
         public final long transferCents;
         public final long cardCents;
@@ -68,12 +74,18 @@ public class CashViewModel extends AndroidViewModel {
         public final List<CashMovementRow> rows;
 
         CashDayState(
+                long dayEpoch,
+                boolean dayClosed,
+                boolean todayClosed,
                 long cashCents,
                 long transferCents,
                 long cardCents,
                 long mercadoPagoCents,
                 long netTotalCents,
                 @NonNull List<CashMovementRow> rows) {
+            this.dayEpoch = dayEpoch;
+            this.dayClosed = dayClosed;
+            this.todayClosed = todayClosed;
             this.cashCents = cashCents;
             this.transferCents = transferCents;
             this.cardCents = cardCents;
@@ -88,6 +100,8 @@ public class CashViewModel extends AndroidViewModel {
     private final LiveData<Integer> receivablesCount;
     private final LiveData<List<CashMovementEntity>> rawMovements;
     private final LiveData<List<String>> sameDayReversedIds;
+    private final LiveData<CashClosingEntity> closingForSelectedDay;
+    private final MutableLiveData<Long> latestUnclosedPreviousDay = new MutableLiveData<>();
     private final MediatorLiveData<CashDayState> dayState = new MediatorLiveData<>();
     private final MutableLiveData<Event<Integer>> messageEvent = new MutableLiveData<>();
 
@@ -100,9 +114,12 @@ public class CashViewModel extends AndroidViewModel {
         this.rawMovements = Transformations.switchMap(selectedDay, cashDao::observeByDay);
         this.sameDayReversedIds = Transformations.switchMap(
                 selectedDay, cashDao::observeReversedIdsOnDay);
+        this.closingForSelectedDay = Transformations.switchMap(
+                selectedDay, cashDao::observeClosingByDay);
 
         dayState.addSource(rawMovements, list -> recomputeDayState(list));
         dayState.addSource(sameDayReversedIds, ignored -> recomputeDayState(rawMovements.getValue()));
+        dayState.addSource(closingForSelectedDay, ignored -> recomputeDayState(rawMovements.getValue()));
     }
 
     public long todayEpochDay() {
@@ -115,6 +132,14 @@ public class CashViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getReceivablesCount() {
         return receivablesCount;
+    }
+
+    public LiveData<CashClosingEntity> getClosingForSelectedDay() {
+        return closingForSelectedDay;
+    }
+
+    public LiveData<Long> getLatestUnclosedPreviousDay() {
+        return latestUnclosedPreviousDay;
     }
 
     public LiveData<CashDayState> getDayState() {
@@ -187,6 +212,32 @@ public class CashViewModel extends AndroidViewModel {
         });
     }
 
+    public void closeDay(
+            long dayEpoch,
+            @NonNull Map<PaymentMethod, Money> countedByMethod,
+            @NonNull String notes,
+            @NonNull Consumer<Boolean> callback) {
+        container.executors().io().execute(() -> {
+            Result<CashClosing> result = container.closeCashDayUseCase().execute(
+                    new CloseCashDayUseCase.Request(dayEpoch, countedByMethod, notes));
+            if (result.isSuccess()) {
+                messageEvent.postValue(new Event<>(R.string.cash_closing_success));
+                container.executors().mainThread().execute(() -> callback.accept(true));
+                return;
+            }
+            int msgRes;
+            if (result.getError() == DomainError.CONFLICT) {
+                msgRes = R.string.cash_closing_conflict;
+            } else if (result.getError() == DomainError.VALIDATION_ERROR) {
+                msgRes = R.string.cash_closing_validation_error;
+            } else {
+                msgRes = R.string.cash_closing_unexpected_error;
+            }
+            messageEvent.postValue(new Event<>(msgRes));
+            container.executors().mainThread().execute(() -> callback.accept(false));
+        });
+    }
+
     private void recomputeDayState(List<CashMovementEntity> list) {
         List<CashMovementEntity> snapshot = list == null
                 ? Collections.emptyList()
@@ -195,7 +246,12 @@ public class CashViewModel extends AndroidViewModel {
         long targetDay = targetDayObj == null ? todayEpochDay() : targetDayObj;
         container.executors().io().execute(() -> {
             CashDao cashDao = container.database().cashDao();
-            boolean todayClosed = cashDao.isDayClosedSync(todayEpochDay());
+            long today = todayEpochDay();
+            boolean dayClosed = cashDao.isDayClosedSync(targetDay);
+            boolean todayClosed = cashDao.isDayClosedSync(today);
+            Long unclosedPrev = cashDao.findLatestUnclosedDayWithMovementsBeforeSync(today);
+            latestUnclosedPreviousDay.postValue(unclosedPrev);
+
             Map<String, CashMovementType> knownTypes = new HashMap<>();
             for (CashMovementEntity e : snapshot) {
                 knownTypes.put(e.id, parseType(e.type));
@@ -225,16 +281,21 @@ public class CashViewModel extends AndroidViewModel {
                 }
                 net += signed;
                 boolean isReversed = reversedIds.contains(e.id);
-                boolean canReverse = !todayClosed
+                boolean canReverse = !dayClosed
+                        && !todayClosed
                         && !isReversed
                         && type != CashMovementType.REVERSAL;
                 rows.add(new CashMovementRow(e, signed, isReversed, canReverse));
             }
 
-            if (targetDay != (selectedDay.getValue() == null ? targetDay : selectedDay.getValue())) {
+            Long latestSelected = selectedDay.getValue();
+            if (latestSelected != null && latestSelected != targetDay) {
                 return;
             }
             dayState.postValue(new CashDayState(
+                    targetDay,
+                    dayClosed,
+                    todayClosed,
                     totals.get(PaymentMethod.CASH),
                     totals.get(PaymentMethod.TRANSFER),
                     totals.get(PaymentMethod.CARD),

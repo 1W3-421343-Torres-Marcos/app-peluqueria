@@ -19,14 +19,15 @@ import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.databinding.DialogReverseReasonBinding;
 import com.metanoia.app.databinding.FragmentCashBinding;
+import com.metanoia.app.ui.cash.closing.CashClosingDialogFragment;
 import com.metanoia.app.util.Formats;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
 
 /**
- * Pantalla de Caja: resumen diario por medio de pago, movimientos, ventas sueltas/gastos
- * y acceso a cobros pendientes.
+ * Pantalla de Caja: resumen diario por medio de pago, movimientos, ventas sueltas/gastos,
+ * cobros pendientes y cierre de caja diario.
  */
 public class CashFragment extends Fragment {
 
@@ -64,6 +65,12 @@ public class CashFragment extends Fragment {
                         .show(getChildFragmentManager(), "cash_expense_form"));
         binding.btnCashReceivables.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_cash_to_receivables));
+        binding.btnCashCloseDay.setOnClickListener(v -> {
+            Long day = viewModel.getSelectedDay().getValue();
+            long targetDay = day == null ? viewModel.todayEpochDay() : day;
+            CashClosingDialogFragment.newInstance(targetDay)
+                    .show(getChildFragmentManager(), "cash_closing_dialog");
+        });
 
         viewModel.getSelectedDay().observe(getViewLifecycleOwner(), epochDay -> {
             if (epochDay != null) {
@@ -79,6 +86,46 @@ public class CashFragment extends Fragment {
                     getString(R.string.cash_receivables_button_format, safeCount));
         });
 
+        viewModel.getLatestUnclosedPreviousDay().observe(getViewLifecycleOwner(), unclosedDay -> {
+            Long selected = viewModel.getSelectedDay().getValue();
+            if (unclosedDay == null || (selected != null && selected.longValue() == unclosedDay)) {
+                binding.cashUnclosedBanner.setVisibility(View.GONE);
+                return;
+            }
+            binding.cashUnclosedBanner.setMessage(getString(
+                    R.string.cash_unclosed_banner_format,
+                    Formats.formatDayWithShortWeekday(unclosedDay)));
+            binding.cashUnclosedBanner.setAction(R.string.cash_unclosed_banner_action,
+                    v -> viewModel.setSelectedDay(unclosedDay));
+            binding.cashUnclosedBanner.setVisibility(View.VISIBLE);
+        });
+
+        viewModel.getClosingForSelectedDay().observe(getViewLifecycleOwner(), closing -> {
+            if (closing == null) {
+                binding.cashClosedSummaryCard.setVisibility(View.GONE);
+                binding.btnCashCloseDay.setVisibility(View.VISIBLE);
+            } else {
+                binding.cashClosedSummaryCard.setVisibility(View.VISIBLE);
+                binding.btnCashCloseDay.setVisibility(View.GONE);
+                binding.cashClosedMeta.setText(getString(
+                        R.string.cash_closed_meta_format,
+                        Formats.formatDateTime(closing.closedAt),
+                        closing.operator));
+                long countedTotal = closing.countedCashCents
+                        + closing.countedTransferCents
+                        + closing.countedCardCents
+                        + closing.countedMpCents;
+                binding.cashClosedTotalCounted.setMoneyCents(countedTotal);
+                binding.cashClosedTotalDiff.setMoneyCents(closing.differenceCents);
+                if (closing.notes.isEmpty()) {
+                    binding.cashClosedNotes.setVisibility(View.GONE);
+                } else {
+                    binding.cashClosedNotes.setText(closing.notes);
+                    binding.cashClosedNotes.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         viewModel.getDayState().observe(getViewLifecycleOwner(), state -> {
             if (state == null) {
                 return;
@@ -88,6 +135,9 @@ public class CashFragment extends Fragment {
             binding.cashSummaryCardAmount.setMoneyCents(state.cardCents);
             binding.cashSummaryMercadoPagoAmount.setMoneyCents(state.mercadoPagoCents);
             binding.cashSummaryNetAmount.setMoneyCents(state.netTotalCents);
+
+            binding.btnCashAddIncome.setEnabled(!state.todayClosed);
+            binding.btnCashAddExpense.setEnabled(!state.todayClosed);
 
             boolean empty = state.rows.isEmpty();
             binding.cashMovementsRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);

@@ -499,4 +499,21 @@
     <string name="cash_form_validation_error">Ingresá un concepto válido y un importe mayor a cero.</string>
     <string name="cash_form_closed_conflict">La caja del día ya está cerrada.</string>
     <string name="cash_form_unexpected_error">No se pudo registrar el movimiento.</string>
+    <string name="cash_closing_dialog_title">Cerrar caja diaria</string>
+    <string name="cash_closing_expected_format">Esperado: %1$s</string>
+    <string name="cash_closing_counted_label">Contado ($)</string>
+    <string name="cash_closing_diff_format">Diferencia: %1$s</string>
+    <string name="cash_closing_total_expected">Total esperado</string>
+    <string name="cash_closing_total_counted">Total contado</string>
+    <string name="cash_closing_total_diff">Diferencia total</string>
+    <string name="cash_closing_notes_label">Observaciones del cierre (opcional)</string>
+    <string name="cash_closing_confirm_btn">Confirmar cierre y bloquear día</string>
+    <string name="cash_closing_success">Caja cerrada correctamente</string>
+    <string name="cash_closing_conflict">La caja de este día ya está cerrada.</string>
+    <string name="cash_closing_validation_error">Revisá los importes contados (no pueden ser negativos).</string>
+    <string name="cash_closing_unexpected_error">No se pudo registrar el cierre.</string>
+    <string name="cash_closed_summary_title">Caja cerrada</string>
+    <string name="cash_closed_meta_format">%1$s · %2$s</string>
+    <string name="cash_unclosed_banner_format">Tenés movimientos sin cerrar del %1$s.</string>
+    <string name="cash_unclosed_banner_action">Ir a cerrar</string>
 </resources>
