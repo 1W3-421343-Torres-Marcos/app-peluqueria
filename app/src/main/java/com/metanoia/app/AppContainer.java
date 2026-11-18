@@ -12,6 +12,7 @@ import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
 import com.metanoia.app.data.repository.CashRepositoryImpl;
 import com.metanoia.app.data.repository.ClientRepositoryImpl;
 import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
+import com.metanoia.app.data.repository.ReminderRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
 import com.metanoia.app.data.repository.ScheduleBlockRepositoryImpl;
 import com.metanoia.app.data.repository.SettingsRepositoryImpl;
@@ -22,6 +23,7 @@ import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.ClientRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
+import com.metanoia.domain.repository.ReminderRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
@@ -37,6 +39,7 @@ import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
+import com.metanoia.domain.usecase.RecordReminderSentUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 import com.metanoia.domain.usecase.ReverseMovementUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
@@ -66,6 +69,7 @@ public final class AppContainer {
     private final AppointmentRepository appointmentRepository;
     private final ScheduleBlockRepository scheduleBlockRepository;
     private final CashRepository cashRepository;
+    private final ReminderRepository reminderRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -88,6 +92,7 @@ public final class AppContainer {
     private final CompleteAndChargeUseCase completeAndChargeUseCase;
     private final RecordCashMovementUseCase recordCashMovementUseCase;
     private final CloseCashDayUseCase closeCashDayUseCase;
+    private final RecordReminderSentUseCase recordReminderSentUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -108,6 +113,7 @@ public final class AppContainer {
                 database.appointmentDao(), database.recurrenceRuleDao());
         this.scheduleBlockRepository = new ScheduleBlockRepositoryImpl(database.scheduleBlockDao());
         this.cashRepository = new CashRepositoryImpl(database);
+        this.reminderRepository = new ReminderRepositoryImpl(database.reminderDao());
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -167,6 +173,8 @@ public final class AppContainer {
                 cashRepository, settingsRepository, auditLogRepository,
                 clock, idGenerator,
                 closedDayEpoch -> BackupScheduler.enqueueCashClose(appContext));
+        this.recordReminderSentUseCase = new RecordReminderSentUseCase(
+                reminderRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
@@ -320,5 +328,13 @@ public final class AppContainer {
 
     public CloseCashDayUseCase closeCashDayUseCase() {
         return closeCashDayUseCase;
+    }
+
+    public ReminderRepository reminderRepository() {
+        return reminderRepository;
+    }
+
+    public RecordReminderSentUseCase recordReminderSentUseCase() {
+        return recordReminderSentUseCase;
     }
 }

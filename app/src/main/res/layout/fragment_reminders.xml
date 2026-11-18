@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/remindersTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabSelectedTextColor="?attr/colorOnSurface"
+        app:tabTextColor="?attr/colorOnSurfaceVariant">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminders_tab_tomorrow" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminders_tab_birthdays" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/remindersTomorrowPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/remindersTomorrowHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/screen_margin"
+                android:paddingTop="@dimen/space_s"
+                android:paddingBottom="@dimen/space_xs"
+                android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/remindersTomorrowRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/space_l" />
+
+            <com.metanoia.app.ui.common.EmptyStateView
+                android:id="@+id/remindersTomorrowEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:emptyMessage="@string/reminders_tomorrow_empty" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/remindersBirthdaysPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/remindersBirthdaysRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingVertical="@dimen/space_s"
+                android:visibility="gone" />
+
+            <com.metanoia.app.ui.common.EmptyStateView
+                android:id="@+id/remindersBirthdaysEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:emptyMessage="@string/reminders_birthdays_empty" />
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>

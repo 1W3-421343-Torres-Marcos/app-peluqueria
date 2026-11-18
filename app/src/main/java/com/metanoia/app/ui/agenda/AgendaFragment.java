@@ -90,6 +90,8 @@ public class AgendaFragment extends Fragment {
         binding.btnAgendaPrevDate.setOnClickListener(v -> viewModel.shiftDate(-1));
         binding.btnAgendaNextDate.setOnClickListener(v -> viewModel.shiftDate(1));
         binding.btnAgendaToday.setOnClickListener(v -> viewModel.jumpToToday());
+        binding.btnAgendaReminders.setOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigate(R.id.action_agenda_to_reminders));
         binding.btnAgendaBlocks.setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigate(R.id.action_agenda_to_blocks));
         binding.fabNewAppointment.setOnClickListener(v -> openCreateAppointment());

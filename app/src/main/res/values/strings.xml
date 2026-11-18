@@ -549,4 +549,20 @@
     <string name="templates_error_empty">Ninguna plantilla puede quedar vacía.</string>
     <string name="reminder_no_phone_hint">Sin teléfono registrado</string>
     <string name="whatsapp_not_installed">WhatsApp no está instalado o no hay app disponible para abrir el enlace.</string>
+    <string name="reminders_title">Recordatorios WhatsApp</string>
+    <string name="agenda_reminders_button">Recordar</string>
+    <string name="more_reminders_title">Recordatorios por WhatsApp</string>
+    <string name="more_reminders_subtitle">Turnos de mañana y cumpleaños de hoy</string>
+    <string name="reminders_tab_tomorrow">Mañana</string>
+    <string name="reminders_tab_birthdays">Cumpleaños</string>
+    <string name="reminders_tomorrow_empty">No hay turnos programados para mañana.</string>
+    <string name="reminders_birthdays_empty">Hoy no hay clientes que cumplan años.</string>
+    <string name="reminders_tomorrow_header_format">Turnos para mañana (%1$s)</string>
+    <string name="reminder_row_meta_format">%1$s · %2$s · %3$s</string>
+    <string name="reminder_sent_badge_format">Enviado · %1$s</string>
+    <string name="reminder_send_whatsapp_btn">Enviar por WhatsApp</string>
+    <string name="reminder_resend_whatsapp_btn">Reenviar</string>
+    <string name="reminder_undo_action">Deshacer</string>
+    <string name="reminder_marked_sent">Marcado como recordado</string>
+    <string name="reminder_undone">Envío deshecho</string>
 </resources>
