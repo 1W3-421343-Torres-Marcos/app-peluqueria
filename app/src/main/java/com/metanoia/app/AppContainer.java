@@ -20,9 +20,11 @@ import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.usecase.ChangeAppointmentStatusUseCase;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
+import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
 import com.metanoia.domain.usecase.SaveProfessionalUseCase;
 import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
@@ -60,6 +62,8 @@ public final class AppContainer {
     private final SetClientActiveUseCase setClientActiveUseCase;
     private final CreateAppointmentUseCase createAppointmentUseCase;
     private final UpdateAppointmentUseCase updateAppointmentUseCase;
+    private final ChangeAppointmentStatusUseCase changeAppointmentStatusUseCase;
+    private final RescheduleAppointmentUseCase rescheduleAppointmentUseCase;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -103,6 +107,12 @@ public final class AppContainer {
                 appointmentRepository, professionalRepository, salonServiceRepository,
                 scheduleBlockRepository, settingsRepository, auditLogRepository,
                 clock, idGenerator);
+        this.changeAppointmentStatusUseCase = new ChangeAppointmentStatusUseCase(
+                appointmentRepository, clientRepository, professionalRepository,
+                settingsRepository, auditLogRepository, clock, idGenerator);
+        this.rescheduleAppointmentUseCase = new RescheduleAppointmentUseCase(
+                appointmentRepository, professionalRepository, scheduleBlockRepository,
+                settingsRepository, auditLogRepository, clock, idGenerator);
     }
 
     public AppExecutors executors() {
@@ -195,5 +205,13 @@ public final class AppContainer {
 
     public UpdateAppointmentUseCase updateAppointmentUseCase() {
         return updateAppointmentUseCase;
+    }
+
+    public ChangeAppointmentStatusUseCase changeAppointmentStatusUseCase() {
+        return changeAppointmentStatusUseCase;
+    }
+
+    public RescheduleAppointmentUseCase rescheduleAppointmentUseCase() {
+        return rescheduleAppointmentUseCase;
     }
 }

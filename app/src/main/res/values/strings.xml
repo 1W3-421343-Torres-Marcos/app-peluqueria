@@ -280,4 +280,37 @@
     <string name="appointment_error_validation">Completá cliente, al menos un servicio, profesional y horario.</string>
     <string name="appointment_error_conflict">El horario o estado ya no está disponible.</string>
     <string name="appointment_error_unexpected">No se pudo guardar el turno.</string>
+
+    <!-- Detalle y gestión de turno (F3.8) -->
+    <string name="appointment_detail_title">Detalle de turno</string>
+    <string name="appointment_detail_not_found">No se encontró el turno.</string>
+    <string name="appointment_detail_professional_format">Profesional: %1$s</string>
+    <string name="appointment_detail_items_section">Servicios congelados</string>
+    <string name="appointment_detail_item_format">%1$s (%2$d min)</string>
+    <string name="appointment_detail_commission_frozen">Comisión congelada: %1$s</string>
+    <string name="appointment_detail_total_label">Total</string>
+    <string name="appointment_detail_paid_label">Pagado</string>
+    <string name="appointment_detail_balance_label">Saldo pendiente</string>
+    <string name="appointment_detail_notes_section">Notas</string>
+    <string name="appointment_detail_cancel_reason_section">Motivo de cancelación</string>
+    <string name="appointment_action_confirm">Confirmar turno</string>
+    <string name="appointment_action_complete">Completar servicio</string>
+    <string name="appointment_action_edit">Editar</string>
+    <string name="appointment_action_reschedule">Reprogramar</string>
+    <string name="appointment_action_no_show">Ausente</string>
+    <string name="appointment_action_cancel">Cancelar turno</string>
+    <string name="appointment_action_revert_completed">Revertir a confirmado</string>
+    <string name="appointment_revert_confirm_title">¿Revertir a confirmado?</string>
+    <string name="appointment_revert_confirm_message">Esta corrección se registra en auditoría y libera las comisiones congeladas del turno.</string>
+    <string name="appointment_no_show_confirm_title">¿Marcar cliente ausente?</string>
+    <string name="appointment_no_show_confirm_message">Se liberará el horario y se sumará una ausencia al historial del cliente.</string>
+    <string name="appointment_cancel_dialog_title">Cancelar turno</string>
+    <string name="appointment_cancel_reason_label">Motivo de cancelación</string>
+    <string name="appointment_cancel_confirm_btn">Confirmar cancelación</string>
+    <string name="appointment_cancel_reason_required">Indicá un motivo de al menos 2 caracteres.</string>
+    <string name="appointment_reschedule_title">Reprogramar turno</string>
+    <string name="appointment_reschedule_confirm">Confirmar nuevo horario</string>
+    <string name="appointment_status_updated">Estado actualizado</string>
+    <string name="appointment_rescheduled">Turno reprogramado</string>
+    <string name="appointment_error_status_conflict">No se pudo cambiar el estado en la situación actual del turno.</string>
 </resources>

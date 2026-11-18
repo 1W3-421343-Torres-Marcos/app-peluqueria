@@ -22,6 +22,7 @@ import com.metanoia.app.databinding.FragmentAgendaBinding;
 import com.metanoia.app.ui.agenda.AgendaViewModel.AgendaFilter;
 import com.metanoia.app.ui.agenda.AgendaViewModel.ViewMode;
 import com.metanoia.app.ui.agenda.create.AppointmentCreateFragment;
+import com.metanoia.app.ui.agenda.detail.AppointmentDetailFragment;
 import com.metanoia.app.util.Formats;
 
 import java.util.Collections;
@@ -57,8 +58,7 @@ public class AgendaFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(AgendaViewModel.class);
 
-        dayAdapter = new DayTimelineAdapter(card -> Toast.makeText(
-                requireContext(), R.string.agenda_detail_pending_step, Toast.LENGTH_SHORT).show());
+        dayAdapter = new DayTimelineAdapter(card -> openAppointmentDetail(card.id));
         weekAdapter = new WeekDaysAdapter(dayEpoch -> viewModel.selectDayAndOpenDayMode(dayEpoch));
 
         binding.agendaRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -87,6 +87,12 @@ public class AgendaFragment extends Fragment {
         binding.btnAgendaBlocks.setOnClickListener(v -> Toast.makeText(
                 requireContext(), R.string.agenda_blocks_pending_step, Toast.LENGTH_SHORT).show());
         binding.fabNewAppointment.setOnClickListener(v -> openCreateAppointment());
+    }
+
+    private void openAppointmentDetail(@NonNull String appointmentId) {
+        Bundle args = new Bundle();
+        args.putString(AppointmentDetailFragment.ARG_APPOINTMENT_ID, appointmentId);
+        NavHostFragment.findNavController(this).navigate(R.id.action_agenda_to_detail, args);
     }
 
     private void openCreateAppointment() {

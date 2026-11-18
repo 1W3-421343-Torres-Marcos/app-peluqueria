@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [~] | 7/12 | 58 % |
+| F3 | Agenda de turnos | [~] | 8/12 | 67 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **25/86** | **29 %** |
+| **Total** | | | **26/86** | **30 %** |
 
 ---
 
@@ -107,7 +107,7 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 7. [x] **F3.7 Flujo crear turno**
    - Archivos: `ui/agenda/create/`
    - Hecho: cliente → servicios → profesional → horario libre sugerido → confirmar en ≤ 4 toques desde la agenda (cliente existente).
-8. [ ] **F3.8 Gestión del turno**
+8. [x] **F3.8 Gestión del turno**
    - Archivos: `ui/agenda/detail/`, casos de uso de estado
    - Hecho: acciones según estado — editar, reprogramar y cancelar (motivo) en PENDING/CONFIRMED; confirmar; completar (congela comisión, queda con saldo); ausente (incrementa contador del cliente); corrección COMPLETED → CONFIRMED auditada sin cobros. Detalle muestra total, pagado y saldo. (Cobro y "Completar y cobrar" en F5.)
 9. [ ] **F3.9 Bloqueos de agenda**
@@ -348,3 +348,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F3.5 | `AppointmentCardView` (borde 1 dp, barra lateral por estado y rayas en `COMPLETED`, saldo adeudado), `MoneyTextView` con soporte `textAppearance`, `AgendaViewModel`, `DayTimelineAdapter` y `AgendaFragment` (selector Día/Semana, navegación fecha, filtro profesional, bloqueos diarios y FAB). | F3.6 |
 | 18/11/2026 | F3.6 | Vista semanal lunes a domingo (`WeekDaysAdapter` + `item_week_day_row.xml`) con cantidad de turnos, horas ocupadas y bloqueos, más navegación al día elegido al tocar una fila. | F3.7 |
 | 18/11/2026 | F3.7 | `TimeSlotGrid`, `SlotAvailabilityLoader`, `AppointmentCreateViewModel`/`AppointmentCreateFragment` (buscador `LIMIT 12` + alta rápida de cliente, multi-servicios, filtro de profesionales habilitados, grilla libre/ocupada y edición), conectado en `nav_main.xml` y FAB de `AgendaFragment`. | F3.8 |
+| 18/11/2026 | F3.8 | `ChangeAppointmentStatusUseCase` (confirmar, completar congelando comisiones, ausente incrementando cliente, cancelar con motivo y revertir completado sin cobros), `RescheduleAppointmentUseCase`, detalle `AppointmentDetailFragment` y `RescheduleDialogFragment`, 80 tests unitarios OK. | F3.9 |
