@@ -10,7 +10,7 @@
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
-| F4 | Backup y restauración | [ ] | 0/8 | 0 % |
+| F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **30/86** | **35 %** |
+| **Total** | | | **38/86** | **44 %** |
 
 ---
 
@@ -122,31 +122,31 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 12. [x] **F3.12 Verificación de fase**
     - Hecho: criterios de `agenda/skills.md` marcados; tests verdes; `versionName 0.3.0`; merge de `fase/F3` a `main`, tag `fase-F3` y entrada en `docs/changelog.md`.
 
-## F4 — Backup y restauración `[ ]`
+## F4 — Backup y restauración `[x]`
 Entregable: datos protegidos con backup automático y restauración segura. Módulo: `backup`.
 
-1. [ ] **F4.1 Carpeta de destino (SAF)**
+1. [x] **F4.1 Carpeta de destino (SAF)**
    - Archivos: `DevicePrefs`, `ui/backup/`
    - Hecho: `ACTION_OPEN_DOCUMENT_TREE` con permiso persistente; se muestra la carpeta elegida; detecta permiso perdido.
-2. [ ] **F4.2 Generador de backup**
+2. [x] **F4.2 Generador de backup**
    - Archivos: `data/backup/BackupManager`, `BackupManifest`
    - Hecho: checkpoint WAL, ZIP con BD + `manifest.json` (versión esquema, app, fecha, SHA-256, conteos).
-3. [ ] **F4.3 Exportar y compartir**
+3. [x] **F4.3 Exportar y compartir**
    - Archivos: `ui/backup/`, `FileProvider`
    - Hecho: `ACTION_CREATE_DOCUMENT` y compartir por menú de Android funcionan.
-4. [ ] **F4.4 Backup automático, en segundo plano y retención**
+4. [x] **F4.4 Backup automático, en segundo plano y retención**
    - Archivos: `BackupWorker`, `BackupScheduler`, `domain/rules/BackupRetentionPolicy`, observer con `ProcessLifecycleOwner`
    - Hecho: AUTO periódico (diario por defecto); ON_BACKGROUND como `OneTimeWorkRequest` único (KEEP) solo si el último backup exitoso supera X horas (default 6); retención = el más reciente de cada uno de los últimos N días con backup (default 7) + últimos 3 PRE_RESTORE; tests de la política de retención y del umbral de horas; registra resultado y trigger.
-5. [ ] **F4.5 Validador y restaurador**
+5. [x] **F4.5 Validador y restaurador**
    - Archivos: `domain/rules/BackupValidator`, `data/backup/RestoreManager`
    - Hecho: rechaza ZIP inválido, hash incorrecto, esquema más nuevo, `PRAGMA integrity_check` fallido; tests.
-6. [ ] **F4.6 Flujo de restauración**
+6. [x] **F4.6 Flujo de restauración**
    - Archivos: `ui/backup/restore/`
    - Hecho: `ACTION_OPEN_DOCUMENT` → resumen → confirmación → backup previo automático → reemplazo → reinicio.
-7. [ ] **F4.7 Aviso de backup vencido**
+7. [x] **F4.7 Aviso de backup vencido**
    - Archivos: `AlertBanner` en Agenda
    - Hecho: banner si el último backup exitoso supera X días (configurable, default 3) o no hay carpeta.
-8. [ ] **F4.8 Verificación de fase**
+8. [x] **F4.8 Verificación de fase**
    - Hecho: prueba ida y vuelta (backup → borrar app → restaurar) sin pérdida; criterios de `backup/skills.md` OK; `versionName 0.4.0`; merge de `fase/F4` a `main`, tag `fase-F4` y entrada en `docs/changelog.md`.
 
 ## F5 — Caja `[ ]`
@@ -353,3 +353,11 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F3.10 | `RecurrenceRule`, `GenerateRecurringAppointmentsUseCase` (series cada N semanas y reporte de fechas en conflicto) y `CancelRecurringSeriesUseCase` (cancelación única o este y siguientes), UI en `AppointmentCreateFragment` y `AppointmentDetailFragment`, 84 tests unitarios OK. | F3.11 |
 | 18/11/2026 | F3.11 | `ClientVisitsAdapter`, `AppointmentCardView.bindForClientHistory` e historial real de visitas `COMPLETED`/`PAID` más saldo pendiente reactivo en `ClientDetailFragment` / `ClientsViewModel`; `DebugSeeder` SQLite por lotes (5.000 clientes y 50.000 turnos) accesible en build debug y test DAO compilado OK. | F3.12 |
 | 18/11/2026 | F3.12 | Fase F3 cerrada (`versionName 0.3.0`, `versionCode 3`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 84 tests unitarios OK, migraciones v1→v6 compiladas), criterios marcados en `agenda/skills.md`, `configuracion/skills.md`, `servicios/skills.md` y `profesionales/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F3` / `v0.3.0`. | F4.1 |
+| 18/11/2026 | F4.1 | `DevicePrefs` ampliado (URI SAF, último backup y parámetros AUTO/retención/`ON_BACKGROUND`/aviso), `BackupFolderAccess` con `takePersistableUriPermission` y detección de permiso perdido, UI `BackupFragment`/`BackupViewModel` conectada desde `MoreFragment` y `nav_main.xml`. | F4.2 |
+| 18/11/2026 | F4.2 | `BackupTrigger`, `BackupManifest`, `BackupManifestCodec` + `BackupManifestCodecTest`, y `BackupManager` (checkpoint WAL `TRUNCATE`, hash SHA-256, paquete ZIP `metanoia.db` + `manifest.json`, lock mutuo, `AuditLog` y botón manual) OK. | F4.3 |
+| 18/11/2026 | F4.3 | `FileProvider` (`file_paths.xml`) en manifiesto, exportación manual con `ACTION_CREATE_DOCUMENT` y acción Compartir (`ACTION_SEND`) con ZIP en caché en `BackupFragment`/`BackupViewModel`. | F4.4 |
+| 18/11/2026 | F4.4 | `BackupRetentionPolicy` (más reciente por cada uno de los últimos N días con backup, últimos 3 `PRE_RESTORE` aparte, umbral `ON_BACKGROUND` y protección de archivos propios/nuevos) + `BackupRetentionPolicyTest` (5/5 OK), `BackupWorker`, `BackupScheduler` (`AUTO` periódico, `ON_BACKGROUND` y `CASH_CLOSE` únicos con `KEEP`) y observer `ProcessLifecycleOwner` en `MetanoiaApp`. | F4.5 |
+| 18/11/2026 | F4.5 | `BackupValidator` + `BackupValidatorTest` (3/3 OK: esquema igual/menor vs mayor, formato y SHA-256) y `RestoreManager` (extracción ZIP segura, validación de hash, `PRAGMA integrity_check`, backup previo `PRE_RESTORE` automático, rollback ante fallos y `MetanoiaApp.resetContainer`). | F4.6 |
+| 18/11/2026 | F4.6 | Flujo completo de restauración en `BackupFragment`/`BackupViewModel` (`OpenDocument`, inspección previa, diálogo de resumen y confirmación, `PRE_RESTORE` automático, reinicio de `AppContainer` y `MainActivity`). | F4.7 |
+| 18/11/2026 | F4.7 | `AlertBanner` en `fragment_agenda.xml` y `AgendaFragment` para alertar carpeta faltante, permiso perdido o último backup superior a N días configurados (default 3) con acceso directo a `BackupFragment`. | F4.8 |
+| 18/11/2026 | F4.8 | Fase F4 cerrada (`versionName 0.4.0`, `versionCode 4`): `BackupPackageRoundTripTest` y `BackupRestoreRoundTripTest` (`androidTest`), `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 95 tests unitarios OK), 9 criterios marcados en `backup/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F4` / `v0.4.0`. | F5.1 |

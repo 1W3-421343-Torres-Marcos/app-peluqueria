@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_agenda_to_blocks"
             app:destination="@id/nav_schedule_blocks" />
+        <action
+            android:id="@+id/action_agenda_to_backup"
+            app:destination="@id/nav_backup" />
     </fragment>
 
     <fragment
@@ -67,6 +70,9 @@
             android:id="@+id/action_more_to_settings"
             app:destination="@id/nav_settings" />
         <action
+            android:id="@+id/action_more_to_backup"
+            app:destination="@id/nav_backup" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -97,6 +103,11 @@
         android:id="@+id/nav_settings"
         android:name="com.metanoia.app.ui.settings.SettingsFragment"
         android:label="@string/settings_title" />
+
+    <fragment
+        android:id="@+id/nav_backup"
+        android:name="com.metanoia.app.ui.backup.BackupFragment"
+        android:label="@string/backup_title" />
 
     <fragment
         android:id="@+id/nav_about"

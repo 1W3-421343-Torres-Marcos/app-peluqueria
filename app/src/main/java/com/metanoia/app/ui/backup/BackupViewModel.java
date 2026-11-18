@@ -1,0 +1,280 @@
+package com.metanoia.app.ui.backup;
+
+import android.app.Application;
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.metanoia.app.AppContainer;
+import com.metanoia.app.MetanoiaApp;
+import com.metanoia.app.R;
+import com.metanoia.app.data.backup.BackupFolderAccess;
+import com.metanoia.app.data.backup.BackupFolderAccess.FolderStatus;
+import com.metanoia.app.data.backup.BackupManager;
+import com.metanoia.app.data.backup.BackupManager.BackupCreated;
+import com.metanoia.app.data.backup.BackupScheduler;
+import com.metanoia.app.data.backup.RestoreManager.ValidatedBackup;
+import com.metanoia.app.data.prefs.DevicePrefs;
+import com.metanoia.app.ui.common.Event;
+import com.metanoia.domain.common.DomainError;
+import com.metanoia.domain.common.Result;
+import com.metanoia.domain.model.BackupManifest;
+import com.metanoia.domain.model.BackupTrigger;
+
+import java.io.File;
+
+/**
+ * ViewModel para configuración de carpeta SAF, parámetros automáticos y estado de backups.
+ */
+public class BackupViewModel extends AndroidViewModel {
+
+    public static final class BackupUiState {
+        public final FolderStatus folderStatus;
+        public final long lastBackupSuccessMillis;
+        public final String lastBackupFileName;
+        public final String lastBackupTrigger;
+        public final String lastBackupError;
+        public final int autoFrequencyHours;
+        public final int retentionDays;
+        public final int onBackgroundHours;
+        public final int overdueWarningDays;
+        public final boolean busy;
+
+        public BackupUiState(
+                @NonNull FolderStatus folderStatus,
+                long lastBackupSuccessMillis,
+                @NonNull String lastBackupFileName,
+                @NonNull String lastBackupTrigger,
+                @NonNull String lastBackupError,
+                int autoFrequencyHours,
+                int retentionDays,
+                int onBackgroundHours,
+                int overdueWarningDays,
+                boolean busy
+        ) {
+            this.folderStatus = folderStatus;
+            this.lastBackupSuccessMillis = lastBackupSuccessMillis;
+            this.lastBackupFileName = lastBackupFileName;
+            this.lastBackupTrigger = lastBackupTrigger;
+            this.lastBackupError = lastBackupError;
+            this.autoFrequencyHours = autoFrequencyHours;
+            this.retentionDays = retentionDays;
+            this.onBackgroundHours = onBackgroundHours;
+            this.overdueWarningDays = overdueWarningDays;
+            this.busy = busy;
+        }
+    }
+
+    protected final AppContainer container;
+    private final MutableLiveData<BackupUiState> uiState = new MutableLiveData<>();
+    private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<File>> shareFileEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<ValidatedBackup>> restorePreviewEvent =
+            new MutableLiveData<>();
+    private final MutableLiveData<Event<String>> restoreErrorEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<Boolean>> restoreCompletedEvent = new MutableLiveData<>();
+    private boolean busy;
+
+    public BackupViewModel(@NonNull Application application) {
+        super(application);
+        container = ((MetanoiaApp) application).getContainer();
+        refresh();
+    }
+
+    public LiveData<BackupUiState> observeUiState() {
+        return uiState;
+    }
+
+    public LiveData<Event<Integer>> observeFeedback() {
+        return feedbackEvent;
+    }
+
+    public LiveData<Event<File>> observeShareFile() {
+        return shareFileEvent;
+    }
+
+    public LiveData<Event<ValidatedBackup>> observeRestorePreview() {
+        return restorePreviewEvent;
+    }
+
+    public LiveData<Event<String>> observeRestoreError() {
+        return restoreErrorEvent;
+    }
+
+    public LiveData<Event<Boolean>> observeRestoreCompleted() {
+        return restoreCompletedEvent;
+    }
+
+    @NonNull
+    public String suggestExportFileName() {
+        return BackupManager.buildBackupFileName(
+                container.clock().nowMillis(), BackupTrigger.MANUAL);
+    }
+
+    public void refresh() {
+        DevicePrefs prefs = container.devicePrefs();
+        FolderStatus status = BackupFolderAccess.inspect(getApplication(), prefs);
+        uiState.postValue(new BackupUiState(
+                status,
+                prefs.getLastBackupSuccessMillis(),
+                prefs.getLastBackupFileName(),
+                prefs.getLastBackupTrigger(),
+                prefs.getLastBackupError(),
+                prefs.getAutoFrequencyHours(),
+                prefs.getRetentionDays(),
+                prefs.getOnBackgroundThresholdHours(),
+                prefs.getOverdueWarningDays(),
+                busy
+        ));
+    }
+
+    public void onFolderSelected(@NonNull Uri treeUri) {
+        boolean persisted = BackupFolderAccess.persistTreePermission(
+                getApplication(), treeUri, container.devicePrefs());
+        feedbackEvent.setValue(new Event<>(persisted
+                ? R.string.backup_folder_saved
+                : R.string.backup_folder_permission_failed));
+        refresh();
+    }
+
+    public void saveSettings(
+            int frequencyHours,
+            int retentionDays,
+            int onBackgroundHours,
+            int overdueDays
+    ) {
+        if (retentionDays < 1 || retentionDays > 60
+                || onBackgroundHours < 1 || onBackgroundHours > 72
+                || overdueDays < 1 || overdueDays > 30) {
+            feedbackEvent.setValue(new Event<>(R.string.backup_settings_error_validation));
+            return;
+        }
+        DevicePrefs prefs = container.devicePrefs();
+        prefs.setAutoFrequencyHours(frequencyHours);
+        prefs.setRetentionDays(retentionDays);
+        prefs.setOnBackgroundThresholdHours(onBackgroundHours);
+        prefs.setOverdueWarningDays(overdueDays);
+        BackupScheduler.schedulePeriodicAuto(getApplication(), prefs.getAutoFrequencyHours());
+        feedbackEvent.setValue(new Event<>(R.string.backup_settings_saved));
+        refresh();
+    }
+
+    public void runManualBackup() {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_now_running);
+        container.executors().io().execute(() -> {
+            Result<BackupCreated> result = container.backupManager()
+                    .createBackupToConfiguredFolder(BackupTrigger.MANUAL);
+            if (result.isSuccess()) {
+                postFeedback(R.string.backup_now_success);
+            } else if (result.getError() == DomainError.CONFLICT) {
+                postFeedback(R.string.backup_now_folder_required);
+            } else {
+                postFeedback(R.string.backup_now_failed);
+            }
+            setBusy(false);
+        });
+    }
+
+    public void exportBackupToUri(@NonNull Uri targetUri) {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_export_running);
+        container.executors().io().execute(() -> {
+            Result<BackupCreated> result = container.backupManager()
+                    .exportBackupToUri(targetUri, BackupTrigger.MANUAL);
+            postFeedback(result.isSuccess()
+                    ? R.string.backup_export_success
+                    : R.string.backup_export_failed);
+            setBusy(false);
+        });
+    }
+
+    public void prepareShareBackup() {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        container.executors().io().execute(() -> {
+            clearShareCacheDir();
+            Result<File> result = container.backupManager()
+                    .createBackupInCacheDir("shared_backups", BackupTrigger.MANUAL);
+            if (result.isSuccess()) {
+                shareFileEvent.postValue(new Event<>(result.getValue()));
+            } else {
+                postFeedback(R.string.backup_share_failed);
+            }
+            setBusy(false);
+        });
+    }
+
+    private void clearShareCacheDir() {
+        File dir = new File(getApplication().getCacheDir(), "shared_backups");
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                f.delete();
+            }
+        }
+    }
+
+    public void inspectBackupForRestore(@NonNull Uri sourceUri) {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_restore_inspecting);
+        container.executors().io().execute(() -> {
+            Result<ValidatedBackup> result = container.restoreManager().inspectBackup(sourceUri);
+            if (result.isSuccess()) {
+                restorePreviewEvent.postValue(new Event<>(result.getValue()));
+            } else {
+                String msg = result.getErrorMessage();
+                restoreErrorEvent.postValue(new Event<>(msg == null ? "" : msg));
+            }
+            setBusy(false);
+        });
+    }
+
+    public void confirmRestore(@NonNull ValidatedBackup validated) {
+        if (busy) {
+            return;
+        }
+        setBusy(true);
+        postFeedback(R.string.backup_restore_running);
+        container.executors().io().execute(() -> {
+            Result<BackupManifest> result = container.restoreManager().performRestore(validated);
+            if (result.isSuccess()) {
+                restoreCompletedEvent.postValue(new Event<>(true));
+            } else {
+                postFeedback(R.string.backup_restore_failed);
+            }
+            setBusy(false);
+        });
+    }
+
+    public void discardPendingRestore(@NonNull ValidatedBackup validated) {
+        container.executors().io().execute(() -> {
+            if (validated.extractedDbFile.exists()) {
+                validated.extractedDbFile.delete();
+            }
+        });
+    }
+
+    protected void setBusy(boolean busy) {
+        this.busy = busy;
+        refresh();
+    }
+
+    protected void postFeedback(int stringResId) {
+        feedbackEvent.postValue(new Event<>(stringResId));
+    }
+}

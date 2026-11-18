@@ -3,6 +3,8 @@ package com.metanoia.app.data.prefs;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
 /**
@@ -14,8 +16,26 @@ public final class DevicePrefs {
     public static final int THEME_LIGHT = 1;
     public static final int THEME_DARK = 2;
 
+    public static final int AUTO_FREQ_12H = 12;
+    public static final int AUTO_FREQ_24H = 24;
+    public static final int AUTO_FREQ_48H = 48;
+
+    public static final int DEFAULT_AUTO_FREQUENCY_HOURS = AUTO_FREQ_24H;
+    public static final int DEFAULT_RETENTION_DAYS = 7;
+    public static final int DEFAULT_ON_BACKGROUND_HOURS = 6;
+    public static final int DEFAULT_OVERDUE_WARNING_DAYS = 3;
+
     private static final String PREFS_NAME = "metanoia_device_prefs";
     private static final String KEY_THEME_MODE = "theme_mode";
+    private static final String KEY_BACKUP_TREE_URI = "backup_tree_uri";
+    private static final String KEY_LAST_BACKUP_SUCCESS_MILLIS = "last_backup_success_millis";
+    private static final String KEY_LAST_BACKUP_FILE = "last_backup_file";
+    private static final String KEY_LAST_BACKUP_TRIGGER = "last_backup_trigger";
+    private static final String KEY_LAST_BACKUP_ERROR = "last_backup_error";
+    private static final String KEY_AUTO_FREQUENCY_HOURS = "backup_auto_frequency_hours";
+    private static final String KEY_RETENTION_DAYS = "backup_retention_days";
+    private static final String KEY_ON_BACKGROUND_HOURS = "backup_on_background_hours";
+    private static final String KEY_OVERDUE_WARNING_DAYS = "backup_overdue_warning_days";
 
     private final SharedPreferences prefs;
 
@@ -36,6 +56,114 @@ public final class DevicePrefs {
 
     public void applySavedTheme() {
         applyTheme(getThemeMode());
+    }
+
+    @Nullable
+    public String getBackupTreeUri() {
+        String raw = prefs.getString(KEY_BACKUP_TREE_URI, null);
+        if (raw == null || raw.trim().isEmpty()) {
+            return null;
+        }
+        return raw;
+    }
+
+    public void setBackupTreeUri(@Nullable String uriString) {
+        if (uriString == null || uriString.trim().isEmpty()) {
+            prefs.edit().remove(KEY_BACKUP_TREE_URI).apply();
+        } else {
+            prefs.edit().putString(KEY_BACKUP_TREE_URI, uriString.trim()).apply();
+        }
+    }
+
+    public long getLastBackupSuccessMillis() {
+        return prefs.getLong(KEY_LAST_BACKUP_SUCCESS_MILLIS, 0L);
+    }
+
+    @NonNull
+    public String getLastBackupFileName() {
+        return prefs.getString(KEY_LAST_BACKUP_FILE, "");
+    }
+
+    @NonNull
+    public String getLastBackupTrigger() {
+        return prefs.getString(KEY_LAST_BACKUP_TRIGGER, "");
+    }
+
+    @NonNull
+    public String getLastBackupError() {
+        return prefs.getString(KEY_LAST_BACKUP_ERROR, "");
+    }
+
+    public void recordBackupSuccess(
+            long timestampMillis,
+            @NonNull String fileName,
+            @NonNull String trigger
+    ) {
+        prefs.edit()
+                .putLong(KEY_LAST_BACKUP_SUCCESS_MILLIS, timestampMillis)
+                .putString(KEY_LAST_BACKUP_FILE, fileName)
+                .putString(KEY_LAST_BACKUP_TRIGGER, trigger)
+                .remove(KEY_LAST_BACKUP_ERROR)
+                .commit();
+    }
+
+    public void recordBackupError(@NonNull String errorMessage) {
+        prefs.edit()
+                .putString(KEY_LAST_BACKUP_ERROR, errorMessage)
+                .commit();
+    }
+
+    public int getAutoFrequencyHours() {
+        int raw = prefs.getInt(KEY_AUTO_FREQUENCY_HOURS, DEFAULT_AUTO_FREQUENCY_HOURS);
+        return normalizeFrequencyHours(raw);
+    }
+
+    public void setAutoFrequencyHours(int hours) {
+        prefs.edit().putInt(KEY_AUTO_FREQUENCY_HOURS, normalizeFrequencyHours(hours)).apply();
+    }
+
+    public int getRetentionDays() {
+        return clampInt(
+                prefs.getInt(KEY_RETENTION_DAYS, DEFAULT_RETENTION_DAYS), 1, 60);
+    }
+
+    public void setRetentionDays(int days) {
+        prefs.edit().putInt(KEY_RETENTION_DAYS, clampInt(days, 1, 60)).apply();
+    }
+
+    public int getOnBackgroundThresholdHours() {
+        return clampInt(
+                prefs.getInt(KEY_ON_BACKGROUND_HOURS, DEFAULT_ON_BACKGROUND_HOURS), 1, 72);
+    }
+
+    public void setOnBackgroundThresholdHours(int hours) {
+        prefs.edit().putInt(KEY_ON_BACKGROUND_HOURS, clampInt(hours, 1, 72)).apply();
+    }
+
+    public int getOverdueWarningDays() {
+        return clampInt(
+                prefs.getInt(KEY_OVERDUE_WARNING_DAYS, DEFAULT_OVERDUE_WARNING_DAYS), 1, 30);
+    }
+
+    public void setOverdueWarningDays(int days) {
+        prefs.edit().putInt(KEY_OVERDUE_WARNING_DAYS, clampInt(days, 1, 30)).apply();
+    }
+
+    private static int normalizeFrequencyHours(int hours) {
+        if (hours == AUTO_FREQ_12H || hours == AUTO_FREQ_48H) {
+            return hours;
+        }
+        return AUTO_FREQ_24H;
+    }
+
+    private static int clampInt(int value, int min, int max) {
+        if (value < min) {
+            return min;
+        }
+        if (value > max) {
+            return max;
+        }
+        return value;
     }
 
     public static void applyTheme(int mode) {

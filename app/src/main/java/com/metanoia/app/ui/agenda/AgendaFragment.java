@@ -13,16 +13,23 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.chip.Chip;
+import com.metanoia.app.AppContainer;
+import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
+import com.metanoia.app.data.backup.BackupFolderAccess;
+import com.metanoia.app.data.backup.BackupFolderAccess.FolderState;
+import com.metanoia.app.data.backup.BackupFolderAccess.FolderStatus;
 import com.metanoia.app.data.db.entity.ScheduleBlockEntity;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.db.projection.AppointmentCardProjection;
+import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.databinding.FragmentAgendaBinding;
 import com.metanoia.app.ui.agenda.AgendaViewModel.AgendaFilter;
 import com.metanoia.app.ui.agenda.AgendaViewModel.ViewMode;
 import com.metanoia.app.ui.agenda.create.AppointmentCreateFragment;
 import com.metanoia.app.ui.agenda.detail.AppointmentDetailFragment;
 import com.metanoia.app.util.Formats;
+import com.metanoia.domain.rules.BackupRetentionPolicy;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -258,6 +265,81 @@ public class AgendaFragment extends Fragment {
         } else {
             dayAdapter.submitList(rows);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshBackupBanner();
+    }
+
+    private void refreshBackupBanner() {
+        if (!isAdded() || binding == null) {
+            return;
+        }
+        AppContainer container = MetanoiaApp.container(requireContext());
+        android.content.Context appContext = requireContext().getApplicationContext();
+        container.executors().io().execute(() -> {
+            DevicePrefs prefs = container.devicePrefs();
+            FolderStatus folderStatus = BackupFolderAccess.inspect(appContext, prefs);
+            long lastSuccess = prefs.getLastBackupSuccessMillis();
+            int warningDays = prefs.getOverdueWarningDays();
+            boolean validFolder = folderStatus.state == FolderState.READY;
+            boolean overdue = BackupRetentionPolicy.isBackupOverdue(
+                    validFolder,
+                    lastSuccess,
+                    container.clock().nowMillis(),
+                    warningDays);
+            if (!isAdded() || binding == null) {
+                return;
+            }
+            requireActivity().runOnUiThread(() -> applyBackupBannerState(
+                    folderStatus.state, lastSuccess, warningDays, overdue));
+        });
+    }
+
+    private void applyBackupBannerState(
+            @NonNull FolderState folderState,
+            long lastSuccessMillis,
+            int warningDays,
+            boolean overdue
+    ) {
+        if (!isAdded() || binding == null) {
+            return;
+        }
+        if (folderState == FolderState.NOT_CONFIGURED) {
+            binding.agendaBackupBanner.setVisibility(View.VISIBLE);
+            binding.agendaBackupBanner.setMessage(R.string.backup_overdue_no_folder);
+            binding.agendaBackupBanner.setAction(
+                    R.string.backup_banner_action_configure,
+                    v -> NavHostFragment.findNavController(this)
+                            .navigate(R.id.action_agenda_to_backup));
+            return;
+        }
+        if (folderState == FolderState.PERMISSION_LOST) {
+            binding.agendaBackupBanner.setVisibility(View.VISIBLE);
+            binding.agendaBackupBanner.setMessage(R.string.backup_overdue_lost_folder);
+            binding.agendaBackupBanner.setAction(
+                    R.string.backup_banner_action_configure,
+                    v -> NavHostFragment.findNavController(this)
+                            .navigate(R.id.action_agenda_to_backup));
+            return;
+        }
+        if (overdue) {
+            binding.agendaBackupBanner.setVisibility(View.VISIBLE);
+            if (lastSuccessMillis <= 0L) {
+                binding.agendaBackupBanner.setMessage(R.string.backup_overdue_never_run);
+            } else {
+                binding.agendaBackupBanner.setMessage(
+                        getString(R.string.backup_overdue_days_format, warningDays));
+            }
+            binding.agendaBackupBanner.setAction(
+                    R.string.backup_banner_action_now,
+                    v -> NavHostFragment.findNavController(this)
+                            .navigate(R.id.action_agenda_to_backup));
+            return;
+        }
+        binding.agendaBackupBanner.setVisibility(View.GONE);
     }
 
     @Override
