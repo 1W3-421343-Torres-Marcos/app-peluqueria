@@ -309,6 +309,15 @@
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionShareReceipt"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_share_receipt"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnActionRevertCompleted"
                 style="@style/Widget.Metanoia.Button.Secondary"
                 android:layout_width="match_parent"

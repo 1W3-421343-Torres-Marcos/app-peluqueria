@@ -13,6 +13,7 @@ import com.metanoia.app.AppContainer;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.dao.ClientSearchFilter;
+import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.data.db.entity.ClientEntity;
 import com.metanoia.app.data.db.projection.AppointmentCardProjection;
 import com.metanoia.app.data.db.projection.ClientRowProjection;
@@ -68,6 +69,14 @@ public class ClientsViewModel extends AndroidViewModel {
 
     public LiveData<Long> observeClientPendingBalanceCents(@NonNull String clientId) {
         return container.database().appointmentDao().observeClientPendingBalanceCents(clientId);
+    }
+
+    public LiveData<Long> observeClientTotalSpentCents(@NonNull String clientId) {
+        return container.database().cashDao().observeClientTotalSpentCents(clientId);
+    }
+
+    public LiveData<List<CashMovementEntity>> observeClientMovements(@NonNull String clientId) {
+        return container.database().cashDao().observeByClientId(clientId);
     }
 
     public LiveData<Event<Integer>> observeFeedback() {

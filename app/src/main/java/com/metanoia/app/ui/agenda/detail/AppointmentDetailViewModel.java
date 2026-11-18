@@ -19,6 +19,7 @@ import com.metanoia.app.data.mapper.AppointmentMapper;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader.SlotLoadResult;
 import com.metanoia.app.ui.common.Event;
+import com.metanoia.app.util.ReceiptPdfBuilder;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.Appointment;
@@ -26,10 +27,13 @@ import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.CashMovement;
 import com.metanoia.domain.model.Client;
 import com.metanoia.domain.model.Professional;
+import com.metanoia.domain.model.Settings;
 import com.metanoia.domain.rules.AppointmentPaymentCalculator;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +64,7 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<SlotLoadResult> rescheduleSlots = new MutableLiveData<>();
     private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
     private final MutableLiveData<Event<Boolean>> closeRescheduleEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<File>> shareReceiptEvent = new MutableLiveData<>();
 
     public AppointmentDetailViewModel(@NonNull Application application) {
         super(application);
@@ -95,6 +100,30 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
 
     public LiveData<Event<Boolean>> observeCloseReschedule() {
         return closeRescheduleEvent;
+    }
+
+    public LiveData<Event<File>> observeShareReceipt() {
+        return shareReceiptEvent;
+    }
+
+    public void generateReceiptPdf(
+            @NonNull DetailUiState state,
+            @NonNull List<CashMovement> movements) {
+        container.executors().io().execute(() -> {
+            try {
+                Settings settings = container.settingsRepository().getSettings();
+                File pdfFile = ReceiptPdfBuilder.buildPdfFile(
+                        getApplication(),
+                        settings,
+                        state.appointment,
+                        state.clientName,
+                        state.professionalName,
+                        movements);
+                shareReceiptEvent.postValue(new Event<>(pdfFile));
+            } catch (IOException ex) {
+                feedbackEvent.postValue(new Event<>(R.string.receipt_share_failed));
+            }
+        });
     }
 
     public void resolveDetail(@Nullable AppointmentWithItems withItems) {

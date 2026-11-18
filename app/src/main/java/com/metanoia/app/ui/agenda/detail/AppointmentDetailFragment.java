@@ -1,6 +1,9 @@
 package com.metanoia.app.ui.agenda.detail;
 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -121,6 +125,12 @@ public class AppointmentDetailFragment extends Fragment {
                 Toast.makeText(requireContext(), resId, Toast.LENGTH_SHORT).show();
             }
         });
+        viewModel.observeShareReceipt().observe(getViewLifecycleOwner(), event -> {
+            java.io.File pdfFile = event.getContentIfNotHandled();
+            if (pdfFile != null) {
+                sharePdfReceipt(pdfFile);
+            }
+        });
 
         setupActionListeners();
     }
@@ -148,6 +158,11 @@ public class AppointmentDetailFragment extends Fragment {
             if (currentAppointment != null) {
                 viewModel.changeStatus(
                         currentAppointment.id(), AppointmentStatus.COMPLETED, null);
+            }
+        });
+        binding.btnActionShareReceipt.setOnClickListener(v -> {
+            if (latestDetailState != null) {
+                viewModel.generateReceiptPdf(latestDetailState, latestMovements);
             }
         });
         binding.btnActionEdit.setOnClickListener(v -> {
@@ -361,6 +376,7 @@ public class AppointmentDetailFragment extends Fragment {
         boolean isPending = status == AppointmentStatus.PENDING;
         boolean isConfirmed = status == AppointmentStatus.CONFIRMED;
         boolean isCompleted = status == AppointmentStatus.COMPLETED;
+        boolean isPaid = status == AppointmentStatus.PAID;
         boolean isEditable = isPending || isConfirmed;
 
         binding.btnActionCharge.setVisibility(
@@ -372,8 +388,29 @@ public class AppointmentDetailFragment extends Fragment {
         binding.btnActionReschedule.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionNoShow.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionCancel.setVisibility(isEditable ? View.VISIBLE : View.GONE);
+        binding.btnActionShareReceipt.setVisibility(
+                isCompleted || isPaid ? View.VISIBLE : View.GONE);
         binding.btnActionRevertCompleted.setVisibility(
                 isCompleted && !balance.hasPayments() ? View.VISIBLE : View.GONE);
+    }
+
+    private void sharePdfReceipt(@NonNull java.io.File pdfFile) {
+        Uri uri = FileProvider.getUriForFile(
+                requireContext(),
+                requireContext().getPackageName() + ".fileprovider",
+                pdfFile);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.receipt_title));
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(Intent.createChooser(
+                    intent, getString(R.string.receipt_share_chooser_title)));
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(requireContext(), R.string.receipt_share_no_app, Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     private void openRescheduleDialog() {

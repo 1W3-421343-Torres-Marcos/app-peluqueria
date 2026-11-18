@@ -516,4 +516,21 @@
     <string name="cash_closed_meta_format">%1$s · %2$s</string>
     <string name="cash_unclosed_banner_format">Tenés movimientos sin cerrar del %1$s.</string>
     <string name="cash_unclosed_banner_action">Ir a cerrar</string>
+    <string name="appointment_action_share_receipt">Compartir recibo PDF</string>
+    <string name="receipt_share_chooser_title">Compartir recibo</string>
+    <string name="receipt_share_failed">No se pudo generar el recibo PDF.</string>
+    <string name="receipt_share_no_app">No se encontró una app disponible para compartir PDF.</string>
+    <string name="receipt_title">Recibo de atención</string>
+    <string name="receipt_date_label">Fecha y horario</string>
+    <string name="receipt_client_label">Cliente</string>
+    <string name="receipt_professional_label">Profesional</string>
+    <string name="receipt_services_header">Servicios realizados</string>
+    <string name="receipt_subtotal_label">Subtotal</string>
+    <string name="receipt_adjustment_label">Ajuste</string>
+    <string name="receipt_total_label">Total</string>
+    <string name="receipt_payments_header">Pagos registrados</string>
+    <string name="receipt_paid_label">Total abonado</string>
+    <string name="receipt_balance_label">Saldo pendiente</string>
+    <string name="receipt_footer">Gracias por elegirnos.</string>
+    <string name="client_detail_total_spent_label">Total histórico gastado</string>
 </resources>

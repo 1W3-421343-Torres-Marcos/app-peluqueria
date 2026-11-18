@@ -64,6 +64,10 @@ public class ClientDetailFragment extends Fragment {
         binding.clientVisitsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.clientVisitsRecycler.setAdapter(visitsAdapter);
 
+        ClientSpendingAdapter spendingAdapter = new ClientSpendingAdapter();
+        binding.clientSpendingRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.clientSpendingRecycler.setAdapter(spendingAdapter);
+
         viewModel = new ViewModelProvider(this).get(ClientsViewModel.class);
         viewModel.observeClientById(trimmedClientId).observe(getViewLifecycleOwner(), entity -> {
             currentClient = entity;
@@ -88,6 +92,20 @@ public class ClientDetailFragment extends Fragment {
                 getViewLifecycleOwner(),
                 pendingCents -> binding.clientDetailBalanceValue.setMoneyCents(
                         pendingCents == null ? 0L : pendingCents));
+        viewModel.observeClientTotalSpentCents(trimmedClientId).observe(
+                getViewLifecycleOwner(),
+                totalSpentCents -> binding.clientDetailTotalSpentValue.setMoneyCents(
+                        totalSpentCents == null ? 0L : totalSpentCents));
+        viewModel.observeClientMovements(trimmedClientId).observe(
+                getViewLifecycleOwner(),
+                movements -> {
+                    boolean hasSpending = movements != null && !movements.isEmpty();
+                    spendingAdapter.submitList(hasSpending ? movements : Collections.emptyList());
+                    binding.clientSpendingRecycler.setVisibility(
+                            hasSpending ? View.VISIBLE : View.GONE);
+                    binding.clientTabSpendingEmpty.setVisibility(
+                            hasSpending ? View.GONE : View.VISIBLE);
+                });
         viewModel.observeFeedback().observe(getViewLifecycleOwner(), event -> {
             Integer resId = event.getContentIfNotHandled();
             if (resId != null) {
@@ -186,7 +204,7 @@ public class ClientDetailFragment extends Fragment {
 
     private void showTabPanel(int index) {
         binding.clientTabVisitsPanel.setVisibility(index == 0 ? View.VISIBLE : View.GONE);
-        binding.clientTabSpendingEmpty.setVisibility(index == 1 ? View.VISIBLE : View.GONE);
+        binding.clientTabSpendingPanel.setVisibility(index == 1 ? View.VISIBLE : View.GONE);
         binding.clientTabColorEmpty.setVisibility(index == 2 ? View.VISIBLE : View.GONE);
     }
 
