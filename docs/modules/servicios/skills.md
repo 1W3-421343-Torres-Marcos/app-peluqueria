@@ -27,5 +27,5 @@ Validaciones de precio/duración/nombre, desactivación, no asignable si inactiv
 - [x] Alta y edición de servicios con validaciones.
 - [x] Desactivar sin borrar; historial intacto.
 - [x] Lista agrupada por categoría con filtro.
-- [ ] Cambios de precio no alteran turnos existentes.
+- [x] Cambios de precio no alteran turnos existentes.
 - [x] Marca de coloración disponible para F7.

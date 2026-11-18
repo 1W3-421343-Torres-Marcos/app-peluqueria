@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [~] | 11/12 | 92 % |
+| F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **29/86** | **34 %** |
+| **Total** | | | **30/86** | **35 %** |
 
 ---
 
@@ -83,7 +83,7 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 8. [x] **F2.8 Verificación de fase**
    - Hecho: tests verdes; tests de migración v1→actual; flujo manual completo en dispositivo; `versionName 0.2.0`; merge de `fase/F2` a `main`, tag `fase-F2` y entrada en `docs/changelog.md`.
 
-## F3 — Agenda de turnos `[~]`
+## F3 — Agenda de turnos `[x]`
 Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agenda`.
 
 1. [x] **F3.1 Modelo de turno y estados**
@@ -119,7 +119,7 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 11. [x] **F3.11 Historial del cliente y rendimiento**
     - Archivos: `ui/clients/detail`, `DebugSeeder`
     - Hecho: historial de visitas en ficha; con 5.000 clientes y 50.000 turnos la agenda y la búsqueda responden sin trabas.
-12. [ ] **F3.12 Verificación de fase**
+12. [x] **F3.12 Verificación de fase**
     - Hecho: criterios de `agenda/skills.md` marcados; tests verdes; `versionName 0.3.0`; merge de `fase/F3` a `main`, tag `fase-F3` y entrada en `docs/changelog.md`.
 
 ## F4 — Backup y restauración `[ ]`
@@ -352,3 +352,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F3.9 | `CreateScheduleBlockUseCase` (aviso de turnos afectados) y `DeactivateScheduleBlockUseCase`, UI `ScheduleBlocksFragment`/`ScheduleBlockFormDialogFragment`, enlace en `AgendaFragment` y `nav_main.xml`, 82 tests unitarios OK. | F3.10 |
 | 18/11/2026 | F3.10 | `RecurrenceRule`, `GenerateRecurringAppointmentsUseCase` (series cada N semanas y reporte de fechas en conflicto) y `CancelRecurringSeriesUseCase` (cancelación única o este y siguientes), UI en `AppointmentCreateFragment` y `AppointmentDetailFragment`, 84 tests unitarios OK. | F3.11 |
 | 18/11/2026 | F3.11 | `ClientVisitsAdapter`, `AppointmentCardView.bindForClientHistory` e historial real de visitas `COMPLETED`/`PAID` más saldo pendiente reactivo en `ClientDetailFragment` / `ClientsViewModel`; `DebugSeeder` SQLite por lotes (5.000 clientes y 50.000 turnos) accesible en build debug y test DAO compilado OK. | F3.12 |
+| 18/11/2026 | F3.12 | Fase F3 cerrada (`versionName 0.3.0`, `versionCode 3`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 84 tests unitarios OK, migraciones v1→v6 compiladas), criterios marcados en `agenda/skills.md`, `configuracion/skills.md`, `servicios/skills.md` y `profesionales/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F3` / `v0.3.0`. | F4.1 |

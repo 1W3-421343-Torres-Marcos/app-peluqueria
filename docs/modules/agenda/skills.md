@@ -51,15 +51,15 @@ Gestionar los turnos del salón por profesional, garantizando que nunca haya con
 Solapamientos (bordes, contenidos, idénticos; COMPLETED/PAID ocupan agenda), fuera de horario, día libre, bloqueo parcial/total, todas las transiciones válidas e inválidas, paso automático COMPLETED ↔ PAID, congelado de comisión al completar, cálculo de duración y redondeo, generación recurrente con conflictos.
 
 ## Criterios de aceptación
-- [ ] Vista diaria y semanal funcionan y filtran por profesional.
-- [ ] Alta, edición, reprogramación y cancelación operativas.
-- [ ] Los 6 estados con transiciones validadas por tests (incluido COMPLETED ↔ PAID automático).
-- [ ] Turno con varios servicios suma duraciones correctamente.
-- [ ] Imposible guardar turnos solapados, fuera de horario, en día libre o en bloqueo (tests verdes).
-- [ ] Precio congelado: cambiar el catálogo no altera turnos existentes.
-- [ ] `paidCents`/`balanceCents` derivados de caja, no editables.
-- [ ] Turnos recurrentes con manejo de conflictos.
-- [ ] Bloqueos de agenda visibles y respetados.
-- [ ] Ausente incrementa el contador del cliente.
-- [ ] Crear turno para cliente existente en ≤ 4 toques.
-- [ ] Fluido con 50.000 turnos.
+- [x] Vista diaria y semanal funcionan y filtran por profesional.
+- [x] Alta, edición, reprogramación y cancelación operativas.
+- [x] Los 6 estados con transiciones validadas por tests (incluido COMPLETED ↔ PAID automático).
+- [x] Turno con varios servicios suma duraciones correctamente.
+- [x] Imposible guardar turnos solapados, fuera de horario, en día libre o en bloqueo (tests verdes).
+- [x] Precio congelado: cambiar el catálogo no altera turnos existentes.
+- [x] `paidCents`/`balanceCents` derivados de caja, no editables.
+- [x] Turnos recurrentes con manejo de conflictos.
+- [x] Bloqueos de agenda visibles y respetados.
+- [x] Ausente incrementa el contador del cliente.
+- [x] Crear turno para cliente existente en ≤ 4 toques.
+- [x] Fluido con 50.000 turnos.

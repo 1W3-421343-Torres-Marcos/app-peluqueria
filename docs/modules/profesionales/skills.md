@@ -30,6 +30,6 @@ Validación de tramos, solapamiento de tramos, rango de comisión, bloqueo de de
 ## Criterios de aceptación
 - [x] Alta/edición/baja lógica de profesionales.
 - [x] Horario semanal con múltiples tramos por día validado.
-- [ ] Días libres cargables y respetados por la agenda.
-- [ ] Asignación de servicios que filtra el flujo de crear turno.
-- [ ] % de comisión configurable y congelado por ítem.
+- [x] Días libres cargables y respetados por la agenda.
+- [x] Asignación de servicios que filtra el flujo de crear turno.
+- [x] % de comisión configurable y congelado por ítem.

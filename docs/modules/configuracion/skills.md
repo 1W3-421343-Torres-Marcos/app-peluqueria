@@ -32,7 +32,7 @@ Validación de horario general, render de plantillas por defecto, hash/verificac
 
 ## Criterios de aceptación
 - [x] Datos del negocio editables y usados en PDF/WhatsApp.
-- [ ] Horario general y bloque mínimo aplicados en la agenda.
+- [x] Horario general y bloque mínimo aplicados en la agenda.
 - [ ] Plantillas de mensajes editables.
 - [x] Operador actual registrado en auditoría.
 - [x] Tema Sistema/Claro/Oscuro.
