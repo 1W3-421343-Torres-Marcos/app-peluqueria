@@ -110,6 +110,17 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_waitlist_entry_services_service_id"));
     }
 
+    @Test
+    public void roomSchemaV12_isExportedWithStockTablesAndIndices() throws Exception {
+        String content = readSchema(12);
+        assertTrue(content.contains("\"tableName\": \"products\""));
+        assertTrue(content.contains("\"tableName\": \"stock_movements\""));
+        assertTrue(content.contains("index_products_active_type_name_normalized"));
+        assertTrue(content.contains("index_products_active_current_stock_min_stock"));
+        assertTrue(content.contains("index_stock_movements_product_id_timestamp"));
+        assertTrue(content.contains("index_stock_movements_cash_movement_id"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

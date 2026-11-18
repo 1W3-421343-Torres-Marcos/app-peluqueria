@@ -20,6 +20,7 @@ import com.metanoia.app.data.db.dao.ReminderDao;
 import com.metanoia.app.data.db.dao.SalonServiceDao;
 import com.metanoia.app.data.db.dao.ScheduleBlockDao;
 import com.metanoia.app.data.db.dao.SettingsDao;
+import com.metanoia.app.data.db.dao.StockDao;
 import com.metanoia.app.data.db.dao.WaitlistDao;
 import com.metanoia.app.data.db.entity.AppointmentEntity;
 import com.metanoia.app.data.db.entity.AppointmentItemEntity;
@@ -29,6 +30,7 @@ import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.data.db.entity.ClientEntity;
 import com.metanoia.app.data.db.entity.ColorFormulaComponentEntity;
 import com.metanoia.app.data.db.entity.ColorFormulaEntity;
+import com.metanoia.app.data.db.entity.ProductEntity;
 import com.metanoia.app.data.db.entity.ProfessionalDayOffEntity;
 import com.metanoia.app.data.db.entity.ProfessionalEntity;
 import com.metanoia.app.data.db.entity.ProfessionalServiceCrossRef;
@@ -38,6 +40,7 @@ import com.metanoia.app.data.db.entity.SalonHoursEntity;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
 import com.metanoia.app.data.db.entity.ScheduleBlockEntity;
 import com.metanoia.app.data.db.entity.SettingsEntity;
+import com.metanoia.app.data.db.entity.StockMovementEntity;
 import com.metanoia.app.data.db.entity.WaitlistEntryEntity;
 import com.metanoia.app.data.db.entity.WaitlistEntryServiceCrossRef;
 import com.metanoia.app.data.db.entity.WorkScheduleEntity;
@@ -51,6 +54,7 @@ import com.metanoia.app.data.db.migration.Migration_7_8;
 import com.metanoia.app.data.db.migration.Migration_8_9;
 import com.metanoia.app.data.db.migration.Migration_9_10;
 import com.metanoia.app.data.db.migration.Migration_10_11;
+import com.metanoia.app.data.db.migration.Migration_11_12;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -76,9 +80,11 @@ import com.metanoia.app.data.db.migration.Migration_10_11;
                 ColorFormulaEntity.class,
                 ColorFormulaComponentEntity.class,
                 WaitlistEntryEntity.class,
-                WaitlistEntryServiceCrossRef.class
+                WaitlistEntryServiceCrossRef.class,
+                ProductEntity.class,
+                StockMovementEntity.class
         },
-        version = 11,
+        version = 12,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -109,6 +115,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract WaitlistDao waitlistDao();
 
+    public abstract StockDao stockDao();
+
     public static Migration[] allMigrations() {
         return new Migration[]{
                 Migration_1_2.INSTANCE,
@@ -120,7 +128,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 Migration_7_8.INSTANCE,
                 Migration_8_9.INSTANCE,
                 Migration_9_10.INSTANCE,
-                Migration_10_11.INSTANCE
+                Migration_10_11.INSTANCE,
+                Migration_11_12.INSTANCE
         };
     }
 
