@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [~] | 1/12 | 8 % |
+| F3 | Agenda de turnos | [~] | 2/12 | 17 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **19/86** | **22 %** |
+| **Total** | | | **20/86** | **23 %** |
 
 ---
 
@@ -89,7 +89,7 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 1. [x] **F3.1 Modelo de turno y estados**
    - Archivos: `Appointment`, `AppointmentItem`, `AppointmentStatus` (PENDING, CONFIRMED, COMPLETED, PAID, CANCELLED, NO_SHOW), `StatusTransitions`, `AppointmentBalance`
    - Hecho: duración = suma de ítems; tests de todas las transiciones válidas e inválidas, del paso automático COMPLETED ↔ PAID según `paidCents`/`balanceCents` derivados, de la corrección COMPLETED → CONFIRMED (solo sin cobros) y del congelado de comisión al completar.
-2. [ ] **F3.2 Validador de disponibilidad**
+2. [x] **F3.2 Validador de disponibilidad**
    - Archivos: `domain/rules/AvailabilityChecker`, tests
    - Hecho: rechaza solapamientos (COMPLETED y PAID ocupan agenda), fuera de horario, días libres y bloqueos; bordes (fin = inicio) permitidos; tests exhaustivos.
 3. [ ] **F3.3 Persistencia de agenda**
@@ -342,3 +342,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F2.7 | UI de Clientes (`SearchField` 250 ms, `ConfirmDialog`, `ClientsFragment`, `ClientsViewModel`, `ClientsAdapter` con `ClientRowProjection`, `ClientFormDialogFragment` completo/alta rápida y advertencia duplicado, `ClientDetailFragment` con pestañas vacías F3/F5/F7), criterios F2 marcados en `clientes/skills.md`, build y tests OK. | F2.8 |
 | 18/11/2026 | F2.8 | Fase F2 cerrada (`versionName 0.2.0`, `versionCode 2`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (58 unit tests OK, Lint 0 errores, migraciones v1→v5 compiladas), criterios F2 marcados en `configuracion/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F2` / `v0.2.0`. | F3.1 |
 | 18/11/2026 | F3.1 | Rama `fase/F3`; `AppointmentStatus`, `AppointmentItem`, `Appointment` (duración redondeada a `slotMinutes`), `AppointmentBalance` y `StatusTransitions` (transiciones válidas/inválidas, paso automático `COMPLETED <-> PAID`, corrección `COMPLETED -> CONFIRMED` sin cobros y congelado de comisiones), 64 tests unitarios OK. | F3.2 |
+| 18/11/2026 | F3.2 | `ScheduleBlockType`, `ScheduleBlock` y `AvailabilityChecker` (solapamientos en intervalos semiabiertos, `COMPLETED`/`PAID` bloquean, horarios salón/profesional, días libres, bloqueos generales/parciales y `suggestFreeStartMinutes`), 68 tests unitarios OK. | F3.3 |
