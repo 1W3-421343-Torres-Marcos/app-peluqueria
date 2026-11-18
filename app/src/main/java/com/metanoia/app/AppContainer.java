@@ -20,6 +20,7 @@ import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.usecase.CreateAppointmentUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
@@ -28,6 +29,7 @@ import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
 import com.metanoia.domain.usecase.SetClientActiveUseCase;
 import com.metanoia.domain.usecase.SetProfessionalActiveUseCase;
 import com.metanoia.domain.usecase.SetSalonServiceActiveUseCase;
+import com.metanoia.domain.usecase.UpdateAppointmentUseCase;
 import com.metanoia.domain.usecase.UpdateSettingsUseCase;
 
 /**
@@ -56,6 +58,8 @@ public final class AppContainer {
     private final ManageProfessionalDayOffUseCase manageProfessionalDayOffUseCase;
     private final SaveClientUseCase saveClientUseCase;
     private final SetClientActiveUseCase setClientActiveUseCase;
+    private final CreateAppointmentUseCase createAppointmentUseCase;
+    private final UpdateAppointmentUseCase updateAppointmentUseCase;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -91,6 +95,14 @@ public final class AppContainer {
                 clientRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.setClientActiveUseCase = new SetClientActiveUseCase(
                 clientRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.createAppointmentUseCase = new CreateAppointmentUseCase(
+                appointmentRepository, clientRepository, professionalRepository,
+                salonServiceRepository, scheduleBlockRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
+        this.updateAppointmentUseCase = new UpdateAppointmentUseCase(
+                appointmentRepository, professionalRepository, salonServiceRepository,
+                scheduleBlockRepository, settingsRepository, auditLogRepository,
+                clock, idGenerator);
     }
 
     public AppExecutors executors() {
@@ -175,5 +187,13 @@ public final class AppContainer {
 
     public SetClientActiveUseCase setClientActiveUseCase() {
         return setClientActiveUseCase;
+    }
+
+    public CreateAppointmentUseCase createAppointmentUseCase() {
+        return createAppointmentUseCase;
+    }
+
+    public UpdateAppointmentUseCase updateAppointmentUseCase() {
+        return updateAppointmentUseCase;
     }
 }

@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [~] | 3/12 | 25 % |
+| F3 | Agenda de turnos | [~] | 4/12 | 33 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **21/86** | **24 %** |
+| **Total** | | | **22/86** | **26 %** |
 
 ---
 
@@ -95,7 +95,7 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 3. [x] **F3.3 Persistencia de agenda**
    - Archivos: `AppointmentEntity`, `AppointmentItemEntity`, `ScheduleBlockEntity`, DAOs, migración
    - Hecho: índices `(professionalId, day)` y `(clientId)`; FK RESTRICT; test DAO de consulta por rango.
-4. [ ] **F3.4 Caso de uso crear/editar turno**
+4. [x] **F3.4 Caso de uso crear/editar turno**
    - Archivos: `CreateAppointmentUseCase`, `UpdateAppointmentUseCase`
    - Hecho: precio/duración congelados; validación de disponibilidad; profesional habilitado para cada servicio; tests.
 5. [ ] **F3.5 Vista diaria**
@@ -344,3 +344,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F3.1 | Rama `fase/F3`; `AppointmentStatus`, `AppointmentItem`, `Appointment` (duración redondeada a `slotMinutes`), `AppointmentBalance` y `StatusTransitions` (transiciones válidas/inválidas, paso automático `COMPLETED <-> PAID`, corrección `COMPLETED -> CONFIRMED` sin cobros y congelado de comisiones), 64 tests unitarios OK. | F3.2 |
 | 18/11/2026 | F3.2 | `ScheduleBlockType`, `ScheduleBlock` y `AvailabilityChecker` (solapamientos en intervalos semiabiertos, `COMPLETED`/`PAID` bloquean, horarios salón/profesional, días libres, bloqueos generales/parciales y `suggestFreeStartMinutes`), 68 tests unitarios OK. | F3.3 |
 | 18/11/2026 | F3.3 | `RecurrenceRule`, repositorios de agenda, Room v6 (`AppointmentEntity`, `AppointmentItemEntity`, `ScheduleBlockEntity`, `RecurrenceRuleEntity`, `AppointmentCardProjection`, `AppointmentDao`, `Migration_5_6`, `6.json`, FK `RESTRICT`), enlace `hasFutureActiveAppointments`, 69 tests unitarios OK + `MigrationTest`/`AppointmentDaoTest` compilados. | F3.4 |
+| 18/11/2026 | F3.4 | `AppointmentSupport`, `CreateAppointmentUseCase` y `UpdateAppointmentUseCase` (snapshots de precios/duraciones conservados, habilitación por servicio, validación con `AvailabilityChecker` y auditoría), cableado en `AppContainer`, 75 tests unitarios OK. | F3.5 |
