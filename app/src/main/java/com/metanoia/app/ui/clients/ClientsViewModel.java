@@ -14,6 +14,7 @@ import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.dao.ClientSearchFilter;
 import com.metanoia.app.data.db.entity.ClientEntity;
+import com.metanoia.app.data.db.projection.AppointmentCardProjection;
 import com.metanoia.app.data.db.projection.ClientRowProjection;
 import com.metanoia.app.ui.common.Event;
 import com.metanoia.domain.common.DomainError;
@@ -59,6 +60,14 @@ public class ClientsViewModel extends AndroidViewModel {
 
     public LiveData<ClientEntity> observeClientById(@NonNull String clientId) {
         return container.database().clientDao().observeById(clientId);
+    }
+
+    public LiveData<List<AppointmentCardProjection>> observeClientVisits(@NonNull String clientId) {
+        return container.database().appointmentDao().observeClientVisitCards(clientId);
+    }
+
+    public LiveData<Long> observeClientPendingBalanceCents(@NonNull String clientId) {
+        return container.database().appointmentDao().observeClientPendingBalanceCents(clientId);
     }
 
     public LiveData<Event<Integer>> observeFeedback() {

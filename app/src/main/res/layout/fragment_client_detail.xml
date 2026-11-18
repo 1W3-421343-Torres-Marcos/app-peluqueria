@@ -224,11 +224,34 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_s">
 
-            <com.metanoia.app.ui.common.EmptyStateView
-                android:id="@+id/clientTabVisitsEmpty"
+            <LinearLayout
+                android:id="@+id/clientTabVisitsPanel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:emptyMessage="@string/client_detail_visits_empty" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/clientDetailVisitsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_s"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/clientVisitsRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone" />
+
+                <com.metanoia.app.ui.common.EmptyStateView
+                    android:id="@+id/clientTabVisitsEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:emptyMessage="@string/client_detail_visits_empty" />
+            </LinearLayout>
 
             <com.metanoia.app.ui.common.EmptyStateView
                 android:id="@+id/clientTabSpendingEmpty"

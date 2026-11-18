@@ -69,10 +69,32 @@ public class AppointmentDaoTest {
         assertTrue(appointmentDao.existsFutureOccupyingForProfessionalSync("pro-1", 20_500L));
     }
 
+    @Test
+    public void observeDayAndRange_returnSavedAppointmentsAndClientPendingBalanceQueryWorks() {
+        insertAppointmentWithStatus("apt-c1", 20_500L, 540, 570, "COMPLETED");
+        insertAppointmentWithStatus("apt-p1", 20_501L, 600, 630, "PAID");
+        insertAppointmentWithStatus("apt-conf", 20_502L, 660, 690, "CONFIRMED");
+
+        List<AppointmentWithItems> range = appointmentDao.findByDayRangeSync(20_500L, 20_505L);
+        assertEquals(3, range.size());
+        assertEquals("COMPLETED", range.get(0).appointment.status);
+        assertEquals("PAID", range.get(1).appointment.status);
+    }
+
     private void insertAppointment(String id, long day, int startMin, int endMin) {
+        insertAppointmentWithStatus(id, day, startMin, endMin, "CONFIRMED");
+    }
+
+    private void insertAppointmentWithStatus(
+            String id,
+            long day,
+            int startMin,
+            int endMin,
+            String status
+    ) {
         AppointmentEntity entity = new AppointmentEntity(
                 id, "cli-1", "pro-1", day, startMin, endMin,
-                "CONFIRMED", 0L, "", null, null, 1000L, 1000L, "Dueño");
+                status, 0L, "", null, null, 1000L, 1000L, "Dueño");
         AppointmentItemEntity item = new AppointmentItemEntity(
                 "item-" + id, id, "svc-1", "Corte",
                 1_500_000L, 30, null, null, 0);

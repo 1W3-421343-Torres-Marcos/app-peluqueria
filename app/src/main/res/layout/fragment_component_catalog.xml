@@ -277,5 +277,24 @@
             android:text="@string/catalog_typo_caption"
             android:textAppearance="@style/TextAppearance.Metanoia.Caption"
             android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <TextView
+            android:id="@+id/catalogDebugSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_debug_tools"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCatalogSeedVolume"
+            style="@style/Widget.Metanoia.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/debug_seed_volume_button"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

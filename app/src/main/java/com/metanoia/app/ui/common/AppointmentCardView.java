@@ -76,11 +76,21 @@ public class AppointmentCardView extends MaterialCardView {
     }
 
     public void bind(@NonNull AppointmentCardProjection card) {
+        bindInternal(card, false);
+    }
+
+    public void bindForClientHistory(@NonNull AppointmentCardProjection card) {
+        bindInternal(card, true);
+    }
+
+    private void bindInternal(@NonNull AppointmentCardProjection card, boolean showDateAsTitle) {
         Context context = getContext();
         String start = Formats.formatTime(card.startMin);
         String end = Formats.formatTime(card.endMin);
         timeView.setText(context.getString(R.string.agenda_time_stacked, start, end));
-        clientView.setText(card.clientName);
+        clientView.setText(showDateAsTitle
+                ? Formats.formatDayWithShortWeekday(card.day)
+                : card.clientName);
         servicesView.setText(card.servicesSummary);
         professionalView.setText(card.professionalName);
 

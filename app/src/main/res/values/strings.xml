@@ -356,4 +356,15 @@
     <string name="appointment_cancel_scope_only_this">Solo este turno</string>
     <string name="appointment_cancel_scope_following">Este y los siguientes</string>
     <string name="appointment_detail_recurring_badge">Serie recurrente</string>
+
+    <!-- Historial de cliente y herramientas debug (F3.11) -->
+    <string name="client_detail_visits_count_format">%1$d visitas registradas</string>
+    <string name="catalog_section_debug_tools">Herramientas de prueba (debug)</string>
+    <string name="debug_seed_volume_button">Sembrar volumen (5.000 clientes / 50.000 turnos)</string>
+    <string name="debug_seed_confirm_title">¿Generar datos masivos de prueba?</string>
+    <string name="debug_seed_confirm_message">Se insertarán hasta 5.000 clientes y 50.000 turnos de prueba en la base local para validar rendimiento.</string>
+    <string name="debug_seed_confirm_positive">Generar</string>
+    <string name="debug_seed_running">Generando datos de prueba…</string>
+    <string name="debug_seed_success">Listo: %1$d clientes y %2$d turnos en %3$d ms</string>
+    <string name="debug_seed_error">No se pudieron generar los datos de prueba.</string>
 </resources>
