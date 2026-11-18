@@ -10,7 +10,7 @@
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
-| F4 | Backup y restauración | [~] | 7/8 | 88 % |
+| F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **37/86** | **43 %** |
+| **Total** | | | **38/86** | **44 %** |
 
 ---
 
@@ -122,7 +122,7 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 12. [x] **F3.12 Verificación de fase**
     - Hecho: criterios de `agenda/skills.md` marcados; tests verdes; `versionName 0.3.0`; merge de `fase/F3` a `main`, tag `fase-F3` y entrada en `docs/changelog.md`.
 
-## F4 — Backup y restauración `[~]`
+## F4 — Backup y restauración `[x]`
 Entregable: datos protegidos con backup automático y restauración segura. Módulo: `backup`.
 
 1. [x] **F4.1 Carpeta de destino (SAF)**
@@ -146,7 +146,7 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 7. [x] **F4.7 Aviso de backup vencido**
    - Archivos: `AlertBanner` en Agenda
    - Hecho: banner si el último backup exitoso supera X días (configurable, default 3) o no hay carpeta.
-8. [ ] **F4.8 Verificación de fase**
+8. [x] **F4.8 Verificación de fase**
    - Hecho: prueba ida y vuelta (backup → borrar app → restaurar) sin pérdida; criterios de `backup/skills.md` OK; `versionName 0.4.0`; merge de `fase/F4` a `main`, tag `fase-F4` y entrada en `docs/changelog.md`.
 
 ## F5 — Caja `[ ]`
@@ -360,3 +360,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F4.5 | `BackupValidator` + `BackupValidatorTest` (3/3 OK: esquema igual/menor vs mayor, formato y SHA-256) y `RestoreManager` (extracción ZIP segura, validación de hash, `PRAGMA integrity_check`, backup previo `PRE_RESTORE` automático, rollback ante fallos y `MetanoiaApp.resetContainer`). | F4.6 |
 | 18/11/2026 | F4.6 | Flujo completo de restauración en `BackupFragment`/`BackupViewModel` (`OpenDocument`, inspección previa, diálogo de resumen y confirmación, `PRE_RESTORE` automático, reinicio de `AppContainer` y `MainActivity`). | F4.7 |
 | 18/11/2026 | F4.7 | `AlertBanner` en `fragment_agenda.xml` y `AgendaFragment` para alertar carpeta faltante, permiso perdido o último backup superior a N días configurados (default 3) con acceso directo a `BackupFragment`. | F4.8 |
+| 18/11/2026 | F4.8 | Fase F4 cerrada (`versionName 0.4.0`, `versionCode 4`): `BackupPackageRoundTripTest` y `BackupRestoreRoundTripTest` (`androidTest`), `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 95 tests unitarios OK), 9 criterios marcados en `backup/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F4` / `v0.4.0`. | F5.1 |

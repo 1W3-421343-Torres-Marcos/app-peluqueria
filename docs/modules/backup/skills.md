@@ -49,12 +49,12 @@ Que los datos del salón nunca dependan solo del almacenamiento interno del tel�
 Validador (ZIP corrupto, sin manifest, hash incorrecto, esquema mayor/menor); política de retención (varios backups el mismo día → queda el último; días sin backup; más de N días; PRE_RESTORE separados, últimos 3; nunca borra el recién creado); umbral de horas de ON_BACKGROUND; encolado único con KEEP; ida y vuelta backup→restauración con conteos idénticos.
 
 ## Criterios de aceptación
-- [ ] Carpeta elegida una vez con permiso persistente.
-- [ ] Backup AUTO periódico funcionando.
-- [ ] Backups CASH_CLOSE y ON_BACKGROUND encolados como trabajo único sin duplicados ni bloqueo de UI.
-- [ ] Retención: el más reciente de cada uno de los últimos N días con backup + últimos 3 PRE_RESTORE (tests verdes).
-- [ ] Exportación manual y compartir funcionan.
-- [ ] Restauración valida integridad y versión antes de reemplazar.
-- [ ] Backup previo automático antes de restaurar.
-- [ ] Aviso visible de backup vencido.
-- [ ] Prueba completa: desinstalar, reinstalar, restaurar sin pérdida de datos.
+- [x] Carpeta elegida una vez con permiso persistente.
+- [x] Backup AUTO periódico funcionando.
+- [x] Backups CASH_CLOSE y ON_BACKGROUND encolados como trabajo único sin duplicados ni bloqueo de UI.
+- [x] Retención: el más reciente de cada uno de los últimos N días con backup + últimos 3 PRE_RESTORE (tests verdes).
+- [x] Exportación manual y compartir funcionan.
+- [x] Restauración valida integridad y versión antes de reemplazar.
+- [x] Backup previo automático antes de restaurar.
+- [x] Aviso visible de backup vencido.
+- [x] Prueba completa: desinstalar, reinstalar, restaurar sin pérdida de datos.
