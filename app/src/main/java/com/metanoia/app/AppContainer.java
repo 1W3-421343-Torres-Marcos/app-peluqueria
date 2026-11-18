@@ -3,6 +3,7 @@ package com.metanoia.app;
 import android.content.Context;
 
 import com.metanoia.app.data.backup.BackupManager;
+import com.metanoia.app.data.backup.RestoreManager;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.data.repository.AppointmentRepositoryImpl;
@@ -74,6 +75,7 @@ public final class AppContainer {
     private final GenerateRecurringAppointmentsUseCase generateRecurringAppointmentsUseCase;
     private final CancelRecurringSeriesUseCase cancelRecurringSeriesUseCase;
     private final BackupManager backupManager;
+    private final RestoreManager restoreManager;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -138,6 +140,8 @@ public final class AppContainer {
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
+        this.restoreManager = new RestoreManager(
+                appContext, database, devicePrefs, backupManager);
     }
 
     public AppExecutors executors() {
@@ -258,5 +262,9 @@ public final class AppContainer {
 
     public BackupManager backupManager() {
         return backupManager;
+    }
+
+    public RestoreManager restoreManager() {
+        return restoreManager;
     }
 }

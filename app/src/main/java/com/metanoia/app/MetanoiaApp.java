@@ -52,4 +52,14 @@ public class MetanoiaApp extends Application {
         MetanoiaApp app = (MetanoiaApp) context.getApplicationContext();
         return app.getContainer();
     }
+
+    public static void resetContainer(Context context) {
+        MetanoiaApp app = (MetanoiaApp) context.getApplicationContext();
+        if (app.container != null && app.container.database().isOpen()) {
+            app.container.database().close();
+        }
+        app.container = new AppContainer(app);
+        app.container.devicePrefs().applySavedTheme();
+        BackupScheduler.schedulePeriodicAuto(app, app.container.devicePrefs().getAutoFrequencyHours());
+    }
 }
