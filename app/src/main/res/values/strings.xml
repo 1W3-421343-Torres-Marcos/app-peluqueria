@@ -565,4 +565,7 @@
     <string name="reminder_undo_action">Deshacer</string>
     <string name="reminder_marked_sent">Marcado como recordado</string>
     <string name="reminder_undone">Envío deshecho</string>
+    <string name="appointment_action_remind">Recordar por WhatsApp</string>
+    <string name="appointment_action_remind_again">Volver a recordar por WhatsApp</string>
+    <string name="appointment_detail_reminded_format">Recordado el %1$s</string>
 </resources>
