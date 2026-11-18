@@ -2,6 +2,11 @@
 
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
 
+## [0.7.0] — 18/11/2026 — F7 Ficha de color
+- **Modelo y persistencia de fichas de color (F7.1):** `ColorComponentUnit`, `ColorFormulaComponent` (cantidad en décimas, unidades `g` / `ml` / `partes`), `ColorFormula`, reglas `ColorFormulaRules`, `SaveColorFormulaUseCase`, `DuplicateColorFormulaUseCase` y `DeleteColorFormulaUseCase` en `:domain`; Room `v10` (`color_formulas` y `color_formula_components` con FK `RESTRICT`, `ColorFormulaDao`, `Migration_9_10`, esquema `10.json`, upsert seguro en `AppointmentDao` y `BackupManager` `v10`) con respaldo y restauración completos.
+- **Historial y editor en ficha del cliente (F7.2):** pestaña *Color* en `ClientDetailFragment` con listado cronológico descendente (`ClientColorFormulasAdapter`), formulario `ColorFormulaDialogFragment` con filas dinámicas de componentes, selector de fecha y profesional, inmutabilidad en fórmulas vinculadas a turnos `COMPLETED`/`PAID` con duplicado en 1 toque y baja lógica.
+- **Repetir última fórmula al crear turno (F7.3):** soporte en `CreateAppointmentUseCase`, `GenerateRecurringAppointmentsUseCase` y `AppointmentCreateFragment`/`ViewModel` para duplicar automáticamente como borrador editable la última fórmula del cliente y vincularla (`AppointmentItem.colorFormulaId`) con un toque al seleccionar un servicio de coloración.
+
 ## [0.6.0] — 18/11/2026 — F6 Recordatorios por WhatsApp
 - **Plantillas editables y motor de variables (F6.1):** `TemplateRenderer` en `:domain` con soporte para `{nombre}`, `{fecha}`, `{dia}`, `{hora}`, `{servicios}`, `{profesional}` y `{negocio}`, advertencia de variables desconocidas, firma automática `— <nombre del negocio>` si se omite `{negocio}`, campos de plantillas en `Settings` + Room `v8` (`Migration_7_8`) y pantalla `TemplatesFragment` con vista previa en vivo accesible desde Configuración.
 - **Lanzador de WhatsApp sin permiso `INTERNET` (F6.2):** `WhatsAppUrlBuilder` en `:domain` (`https://wa.me/<dígitos>?text=<UTF-8>`) y `WhatsAppLauncher` en `:app` mediante `Intent.ACTION_VIEW` sin conexión de red.

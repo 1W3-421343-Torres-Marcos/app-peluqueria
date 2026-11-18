@@ -26,8 +26,8 @@ Guardar las fórmulas de coloración de cada cliente para repetir resultados con
 Validación de componentes, obtención de la última fórmula, regla de versión para fórmulas cerradas.
 
 ## Criterios de aceptación
-- [ ] Alta, edición (si no está cerrada) y duplicado de fórmulas.
-- [ ] Historial por cliente ordenado por fecha.
-- [ ] Repetir última fórmula con un toque al crear turno de coloración.
-- [ ] Fórmulas de turnos COMPLETED/PAID inmutables.
-- [ ] Incluidas en backup y restauración.
+- [x] Alta, edición (si no está cerrada) y duplicado de fórmulas.
+- [x] Historial por cliente ordenado por fecha.
+- [x] Repetir última fórmula con un toque al crear turno de coloración.
+- [x] Fórmulas de turnos COMPLETED/PAID inmutables.
+- [x] Incluidas en backup y restauración.
