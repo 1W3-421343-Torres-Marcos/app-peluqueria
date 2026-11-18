@@ -24,6 +24,9 @@ public final class DevicePrefs {
     public static final int DEFAULT_RETENTION_DAYS = 7;
     public static final int DEFAULT_ON_BACKGROUND_HOURS = 6;
     public static final int DEFAULT_OVERDUE_WARNING_DAYS = 3;
+    public static final boolean DEFAULT_REMINDER_DIGEST_ENABLED = true;
+    public static final int DEFAULT_REMINDER_DIGEST_HOUR = 18;
+    public static final int DEFAULT_REMINDER_DIGEST_MINUTE = 0;
 
     private static final String PREFS_NAME = "metanoia_device_prefs";
     private static final String KEY_THEME_MODE = "theme_mode";
@@ -36,6 +39,9 @@ public final class DevicePrefs {
     private static final String KEY_RETENTION_DAYS = "backup_retention_days";
     private static final String KEY_ON_BACKGROUND_HOURS = "backup_on_background_hours";
     private static final String KEY_OVERDUE_WARNING_DAYS = "backup_overdue_warning_days";
+    private static final String KEY_REMINDER_DIGEST_ENABLED = "reminder_digest_enabled";
+    private static final String KEY_REMINDER_DIGEST_HOUR = "reminder_digest_hour";
+    private static final String KEY_REMINDER_DIGEST_MINUTE = "reminder_digest_minute";
 
     private final SharedPreferences prefs;
 
@@ -147,6 +153,30 @@ public final class DevicePrefs {
 
     public void setOverdueWarningDays(int days) {
         prefs.edit().putInt(KEY_OVERDUE_WARNING_DAYS, clampInt(days, 1, 30)).apply();
+    }
+
+    public boolean isReminderDigestEnabled() {
+        return prefs.getBoolean(KEY_REMINDER_DIGEST_ENABLED, DEFAULT_REMINDER_DIGEST_ENABLED);
+    }
+
+    public void setReminderDigestEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_REMINDER_DIGEST_ENABLED, enabled).apply();
+    }
+
+    public int getReminderDigestHour() {
+        return clampInt(prefs.getInt(KEY_REMINDER_DIGEST_HOUR, DEFAULT_REMINDER_DIGEST_HOUR), 0, 23);
+    }
+
+    public int getReminderDigestMinute() {
+        return clampInt(
+                prefs.getInt(KEY_REMINDER_DIGEST_MINUTE, DEFAULT_REMINDER_DIGEST_MINUTE), 0, 59);
+    }
+
+    public void setReminderDigestTime(int hour, int minute) {
+        prefs.edit()
+                .putInt(KEY_REMINDER_DIGEST_HOUR, clampInt(hour, 0, 23))
+                .putInt(KEY_REMINDER_DIGEST_MINUTE, clampInt(minute, 0, 59))
+                .apply();
     }
 
     private static int normalizeFrequencyHours(int hours) {

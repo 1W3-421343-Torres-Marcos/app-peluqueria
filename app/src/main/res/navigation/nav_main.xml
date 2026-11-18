@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_agenda_to_backup"
             app:destination="@id/nav_backup" />
+        <action
+            android:id="@+id/action_agenda_to_reminders"
+            app:destination="@id/nav_reminders" />
     </fragment>
 
     <fragment
@@ -82,6 +85,9 @@
             android:id="@+id/action_more_to_backup"
             app:destination="@id/nav_backup" />
         <action
+            android:id="@+id/action_more_to_reminders"
+            app:destination="@id/nav_reminders" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -111,12 +117,26 @@
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.metanoia.app.ui.settings.SettingsFragment"
-        android:label="@string/settings_title" />
+        android:label="@string/settings_title">
+        <action
+            android:id="@+id/action_settings_to_templates"
+            app:destination="@id/nav_templates" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_templates"
+        android:name="com.metanoia.app.ui.settings.TemplatesFragment"
+        android:label="@string/templates_title" />
 
     <fragment
         android:id="@+id/nav_backup"
         android:name="com.metanoia.app.ui.backup.BackupFragment"
         android:label="@string/backup_title" />
+
+    <fragment
+        android:id="@+id/nav_reminders"
+        android:name="com.metanoia.app.ui.reminders.RemindersFragment"
+        android:label="@string/reminders_title" />
 
     <fragment
         android:id="@+id/nav_about"

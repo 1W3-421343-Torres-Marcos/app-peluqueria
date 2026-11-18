@@ -17,6 +17,8 @@ import com.metanoia.app.data.db.migration.Migration_3_4;
 import com.metanoia.app.data.db.migration.Migration_4_5;
 import com.metanoia.app.data.db.migration.Migration_5_6;
 import com.metanoia.app.data.db.migration.Migration_6_7;
+import com.metanoia.app.data.db.migration.Migration_7_8;
+import com.metanoia.app.data.db.migration.Migration_8_9;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -219,14 +221,65 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To7_allMigrations_passValidation() throws IOException {
+    public void migrate7To8_addsDefaultMessageTemplates() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 7)) {
+            db.execSQL("INSERT INTO settings VALUES ("
+                    + "'default', 'Metanoia', 'Hair Salon', '', '', '', 15, 'Dueño', 'Dueño', 30, 0)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 8, true, Migration_7_8.INSTANCE)) {
+            try (Cursor cursor = migrated.query(
+                    "SELECT reminder_template, birthday_template, waitlist_offer_template "
+                            + "FROM settings WHERE id = 'default'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals(com.metanoia.domain.model.Settings.DEFAULT_REMINDER_TEMPLATE,
+                        cursor.getString(0));
+                assertEquals(com.metanoia.domain.model.Settings.DEFAULT_BIRTHDAY_TEMPLATE,
+                        cursor.getString(1));
+                assertEquals(com.metanoia.domain.model.Settings.DEFAULT_WAITLIST_OFFER_TEMPLATE,
+                        cursor.getString(2));
+            }
+        }
+    }
+
+    @Test
+    public void migrate8To9_createsRemindersTableWithIndices() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 8)) {
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '', '', 4000, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'Sofía', 'sofia', '5491122334455', 18, 11, 1995, "
+                    + "'', 0, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO appointments VALUES ("
+                    + "'apt-1', 'cli-1', 'pro-1', 20501, 540, 570, 'CONFIRMED', 0, '', "
+                    + "NULL, NULL, 1000, 1000, 'Dueño')");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 9, true, Migration_8_9.INSTANCE)) {
+            migrated.execSQL("INSERT INTO reminders VALUES ("
+                    + "'rem-1', 'APPOINTMENT', 'apt-1', 'cli-1', NULL, 2000, 'Dueño')");
+            try (Cursor cursor = migrated.query(
+                    "SELECT type, client_id FROM reminders WHERE appointment_id = 'apt-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("APPOINTMENT", cursor.getString(0));
+                assertEquals("cli-1", cursor.getString(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To9_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                7,
+                9,
                 true,
                 AppDatabase.allMigrations()
         )) {

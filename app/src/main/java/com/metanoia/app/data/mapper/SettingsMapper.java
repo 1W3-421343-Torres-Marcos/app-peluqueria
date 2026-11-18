@@ -46,6 +46,9 @@ public final class SettingsMapper {
                 .operators(operators)
                 .generalSchedule(schedule)
                 .waitlistExpiryDays(entity.waitlistExpiryDays)
+                .reminderTemplate(entity.reminderTemplate)
+                .birthdayTemplate(entity.birthdayTemplate)
+                .waitlistOfferTemplate(entity.waitlistOfferTemplate)
                 .build();
     }
 
@@ -62,6 +65,9 @@ public final class SettingsMapper {
                 settings.currentOperator(),
                 operatorsCsv,
                 settings.waitlistExpiryDays(),
+                settings.reminderTemplate(),
+                settings.birthdayTemplate(),
+                settings.waitlistOfferTemplate(),
                 updatedAtMillis
         );
     }

@@ -2,6 +2,14 @@
 
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
 
+## [0.6.0] — 18/11/2026 — F6 Recordatorios por WhatsApp
+- **Plantillas editables y motor de variables (F6.1):** `TemplateRenderer` en `:domain` con soporte para `{nombre}`, `{fecha}`, `{dia}`, `{hora}`, `{servicios}`, `{profesional}` y `{negocio}`, advertencia de variables desconocidas, firma automática `— <nombre del negocio>` si se omite `{negocio}`, campos de plantillas en `Settings` + Room `v8` (`Migration_7_8`) y pantalla `TemplatesFragment` con vista previa en vivo accesible desde Configuración.
+- **Lanzador de WhatsApp sin permiso `INTERNET` (F6.2):** `WhatsAppUrlBuilder` en `:domain` (`https://wa.me/<dígitos>?text=<UTF-8>`) y `WhatsAppLauncher` en `:app` mediante `Intent.ACTION_VIEW` sin conexión de red.
+- **Bandeja de recordatorios de mañana (F6.3):** entidad `Reminder`, `ReminderEligibility`, `RecordReminderSentUseCase`, Room `v9` (`Migration_8_9`) con tabla `reminders`, `RemindersFragment` con pestaña *Mañana* para enviar en 1 toque, marcar estado y deshacer sin duplicados por turno.
+- **Recordatorio directo desde el detalle de turno (F6.4):** acción en `AppointmentDetailFragment` con `AppointmentDetailViewModel` y opción de deshacer (`Snackbar` e inline) evitando duplicados para el mismo turno.
+- **Cumpleaños del día (F6.5):** pestaña *Cumpleaños* en `RemindersFragment` con edad, validación de teléfono, prevención de duplicados anuales por cliente y botón deshacer.
+- **Resumen diario local programable (F6.6):** `DigestScheduleCalculator`, `ReminderDigestWorker`, `ReminderDigestScheduler` y `ReminderNotificationHelper` con WorkManager periódico local (`POST_NOTIFICATIONS` en Android 13+), selector de horario en `RemindersFragment` y acceso directo desde la notificación en `MainActivity`.
+
 ## [0.5.0] — 18/11/2026 — F5 Caja
 - Agregado (Dominio): modelos inmutables `PaymentMethod`, `CashMovementType`, `CashMovement` y `CashClosing`; calculadoras puras `AppointmentPaymentCalculator`, `CashPaymentSupport` y `CashClosingCalculator`; casos de uso `ChargeAppointmentUseCase`, `CompleteAndChargeUseCase` (atómico en una sola transacción), `ReverseMovementUseCase`, `RecordCashMovementUseCase` y `CloseCashDayUseCase` con `CashCloseBackupTrigger`; unit tests completos para cobros, pasos automáticos `COMPLETED ↔ PAID`, reversos, cierre de caja y disparo de backup.
 - Agregado (Datos): persistencia Room v7 (`CashMovementEntity` con `ForeignKey.RESTRICT` e índices, `CashClosingEntity`, `CashDao`, `CashMapper`, `CashRepositoryImpl`, `Migration_6_7`, esquema `7.json`), proyección `paid_cents` y consultas "Por cobrar" en `AppointmentDao` / `AppointmentCardProjection`, `BackupManager` v7, `SchemaExportTest` (v1–v7), `MigrationTest` (`6→7` y `1→7`) y test instrumentado de atomicidad `CompleteAndChargeAtomicityTest`.

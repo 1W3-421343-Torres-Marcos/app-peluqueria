@@ -13,6 +13,7 @@ import com.metanoia.app.AppContainer;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.CashMovementEntity;
+import com.metanoia.app.data.db.entity.ReminderEntity;
 import com.metanoia.app.data.db.pojo.AppointmentWithItems;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.mapper.AppointmentMapper;
@@ -23,12 +24,16 @@ import com.metanoia.app.util.ReceiptPdfBuilder;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.Appointment;
+import com.metanoia.domain.model.AppointmentItem;
 import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.CashMovement;
 import com.metanoia.domain.model.Client;
 import com.metanoia.domain.model.Professional;
+import com.metanoia.domain.model.Reminder;
 import com.metanoia.domain.model.Settings;
 import com.metanoia.domain.rules.AppointmentPaymentCalculator;
+import com.metanoia.domain.rules.TemplateRenderer;
+import com.metanoia.domain.rules.TemplateRenderer.TemplateContext;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 
@@ -36,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * ViewModel de detalle de turno: resuelve participantes, transiciones de estado y reprogramación.
@@ -45,15 +51,18 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
     public static final class DetailUiState {
         public final Appointment appointment;
         public final String clientName;
+        public final String clientPhone;
         public final String professionalName;
 
         public DetailUiState(
                 Appointment appointment,
                 String clientName,
+                String clientPhone,
                 String professionalName
         ) {
             this.appointment = appointment;
             this.clientName = clientName;
+            this.clientPhone = clientPhone;
             this.professionalName = professionalName;
         }
     }
@@ -80,6 +89,10 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
             @NonNull String appointmentId
     ) {
         return container.database().cashDao().observeByAppointmentId(appointmentId);
+    }
+
+    public LiveData<ReminderEntity> observeAppointmentReminder(@NonNull String appointmentId) {
+        return container.database().reminderDao().observeByAppointmentId(appointmentId);
     }
 
     public LiveData<DetailUiState> observeDetailState() {
@@ -138,8 +151,59 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
             Optional<Professional> proOpt = container.professionalRepository()
                     .findById(appointment.professionalId());
             String clientName = clientOpt.map(Client::name).orElse("");
+            String clientPhone = clientOpt.map(Client::phone).orElse("");
             String proName = proOpt.map(Professional::name).orElse("");
-            detailState.postValue(new DetailUiState(appointment, clientName, proName));
+            detailState.postValue(new DetailUiState(appointment, clientName, clientPhone, proName));
+        });
+    }
+
+    public void buildAppointmentReminderMessage(
+            @NonNull DetailUiState state,
+            @NonNull Consumer<String> onBuilt
+    ) {
+        container.executors().io().execute(() -> {
+            Settings settings = container.settingsRepository().getSettings();
+            StringBuilder services = new StringBuilder();
+            for (AppointmentItem item : state.appointment.items()) {
+                if (services.length() > 0) {
+                    services.append(", ");
+                }
+                services.append(item.serviceNameSnapshot());
+            }
+            TemplateContext context = new TemplateContext(
+                    state.clientName,
+                    state.appointment.day(),
+                    state.appointment.startMin(),
+                    services.toString(),
+                    state.professionalName,
+                    settings.businessDisplayName());
+            String message = TemplateRenderer.render(settings.reminderTemplate(), context)
+                    .renderedText();
+            container.executors().mainThread().execute(() -> onBuilt.accept(message));
+        });
+    }
+
+    public void markAppointmentReminded(
+            @NonNull String appointmentId,
+            @NonNull String clientId,
+            @NonNull Consumer<Reminder> onRecorded
+    ) {
+        container.executors().io().execute(() -> {
+            Result<Reminder> result = container.recordReminderSentUseCase()
+                    .recordAppointmentReminder(appointmentId, clientId);
+            if (result.isSuccess()) {
+                container.executors().mainThread()
+                        .execute(() -> onRecorded.accept(result.getValue()));
+            }
+        });
+    }
+
+    public void undoReminder(@NonNull String reminderId) {
+        container.executors().io().execute(() -> {
+            Result<Boolean> result = container.recordReminderSentUseCase().undoReminder(reminderId);
+            if (result.isSuccess()) {
+                feedbackEvent.postValue(new Event<>(R.string.reminder_undone));
+            }
         });
     }
 

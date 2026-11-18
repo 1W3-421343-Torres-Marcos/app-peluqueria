@@ -30,9 +30,9 @@ Enviar recordatorios de turno y saludos de cumpleaños por WhatsApp en pocos toq
 Render de plantillas (todas las variables, desconocidas, acentos), codificación URL, selección de pendientes de mañana y cumpleaños.
 
 ## Criterios de aceptación
-- [ ] Plantillas editables con vista previa.
-- [ ] Enlace wa.me correcto con mensaje armado y codificado.
-- [ ] Lista de turnos de mañana pendientes de recordar.
-- [ ] Saludo de cumpleaños con la misma mecánica.
-- [ ] Registro de enviados evita duplicados.
-- [ ] Sin API oficial ni permiso INTERNET.
+- [x] Plantillas editables con vista previa.
+- [x] Enlace wa.me correcto con mensaje armado y codificado.
+- [x] Lista de turnos de mañana pendientes de recordar.
+- [x] Saludo de cumpleaños con la misma mecánica.
+- [x] Registro de enviados evita duplicados.
+- [x] Sin API oficial ni permiso INTERNET.

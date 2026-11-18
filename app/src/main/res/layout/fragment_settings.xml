@@ -221,6 +221,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_s" />
+
+            <com.metanoia.app.ui.common.ListRowView
+                android:id="@+id/rowSettingsTemplates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_l"
+                app:rowShowChevron="true"
+                app:rowShowDivider="true"
+                app:rowSubtitle="@string/settings_templates_row_subtitle"
+                app:rowTitle="@string/settings_templates_row_title" />
         </LinearLayout>
     </ScrollView>
 

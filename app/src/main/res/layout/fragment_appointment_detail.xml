@@ -238,6 +238,41 @@
             android:layout_marginTop="@dimen/space_l"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/detailReminderRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_xs"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/detailReminderStatusText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                    android:textColor="?attr/colorPrimary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUndoAppointmentReminder"
+                    style="@style/Widget.Metanoia.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reminder_undo_action" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/detailNoPhoneHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_xs"
+                android:text="@string/reminder_no_phone_hint"
+                android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                android:textColor="?attr/colorError"
+                android:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnActionCharge"
                 style="@style/Widget.Metanoia.Button.Primary"
@@ -270,6 +305,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_s"
                 android:text="@string/appointment_action_complete"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionRemind"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_remind"
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton

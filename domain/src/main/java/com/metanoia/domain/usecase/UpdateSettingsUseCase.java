@@ -77,6 +77,13 @@ public final class UpdateSettingsUseCase {
             return Result.failure(DomainError.VALIDATION_ERROR,
                     "El horario general contiene tramos inválidos o solapados");
         }
+        String reminderTpl = trimSafe(candidate.reminderTemplate());
+        String birthdayTpl = trimSafe(candidate.birthdayTemplate());
+        String waitlistTpl = trimSafe(candidate.waitlistOfferTemplate());
+        if (reminderTpl.isEmpty() || birthdayTpl.isEmpty() || waitlistTpl.isEmpty()) {
+            return Result.failure(DomainError.VALIDATION_ERROR,
+                    "Las plantillas de mensajes no pueden quedar vacías");
+        }
 
         List<TimeRange> sortedSchedule = new ArrayList<>(candidate.generalSchedule());
         Collections.sort(sortedSchedule);
@@ -90,6 +97,9 @@ public final class UpdateSettingsUseCase {
                 .currentOperator(currentOperator)
                 .operators(cleanOperators)
                 .generalSchedule(sortedSchedule)
+                .reminderTemplate(reminderTpl)
+                .birthdayTemplate(birthdayTpl)
+                .waitlistOfferTemplate(waitlistTpl)
                 .build();
 
         Settings previous = settingsRepository.getSettings();
@@ -112,12 +122,19 @@ public final class UpdateSettingsUseCase {
         return new ArrayList<>(unique);
     }
 
+    private static String trimSafe(String raw) {
+        return raw == null ? "" : raw.trim();
+    }
+
     private void recordAuditIfRelevant(Settings previous, Settings updated) {
         boolean scheduleChanged = !previous.generalSchedule().equals(updated.generalSchedule());
         boolean slotChanged = previous.slotMinutes() != updated.slotMinutes();
         boolean operatorChanged = !previous.currentOperator().equals(updated.currentOperator())
                 || !previous.operators().equals(updated.operators());
-        if (!scheduleChanged && !slotChanged && !operatorChanged) {
+        boolean templatesChanged = !previous.reminderTemplate().equals(updated.reminderTemplate())
+                || !previous.birthdayTemplate().equals(updated.birthdayTemplate())
+                || !previous.waitlistOfferTemplate().equals(updated.waitlistOfferTemplate());
+        if (!scheduleChanged && !slotChanged && !operatorChanged && !templatesChanged) {
             return;
         }
         StringBuilder concept = new StringBuilder("Actualización de configuración:");
@@ -129,6 +146,9 @@ public final class UpdateSettingsUseCase {
         }
         if (operatorChanged) {
             concept.append(" operadores");
+        }
+        if (templatesChanged) {
+            concept.append(" plantillas");
         }
         auditLogRepository.record(new AuditRecord.Builder()
                 .id(idGenerator.nextId())

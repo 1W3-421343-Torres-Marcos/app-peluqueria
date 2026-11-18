@@ -45,11 +45,19 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAgendaReminders"
+                style="@style/Widget.Metanoia.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_xs"
+                android:text="@string/agenda_reminders_button" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAgendaBlocks"
                 style="@style/Widget.Metanoia.Button.Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_s"
+                android:layout_marginStart="@dimen/space_xs"
                 android:text="@string/agenda_blocks_button" />
         </LinearLayout>
 

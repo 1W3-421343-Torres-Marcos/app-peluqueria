@@ -15,6 +15,7 @@ import com.metanoia.app.data.db.dao.CashDao;
 import com.metanoia.app.data.db.dao.ClientDao;
 import com.metanoia.app.data.db.dao.ProfessionalDao;
 import com.metanoia.app.data.db.dao.RecurrenceRuleDao;
+import com.metanoia.app.data.db.dao.ReminderDao;
 import com.metanoia.app.data.db.dao.SalonServiceDao;
 import com.metanoia.app.data.db.dao.ScheduleBlockDao;
 import com.metanoia.app.data.db.dao.SettingsDao;
@@ -28,6 +29,7 @@ import com.metanoia.app.data.db.entity.ProfessionalDayOffEntity;
 import com.metanoia.app.data.db.entity.ProfessionalEntity;
 import com.metanoia.app.data.db.entity.ProfessionalServiceCrossRef;
 import com.metanoia.app.data.db.entity.RecurrenceRuleEntity;
+import com.metanoia.app.data.db.entity.ReminderEntity;
 import com.metanoia.app.data.db.entity.SalonHoursEntity;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
 import com.metanoia.app.data.db.entity.ScheduleBlockEntity;
@@ -39,6 +41,8 @@ import com.metanoia.app.data.db.migration.Migration_3_4;
 import com.metanoia.app.data.db.migration.Migration_4_5;
 import com.metanoia.app.data.db.migration.Migration_5_6;
 import com.metanoia.app.data.db.migration.Migration_6_7;
+import com.metanoia.app.data.db.migration.Migration_7_8;
+import com.metanoia.app.data.db.migration.Migration_8_9;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -59,9 +63,10 @@ import com.metanoia.app.data.db.migration.Migration_6_7;
                 AppointmentItemEntity.class,
                 ScheduleBlockEntity.class,
                 CashClosingEntity.class,
-                CashMovementEntity.class
+                CashMovementEntity.class,
+                ReminderEntity.class
         },
-        version = 7,
+        version = 9,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -86,6 +91,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract CashDao cashDao();
 
+    public abstract ReminderDao reminderDao();
+
     public static Migration[] allMigrations() {
         return new Migration[]{
                 Migration_1_2.INSTANCE,
@@ -93,7 +100,9 @@ public abstract class AppDatabase extends RoomDatabase {
                 Migration_3_4.INSTANCE,
                 Migration_4_5.INSTANCE,
                 Migration_5_6.INSTANCE,
-                Migration_6_7.INSTANCE
+                Migration_6_7.INSTANCE,
+                Migration_7_8.INSTANCE,
+                Migration_8_9.INSTANCE
         };
     }
 

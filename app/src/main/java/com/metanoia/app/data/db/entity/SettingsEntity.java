@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.metanoia.domain.model.Settings;
+
 /**
  * Entidad Room con los datos generales del negocio y parámetros de operación.
  */
@@ -47,6 +49,18 @@ public final class SettingsEntity {
     @ColumnInfo(name = "waitlist_expiry_days")
     public final int waitlistExpiryDays;
 
+    @ColumnInfo(name = "reminder_template", defaultValue = Settings.DEFAULT_REMINDER_TEMPLATE)
+    @NonNull
+    public final String reminderTemplate;
+
+    @ColumnInfo(name = "birthday_template", defaultValue = Settings.DEFAULT_BIRTHDAY_TEMPLATE)
+    @NonNull
+    public final String birthdayTemplate;
+
+    @ColumnInfo(name = "waitlist_offer_template", defaultValue = Settings.DEFAULT_WAITLIST_OFFER_TEMPLATE)
+    @NonNull
+    public final String waitlistOfferTemplate;
+
     @ColumnInfo(name = "updated_at")
     public final long updatedAt;
 
@@ -61,6 +75,9 @@ public final class SettingsEntity {
             @NonNull String currentOperator,
             @NonNull String operatorsCsv,
             int waitlistExpiryDays,
+            @NonNull String reminderTemplate,
+            @NonNull String birthdayTemplate,
+            @NonNull String waitlistOfferTemplate,
             long updatedAt
     ) {
         this.id = id;
@@ -73,6 +90,9 @@ public final class SettingsEntity {
         this.currentOperator = currentOperator;
         this.operatorsCsv = operatorsCsv;
         this.waitlistExpiryDays = waitlistExpiryDays;
+        this.reminderTemplate = reminderTemplate;
+        this.birthdayTemplate = birthdayTemplate;
+        this.waitlistOfferTemplate = waitlistOfferTemplate;
         this.updatedAt = updatedAt;
     }
 }

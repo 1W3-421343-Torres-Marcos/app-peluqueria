@@ -25,9 +25,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.CashMovementEntity;
+import com.metanoia.app.data.db.entity.ReminderEntity;
 import com.metanoia.app.data.mapper.CashMapper;
 import com.metanoia.app.databinding.DialogCancelReasonBinding;
 import com.metanoia.app.databinding.DialogReverseReasonBinding;
@@ -40,6 +42,7 @@ import com.metanoia.app.ui.common.ConfirmDialog;
 import com.metanoia.app.ui.common.MoneyTextView;
 import com.metanoia.app.ui.common.StatusChip;
 import com.metanoia.app.util.Formats;
+import com.metanoia.app.util.WhatsAppLauncher;
 import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentBalance;
 import com.metanoia.domain.model.AppointmentItem;
@@ -71,6 +74,8 @@ public class AppointmentDetailFragment extends Fragment {
     private Appointment currentAppointment;
     @Nullable
     private DetailUiState latestDetailState;
+    @Nullable
+    private ReminderEntity latestReminder;
     private List<CashMovement> latestMovements = Collections.emptyList();
 
     @Nullable
@@ -119,6 +124,12 @@ public class AppointmentDetailFragment extends Fragment {
                 bindState(state);
             }
         });
+        viewModel.observeAppointmentReminder(trimmedId).observe(getViewLifecycleOwner(), entity -> {
+            latestReminder = entity;
+            if (latestDetailState != null) {
+                bindState(latestDetailState);
+            }
+        });
         viewModel.observeFeedback().observe(getViewLifecycleOwner(), event -> {
             Integer resId = event.getContentIfNotHandled();
             if (resId != null) {
@@ -158,6 +169,12 @@ public class AppointmentDetailFragment extends Fragment {
             if (currentAppointment != null) {
                 viewModel.changeStatus(
                         currentAppointment.id(), AppointmentStatus.COMPLETED, null);
+            }
+        });
+        binding.btnActionRemind.setOnClickListener(v -> remindByWhatsApp());
+        binding.btnUndoAppointmentReminder.setOnClickListener(v -> {
+            if (latestReminder != null) {
+                viewModel.undoReminder(latestReminder.id);
             }
         });
         binding.btnActionShareReceipt.setOnClickListener(v -> {
@@ -392,6 +409,53 @@ public class AppointmentDetailFragment extends Fragment {
                 isCompleted || isPaid ? View.VISIBLE : View.GONE);
         binding.btnActionRevertCompleted.setVisibility(
                 isCompleted && !balance.hasPayments() ? View.VISIBLE : View.GONE);
+
+        if (isEditable) {
+            boolean hasPhone = latestDetailState != null
+                    && WhatsAppLauncher.hasValidPhone(latestDetailState.clientPhone);
+            binding.btnActionRemind.setVisibility(View.VISIBLE);
+            binding.btnActionRemind.setEnabled(hasPhone);
+            binding.detailNoPhoneHint.setVisibility(hasPhone ? View.GONE : View.VISIBLE);
+            if (latestReminder != null) {
+                binding.detailReminderRow.setVisibility(View.VISIBLE);
+                binding.detailReminderStatusText.setText(getString(
+                        R.string.appointment_detail_reminded_format,
+                        Formats.formatDateTime(latestReminder.sentAt)));
+                binding.btnActionRemind.setText(R.string.appointment_action_remind_again);
+            } else {
+                binding.detailReminderRow.setVisibility(View.GONE);
+                binding.btnActionRemind.setText(R.string.appointment_action_remind);
+            }
+        } else {
+            binding.btnActionRemind.setVisibility(View.GONE);
+            binding.detailNoPhoneHint.setVisibility(View.GONE);
+            binding.detailReminderRow.setVisibility(View.GONE);
+        }
+    }
+
+    private void remindByWhatsApp() {
+        if (latestDetailState == null) {
+            return;
+        }
+        DetailUiState snapshot = latestDetailState;
+        Appointment apt = snapshot.appointment;
+        viewModel.buildAppointmentReminderMessage(snapshot, message -> {
+            if (binding == null) {
+                return;
+            }
+            if (WhatsAppLauncher.openChat(requireContext(), snapshot.clientPhone, message)) {
+                viewModel.markAppointmentReminded(apt.id(), apt.clientId(), reminder -> {
+                    if (binding == null) {
+                        return;
+                    }
+                    Snackbar.make(binding.getRoot(), R.string.reminder_marked_sent,
+                                    Snackbar.LENGTH_LONG)
+                            .setAction(R.string.reminder_undo_action,
+                                    v -> viewModel.undoReminder(reminder.id()))
+                            .show();
+                });
+            }
+        });
     }
 
     private void sharePdfReceipt(@NonNull java.io.File pdfFile) {
