@@ -52,6 +52,7 @@ public class BackupFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(BackupViewModel.class);
 
         binding.btnChooseBackupFolder.setOnClickListener(v -> pickFolderLauncher.launch(null));
+        binding.btnBackupNow.setOnClickListener(v -> viewModel.runManualBackup());
         binding.btnSaveBackupSettings.setOnClickListener(v -> submitSettings());
 
         viewModel.observeUiState().observe(getViewLifecycleOwner(), this::bindState);
@@ -117,6 +118,10 @@ public class BackupFragment extends Fragment {
         } else {
             binding.txtLastBackupError.setVisibility(View.GONE);
         }
+
+        binding.btnBackupNow.setEnabled(folder.state == FolderState.READY && !state.busy);
+        binding.btnChooseBackupFolder.setEnabled(!state.busy);
+        binding.btnSaveBackupSettings.setEnabled(!state.busy);
 
         if (!settingsPopulated) {
             settingsPopulated = true;

@@ -10,7 +10,7 @@
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
-| F4 | Backup y restauración | [~] | 1/8 | 13 % |
+| F4 | Backup y restauración | [~] | 2/8 | 25 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **31/86** | **36 %** |
+| **Total** | | | **32/86** | **37 %** |
 
 ---
 
@@ -128,7 +128,7 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 1. [x] **F4.1 Carpeta de destino (SAF)**
    - Archivos: `DevicePrefs`, `ui/backup/`
    - Hecho: `ACTION_OPEN_DOCUMENT_TREE` con permiso persistente; se muestra la carpeta elegida; detecta permiso perdido.
-2. [ ] **F4.2 Generador de backup**
+2. [x] **F4.2 Generador de backup**
    - Archivos: `data/backup/BackupManager`, `BackupManifest`
    - Hecho: checkpoint WAL, ZIP con BD + `manifest.json` (versión esquema, app, fecha, SHA-256, conteos).
 3. [ ] **F4.3 Exportar y compartir**
@@ -354,3 +354,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F3.11 | `ClientVisitsAdapter`, `AppointmentCardView.bindForClientHistory` e historial real de visitas `COMPLETED`/`PAID` más saldo pendiente reactivo en `ClientDetailFragment` / `ClientsViewModel`; `DebugSeeder` SQLite por lotes (5.000 clientes y 50.000 turnos) accesible en build debug y test DAO compilado OK. | F3.12 |
 | 18/11/2026 | F3.12 | Fase F3 cerrada (`versionName 0.3.0`, `versionCode 3`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 84 tests unitarios OK, migraciones v1→v6 compiladas), criterios marcados en `agenda/skills.md`, `configuracion/skills.md`, `servicios/skills.md` y `profesionales/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F3` / `v0.3.0`. | F4.1 |
 | 18/11/2026 | F4.1 | `DevicePrefs` ampliado (URI SAF, último backup y parámetros AUTO/retención/`ON_BACKGROUND`/aviso), `BackupFolderAccess` con `takePersistableUriPermission` y detección de permiso perdido, UI `BackupFragment`/`BackupViewModel` conectada desde `MoreFragment` y `nav_main.xml`. | F4.2 |
+| 18/11/2026 | F4.2 | `BackupTrigger`, `BackupManifest`, `BackupManifestCodec` + `BackupManifestCodecTest`, y `BackupManager` (checkpoint WAL `TRUNCATE`, hash SHA-256, paquete ZIP `metanoia.db` + `manifest.json`, lock mutuo, `AuditLog` y botón manual) OK. | F4.3 |

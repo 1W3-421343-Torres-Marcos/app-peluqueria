@@ -406,4 +406,8 @@
     <string name="backup_save_settings_btn">Guardar ajustes de backup</string>
     <string name="backup_settings_saved">Ajustes de backup guardados</string>
     <string name="backup_settings_error_validation">Revisá los valores numéricos de retención, horas en segundo plano y días de aviso.</string>
+    <string name="backup_now_running">Generando backup…</string>
+    <string name="backup_now_success">Backup generado correctamente</string>
+    <string name="backup_now_folder_required">Elegí una carpeta válida antes de hacer el backup.</string>
+    <string name="backup_now_failed">No se pudo generar el backup.</string>
 </resources>
