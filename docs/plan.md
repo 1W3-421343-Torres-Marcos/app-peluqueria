@@ -12,14 +12,14 @@
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [x] | 10/10 | 100 % |
-| F6 | Recordatorios por WhatsApp | [~] | 6/7 | 86 % |
+| F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **54/86** | **63 %** |
+| **Total** | | | **55/86** | **64 %** |
 
 ---
 
@@ -182,7 +182,7 @@ Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 10. [x] **F5.10 Verificación de fase**
     - Hecho: criterios de `caja/skills.md` OK; tests verdes; `versionName 0.5.0`; merge de `fase/F5` a `main`, tag `fase-F5` y entrada en `docs/changelog.md`.
 
-## F6 — Recordatorios por WhatsApp `[~]`
+## F6 — Recordatorios por WhatsApp `[x]`
 Entregable: recordar turnos y saludar cumpleaños en pocos toques. Módulos: `recordatorios`, `configuracion`.
 
 1. [x] **F6.1 Plantillas**
@@ -203,7 +203,7 @@ Entregable: recordar turnos y saludar cumpleaños en pocos toques. Módulos: `re
 6. [x] **F6.6 Aviso diario local**
    - Archivos: `ReminderDigestWorker`
    - Hecho: notificación local diaria (hora configurable) con cantidad de pendientes; sin red.
-7. [ ] **F6.7 Verificación de fase**
+7. [x] **F6.7 Verificación de fase**
    - Hecho: criterios de `recordatorios/skills.md` OK; `versionName 0.6.0`; merge de `fase/F6` a `main`, tag `fase-F6` y entrada en `docs/changelog.md`.
 
 ## F7 — Ficha de color `[ ]`
@@ -377,3 +377,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F6.4 | Acción `Recordar por WhatsApp` en un toque desde `AppointmentDetailFragment` / `AppointmentDetailViewModel` con plantilla renderizada, registro de envío, deshabilitación con aviso si falta teléfono y opción Deshacer. | F6.5 |
 | 18/11/2026 | F6.5 | `BirthdayRemindersAdapter` y pestaña Cumpleaños en `RemindersFragment` para saludar por WhatsApp con registro anual anti-duplicados, edad cuando hay año cargado y opción Deshacer. | F6.6 |
 | 18/11/2026 | F6.6 | `DigestScheduleCalculator` + `DigestScheduleCalculatorTest` (2/2 OK), `DevicePrefs` con hora/activación configurables, `POST_NOTIFICATIONS` con explicación previa en Android 13+, `ReminderNotificationHelper`, `ReminderDigestWorker` y `ReminderDigestScheduler` 100 % locales sin red más acceso directo desde notificación en `MainActivity`. | F6.7 |
+| 18/11/2026 | F6.7 | Verificación de fase F6: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, 129 tests unitarios: 109 en `:domain` + 20 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `recordatorios/skills.md` (6/6) y `configuracion/skills.md` (criterio 3) marcados `[x]`, `versionCode 6` / `versionName "0.6.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F6` y `v0.6.0`. | F7.1 |
