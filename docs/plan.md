@@ -14,12 +14,12 @@
 | F5 | Caja | [x] | 10/10 | 100 % |
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
-| F8 | Lista de espera | [~] | 1/4 | 25 % |
+| F8 | Lista de espera | [~] | 2/4 | 50 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **60/86** | **70 %** |
+| **Total** | | | **61/86** | **71 %** |
 
 ---
 
@@ -227,7 +227,7 @@ Módulo: `lista-espera`.
 1. [x] **F8.1 Modelo y persistencia**
    - Archivos: `WaitlistEntry`, DAO, migración
    - Hecho: preferencias de día/franja/profesional/servicio; vencimiento.
-2. [ ] **F8.2 UI de lista de espera**
+2. [x] **F8.2 UI de lista de espera**
    - Archivos: `ui/waitlist/`
    - Hecho: alta rápida desde cliente o agenda; listado activo.
 3. [ ] **F8.3 Sugerencias al cancelar**
@@ -383,3 +383,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F7.3 | Repetir última fórmula en crear turno: `AppointmentSupport` + `CreateAppointmentUseCase` + `GenerateRecurringAppointmentsUseCase` con duplicado borrador y vínculo `colorFormulaId` en ítems de coloración, test en `CreateAppointmentUseCaseTest`, `AppointmentCreateFragment`/`ViewModel` (chip de 1 toque si hay servicio de coloración y fórmula previa) y etiqueta vinculada en `AppointmentDetailFragment`; `./gradlew.bat test assembleDebug` OK. | F7.4 |
 | 18/11/2026 | F7.4 | Verificación de fase F7: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 139 tests unitarios: 118 en `:domain` + 21 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `ficha-color/skills.md` (5/5) marcados `[x]`, `versionCode 7` / `versionName "0.7.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F7` y `v0.7.0`. | F8.1 |
 | 18/11/2026 | F8.1 | Modelos `WaitlistStatus` y `WaitlistEntry`, `SaveWaitlistEntryUseCase`, `CancelWaitlistEntryUseCase`, `ExpireWaitlistEntriesUseCase` + `SaveWaitlistEntryUseCaseTest` (3/3 OK), Room v11 (`WaitlistEntryEntity`, `WaitlistEntryServiceCrossRef`, `WaitlistDao`, `Migration_10_11`, `11.json`, `BackupManager` v11, auto-vencimiento en `MetanoiaApp`), `SchemaExportTest` (11/11 OK) y `MigrationTest` v11 compilado. | F8.2 |
+| 18/11/2026 | F8.2 | UI de lista de espera (`WaitlistFragment`, `WaitlistViewModel`, `WaitlistAdapter`, `WaitlistFormDialogFragment` reutilizable con prefills, `ClientDao.observeSummariesByIds`, `nav_waitlist`) y accesos desde `AgendaFragment`, `AppointmentCreateFragment` (al no haber horarios libres), `ClientDetailFragment` y `MoreFragment`; `./gradlew.bat test assembleDebug` OK. | F8.3 |

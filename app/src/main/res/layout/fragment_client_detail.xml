@@ -194,6 +194,15 @@
                 android:text="@string/client_detail_deactivate" />
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClientAddWaitlist"
+            style="@style/Widget.Metanoia.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/client_detail_waitlist_btn"
+            app:icon="@drawable/ic_add" />
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/clientDetailTabs"
             android:layout_width="match_parent"

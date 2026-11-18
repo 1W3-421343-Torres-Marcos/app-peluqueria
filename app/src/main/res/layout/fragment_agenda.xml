@@ -19,46 +19,62 @@
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/agendaViewModeGroup"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAgendaModeDay"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:minHeight="@dimen/touch_target_min"
                     android:text="@string/agenda_mode_day" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAgendaModeWeek"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:minHeight="@dimen/touch_target_min"
                     android:text="@string/agenda_mode_week" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAgendaReminders"
-                style="@style/Widget.Metanoia.Button.Text"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/space_xs"
-                android:text="@string/agenda_reminders_button" />
+                android:layout_weight="1"
+                android:scrollbars="none">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAgendaBlocks"
-                style="@style/Widget.Metanoia.Button.Text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_xs"
-                android:text="@string/agenda_blocks_button" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAgendaWaitlist"
+                        style="@style/Widget.Metanoia.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/agenda_waitlist_button" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAgendaReminders"
+                        style="@style/Widget.Metanoia.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/agenda_reminders_button" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAgendaBlocks"
+                        style="@style/Widget.Metanoia.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/agenda_blocks_button" />
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
 
         <LinearLayout

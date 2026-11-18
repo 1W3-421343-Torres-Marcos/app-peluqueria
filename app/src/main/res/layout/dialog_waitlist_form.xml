@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_margin">
+
+        <TextView
+            android:id="@+id/dialogWaitlistTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/waitlist_form_new_title"
+            android:textAppearance="@style/TextAppearance.Metanoia.Headline"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/txtWaitlistSelectedClient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+            android:textColor="@color/accent"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/waitlistClientSearchSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_client_section"
+                android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.metanoia.app.ui.common.SearchField
+                android:id="@+id/waitlistClientSearchField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                app:searchHint="@string/clients_search_hint" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/waitlistClientChips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                app:singleSelection="true" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:text="@string/waitlist_services_section"
+            android:textAppearance="@style/TextAppearance.Metanoia.Label"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/waitlistServiceChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:text="@string/waitlist_professional_section"
+            android:textAppearance="@style/TextAppearance.Metanoia.Label"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/waitlistProfessionalChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            app:selectionRequired="true"
+            app:singleSelection="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:text="@string/waitlist_day_mode_section"
+            android:textAppearance="@style/TextAppearance.Metanoia.Label"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/waitlistDayModeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWaitlistModeSpecificDay"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/waitlist_mode_specific_day" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWaitlistModeWeekdays"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/waitlist_mode_weekdays" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <LinearLayout
+            android:id="@+id/waitlistSpecificDayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtWaitlistSpecificDay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                android:textColor="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWaitlistPickSpecificDay"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_change_date" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/waitlistWeekdaysChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:visibility="gone">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdayMon"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_mon" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdayTue"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_tue" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdayWed"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_wed" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdayThu"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_thu" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdayFri"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_fri" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdaySat"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_sat" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeekdaySun"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_weekday_sun" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:text="@string/waitlist_time_window_section"
+            android:textAppearance="@style/TextAppearance.Metanoia.Label"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWaitlistFromTime"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWaitlistToTime"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/waitlist_valid_until_label"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <TextView
+                    android:id="@+id/txtWaitlistValidUntil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                    android:textColor="?attr/colorOnSurface" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWaitlistPickValidUntil"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waitlist_change_date" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:hint="@string/waitlist_notes_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputWaitlistNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="300"
+                android:minLines="2" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveWaitlist"
+            style="@style/Widget.Metanoia.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/waitlist_save_btn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelWaitlistForm"
+            style="@style/Widget.Metanoia.Button.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/common_cancel" />
+    </LinearLayout>
+</ScrollView>

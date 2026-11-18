@@ -261,6 +261,16 @@
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="gone" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddToWaitlistFromAgenda"
+                    style="@style/Widget.Metanoia.Button.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_s"
+                    android:text="@string/appointment_add_to_waitlist_btn"
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_add" />
+
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/switchAptRepeat"
                     android:layout_width="match_parent"
