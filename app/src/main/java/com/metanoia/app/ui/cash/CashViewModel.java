@@ -3,6 +3,7 @@ package com.metanoia.app.ui.cash;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -15,6 +16,7 @@ import com.metanoia.app.R;
 import com.metanoia.app.data.db.dao.CashDao;
 import com.metanoia.app.data.db.entity.CashClosingEntity;
 import com.metanoia.app.data.db.entity.CashMovementEntity;
+import com.metanoia.app.data.db.entity.ProductEntity;
 import com.metanoia.app.ui.common.Event;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
@@ -25,6 +27,7 @@ import com.metanoia.domain.model.Money;
 import com.metanoia.domain.model.PaymentMethod;
 import com.metanoia.domain.usecase.CloseCashDayUseCase;
 import com.metanoia.domain.usecase.RecordCashMovementUseCase.Request;
+import com.metanoia.domain.usecase.SellProductUseCase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,6 +101,7 @@ public class CashViewModel extends AndroidViewModel {
     private final AppContainer container;
     private final MutableLiveData<Long> selectedDay;
     private final LiveData<Integer> receivablesCount;
+    private final LiveData<List<ProductEntity>> activeSaleProducts;
     private final LiveData<List<CashMovementEntity>> rawMovements;
     private final LiveData<List<String>> sameDayReversedIds;
     private final LiveData<CashClosingEntity> closingForSelectedDay;
@@ -111,6 +115,7 @@ public class CashViewModel extends AndroidViewModel {
         CashDao cashDao = container.database().cashDao();
         this.selectedDay = new MutableLiveData<>(container.clock().todayEpochDay());
         this.receivablesCount = container.database().appointmentDao().observeReceivablesCount();
+        this.activeSaleProducts = container.database().stockDao().observeActiveSaleProducts();
         this.rawMovements = Transformations.switchMap(selectedDay, cashDao::observeByDay);
         this.sameDayReversedIds = Transformations.switchMap(
                 selectedDay, cashDao::observeReversedIdsOnDay);
@@ -132,6 +137,10 @@ public class CashViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getReceivablesCount() {
         return receivablesCount;
+    }
+
+    public LiveData<List<ProductEntity>> getActiveSaleProducts() {
+        return activeSaleProducts;
     }
 
     public LiveData<CashClosingEntity> getClosingForSelectedDay() {
@@ -188,6 +197,41 @@ public class CashViewModel extends AndroidViewModel {
             int msgRes;
             if (result.getError() == DomainError.CONFLICT) {
                 msgRes = R.string.cash_form_closed_conflict;
+            } else if (result.getError() == DomainError.VALIDATION_ERROR) {
+                msgRes = R.string.cash_form_validation_error;
+            } else {
+                msgRes = R.string.cash_form_unexpected_error;
+            }
+            messageEvent.postValue(new Event<>(msgRes));
+            container.executors().mainThread().execute(() -> callback.accept(false));
+        });
+    }
+
+    public void sellProduct(
+            @NonNull String productId,
+            int quantity,
+            @NonNull PaymentMethod method,
+            @Nullable Money amountOverride,
+            @NonNull Consumer<Boolean> callback) {
+        container.executors().io().execute(() -> {
+            Result<SellProductUseCase.Outcome> result = container.sellProductUseCase().execute(
+                    new SellProductUseCase.Request(productId, quantity, method, amountOverride, null));
+            if (result.isSuccess()) {
+                selectedDay.postValue(container.clock().todayEpochDay());
+                int msgRes = result.getValue().negativeStockWarning()
+                        ? R.string.cash_product_sale_saved_negative_stock
+                        : R.string.cash_product_sale_saved;
+                messageEvent.postValue(new Event<>(msgRes));
+                container.executors().mainThread().execute(() -> callback.accept(true));
+                return;
+            }
+            int msgRes;
+            if (result.getError() == DomainError.CONFLICT) {
+                boolean closed = container.database().cashDao()
+                        .isDayClosedSync(container.clock().todayEpochDay());
+                msgRes = closed
+                        ? R.string.cash_form_closed_conflict
+                        : R.string.cash_product_sale_error_inactive;
             } else if (result.getError() == DomainError.VALIDATION_ERROR) {
                 msgRes = R.string.cash_form_validation_error;
             } else {

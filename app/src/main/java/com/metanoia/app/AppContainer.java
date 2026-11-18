@@ -62,6 +62,7 @@ import com.metanoia.domain.usecase.SaveProductUseCase;
 import com.metanoia.domain.usecase.SaveProfessionalUseCase;
 import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
 import com.metanoia.domain.usecase.SaveWaitlistEntryUseCase;
+import com.metanoia.domain.usecase.SellProductUseCase;
 import com.metanoia.domain.usecase.SetClientActiveUseCase;
 import com.metanoia.domain.usecase.SetProductActiveUseCase;
 import com.metanoia.domain.usecase.SetProfessionalActiveUseCase;
@@ -126,6 +127,7 @@ public final class AppContainer {
     private final SaveProductUseCase saveProductUseCase;
     private final SetProductActiveUseCase setProductActiveUseCase;
     private final RecordStockMovementUseCase recordStockMovementUseCase;
+    private final SellProductUseCase sellProductUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -195,7 +197,7 @@ public final class AppContainer {
         this.cancelRecurringSeriesUseCase = new CancelRecurringSeriesUseCase(
                 appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.reverseMovementUseCase = new ReverseMovementUseCase(
-                cashRepository, appointmentRepository, settingsRepository,
+                cashRepository, appointmentRepository, stockRepository, settingsRepository,
                 auditLogRepository, clock, idGenerator);
         this.chargeAppointmentUseCase = new ChargeAppointmentUseCase(
                 appointmentRepository, cashRepository, settingsRepository,
@@ -241,6 +243,9 @@ public final class AppContainer {
                 stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.recordStockMovementUseCase = new RecordStockMovementUseCase(
                 stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.sellProductUseCase = new SellProductUseCase(
+                stockRepository, cashRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
@@ -462,5 +467,9 @@ public final class AppContainer {
 
     public RecordStockMovementUseCase recordStockMovementUseCase() {
         return recordStockMovementUseCase;
+    }
+
+    public SellProductUseCase sellProductUseCase() {
+        return sellProductUseCase;
     }
 }

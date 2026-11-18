@@ -15,11 +15,11 @@
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
-| F9 | Stock | [~] | 4/6 | 67 % |
+| F9 | Stock | [~] | 5/6 | 83 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **67/86** | **78 %** |
+| **Total** | | | **68/86** | **79 %** |
 
 ---
 
@@ -251,7 +251,7 @@ Módulo: `stock`.
 4. [x] **F9.4 Alertas de stock bajo**
    - Archivos: `LowStockRule`, `AlertBanner`
    - Hecho: chip y banner cuando cantidad ≤ mínimo; tests.
-5. [ ] **F9.5 Integración con caja**
+5. [x] **F9.5 Integración con caja**
    - Archivos: venta suelta de caja
    - Hecho: vender producto descuenta stock y registra movimiento de caja en una única transacción.
 6. [ ] **F9.6 Verificación de fase**
@@ -390,3 +390,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F9.2 | UI de catálogo de stock (`StockFragment`, `StockViewModel`, `ProductsAdapter`, `ProductFormDialogFragment`, `StockUiLabels`, enlace `rowStock` en `MoreFragment` y `nav_stock`), filtro por tipo Todos/Uso/Venta/Inactivos, buscador con debounce 250 ms, orden con stock bajo primero y alta/edición/baja lógica; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.3 |
 | 18/11/2026 | F9.3 | `RecordStockMovementUseCase` + `RecordStockMovementUseCaseTest` (3/3 OK: suma de movimientos, ajuste con motivo obligatorio, stock negativo permitido con advertencia y auditoría), detalle `ProductDetailFragment` / `ProductDetailViewModel`, historial `StockMovementsAdapter` y formulario `StockMovementFormDialogFragment` (`IN`/`OUT_USE`/`ADJUSTMENT`), conectado desde `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.4 |
 | 18/11/2026 | F9.4 | `LowStockRuleTest` (3/3 OK: límite `<= minStock`, negativos, suma firmada, exclusión de inactivos en conteo y orden con bajos primero) y `AlertBanner` reactivo de stock bajo en `AgendaFragment` / `AgendaViewModel` con acceso directo a `nav_stock`, sumado a `StatusChip` y banner en `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.5 |
+| 18/11/2026 | F9.5 | `SellProductUseCase` (venta + descuento `OUT_SALE` atómicos en una única transacción, rechazo de productos `USE` y días cerrados), reposición automática de stock en `ReverseMovementUseCase` al revertir `PRODUCT_SALE`, `SellProductUseCaseTest` (4/4 OK con rollback transaccional), `ReverseMovementUseCaseTest` (4/4 OK), `ProductSaleAtomicityTest` (`androidTest`) y selector de productos `SALE`/`BOTH` con cantidad y alerta negativa en `CashMovementFormDialogFragment`/`CashViewModel`; build y tests OK. | F9.6 |

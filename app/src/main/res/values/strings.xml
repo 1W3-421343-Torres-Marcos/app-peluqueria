@@ -791,4 +791,15 @@
     <string name="stock_movement_error_validation">Revisá la cantidad y el motivo del movimiento.</string>
     <string name="stock_movement_error_inactive">Reactivá el producto para registrar movimientos.</string>
     <string name="stock_movement_error_unexpected">No se pudo registrar el movimiento.</string>
+
+    <!-- Venta de producto desde caja (F9.5) -->
+    <string name="cash_form_product_label">Producto de stock (opcional)</string>
+    <string name="cash_form_product_manual">Manual (sin stock)</string>
+    <string name="cash_form_product_chip_format">%1$s (%2$s)</string>
+    <string name="cash_form_product_quantity_label">Cantidad</string>
+    <string name="cash_form_product_concept_format">Venta: %1$s x%2$d</string>
+    <string name="cash_form_product_negative_warning">Atención: el stock quedará en %1$s (negativo).</string>
+    <string name="cash_product_sale_saved">Venta registrada y stock actualizado</string>
+    <string name="cash_product_sale_saved_negative_stock">Venta registrada. El stock quedó en negativo para revisar.</string>
+    <string name="cash_product_sale_error_inactive">El producto fue dado de baja; reactivalo desde Stock.</string>
 </resources>
