@@ -223,4 +223,23 @@
     <string name="client_reactivated">Cliente reactivado</string>
     <string name="client_deactivated">Cliente dado de baja</string>
     <string name="client_reactivate_conflict">Ya existe otro cliente activo con ese teléfono.</string>
+
+    <!-- Agenda (F3.5 - F3.6) -->
+    <string name="agenda_mode_day">Día</string>
+    <string name="agenda_mode_week">Semana</string>
+    <string name="agenda_today">Hoy</string>
+    <string name="agenda_prev_day">Día anterior</string>
+    <string name="agenda_next_day">Día siguiente</string>
+    <string name="agenda_blocks_button">Bloqueos</string>
+    <string name="agenda_filter_all_professionals">Todos</string>
+    <string name="agenda_new_appointment_fab">Nuevo turno</string>
+    <string name="agenda_empty_filtered">No hay turnos ni bloqueos para este filtro en la fecha elegida.</string>
+    <string name="agenda_time_stacked">%1$s\n%2$s</string>
+    <string name="agenda_time_inline">%1$s – %2$s</string>
+    <string name="agenda_block_scope_all">Todo el salón</string>
+    <string name="agenda_block_full_day">Todo el día</string>
+    <string name="agenda_block_header">%1$s · %2$s</string>
+    <string name="agenda_detail_pending_step">El detalle de turno estará disponible en el siguiente paso.</string>
+    <string name="agenda_create_pending_step">El alta de turno se habilitará en el paso F3.7.</string>
+    <string name="agenda_blocks_pending_step">La gestión de bloqueos se habilitará en el paso F3.9.</string>
 </resources>
