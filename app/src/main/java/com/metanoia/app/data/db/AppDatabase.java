@@ -20,6 +20,7 @@ import com.metanoia.app.data.db.dao.ReminderDao;
 import com.metanoia.app.data.db.dao.SalonServiceDao;
 import com.metanoia.app.data.db.dao.ScheduleBlockDao;
 import com.metanoia.app.data.db.dao.SettingsDao;
+import com.metanoia.app.data.db.dao.WaitlistDao;
 import com.metanoia.app.data.db.entity.AppointmentEntity;
 import com.metanoia.app.data.db.entity.AppointmentItemEntity;
 import com.metanoia.app.data.db.entity.AuditLogEntity;
@@ -37,6 +38,8 @@ import com.metanoia.app.data.db.entity.SalonHoursEntity;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
 import com.metanoia.app.data.db.entity.ScheduleBlockEntity;
 import com.metanoia.app.data.db.entity.SettingsEntity;
+import com.metanoia.app.data.db.entity.WaitlistEntryEntity;
+import com.metanoia.app.data.db.entity.WaitlistEntryServiceCrossRef;
 import com.metanoia.app.data.db.entity.WorkScheduleEntity;
 import com.metanoia.app.data.db.migration.Migration_1_2;
 import com.metanoia.app.data.db.migration.Migration_2_3;
@@ -47,6 +50,7 @@ import com.metanoia.app.data.db.migration.Migration_6_7;
 import com.metanoia.app.data.db.migration.Migration_7_8;
 import com.metanoia.app.data.db.migration.Migration_8_9;
 import com.metanoia.app.data.db.migration.Migration_9_10;
+import com.metanoia.app.data.db.migration.Migration_10_11;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -70,9 +74,11 @@ import com.metanoia.app.data.db.migration.Migration_9_10;
                 CashMovementEntity.class,
                 ReminderEntity.class,
                 ColorFormulaEntity.class,
-                ColorFormulaComponentEntity.class
+                ColorFormulaComponentEntity.class,
+                WaitlistEntryEntity.class,
+                WaitlistEntryServiceCrossRef.class
         },
-        version = 10,
+        version = 11,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -101,6 +107,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ColorFormulaDao colorFormulaDao();
 
+    public abstract WaitlistDao waitlistDao();
+
     public static Migration[] allMigrations() {
         return new Migration[]{
                 Migration_1_2.INSTANCE,
@@ -111,7 +119,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 Migration_6_7.INSTANCE,
                 Migration_7_8.INSTANCE,
                 Migration_8_9.INSTANCE,
-                Migration_9_10.INSTANCE
+                Migration_9_10.INSTANCE,
+                Migration_10_11.INSTANCE
         };
     }
 

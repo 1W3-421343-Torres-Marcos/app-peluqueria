@@ -26,7 +26,12 @@ public class MetanoiaApp extends Application {
         BackupScheduler.schedulePeriodicAuto(this, container.devicePrefs().getAutoFrequencyHours());
         ReminderDigestScheduler.syncSchedule(
                 this, container.devicePrefs(), container.clock());
+        expireWaitlistInBackground(container);
         registerBackgroundBackupObserver();
+    }
+
+    private static void expireWaitlistInBackground(AppContainer active) {
+        active.executors().io().execute(() -> active.expireWaitlistEntriesUseCase().execute());
     }
 
     private void registerBackgroundBackupObserver() {
@@ -66,5 +71,6 @@ public class MetanoiaApp extends Application {
         BackupScheduler.schedulePeriodicAuto(app, app.container.devicePrefs().getAutoFrequencyHours());
         ReminderDigestScheduler.syncSchedule(
                 app, app.container.devicePrefs(), app.container.clock());
+        expireWaitlistInBackground(app.container);
     }
 }

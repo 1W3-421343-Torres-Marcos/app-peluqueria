@@ -20,6 +20,7 @@ import com.metanoia.app.data.db.migration.Migration_6_7;
 import com.metanoia.app.data.db.migration.Migration_7_8;
 import com.metanoia.app.data.db.migration.Migration_8_9;
 import com.metanoia.app.data.db.migration.Migration_9_10;
+import com.metanoia.app.data.db.migration.Migration_10_11;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -303,25 +304,54 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To10_allMigrations_passValidation() throws IOException {
+    public void migrate10To11_createsWaitlistTablesWithIndices() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 10)) {
+            db.execSQL("INSERT INTO salon_services VALUES ("
+                    + "'svc-1', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '', '', 4000, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'Sofía', 'sofia', '5491122334455', 18, 11, 1995, "
+                    + "'', 0, 1, 1000, 1000)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 11, true, Migration_10_11.INSTANCE)) {
+            migrated.execSQL("INSERT INTO waitlist_entries VALUES ("
+                    + "'wl-1', 'cli-1', 'pro-1', NULL, '5,6', 540, 780, 20550, "
+                    + "'ACTIVE', '', 2000, NULL)");
+            migrated.execSQL("INSERT INTO waitlist_entry_services VALUES ('wl-1', 'svc-1')");
+            try (Cursor cursor = migrated.query(
+                    "SELECT status, preferred_weekdays FROM waitlist_entries WHERE client_id = 'cli-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("ACTIVE", cursor.getString(0));
+                assertEquals("5,6", cursor.getString(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To11_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                10,
+                11,
                 true,
                 AppDatabase.allMigrations()
         )) {
+            migrated.execSQL("INSERT INTO salon_services VALUES ("
+                    + "'svc-all', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
             migrated.execSQL("INSERT INTO clients VALUES ("
                     + "'cli-all', 'Sofía Gómez', 'sofia gomez', '5491144556677', NULL, NULL, NULL, "
                     + "'Notas', 1, 1, 1000, 1000)");
-            migrated.execSQL("INSERT INTO color_formulas VALUES ("
-                    + "'cf-all', 'cli-all', NULL, NULL, 20501, 35, '20 vol', '', NULL, NULL, 1000)");
-            migrated.execSQL("INSERT INTO color_formula_components VALUES ("
-                    + "'cfc-all', 'cf-all', 'Wella', NULL, '7.1', 300, 'GRAMS', 0)");
-            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM color_formulas")) {
+            migrated.execSQL("INSERT INTO waitlist_entries VALUES ("
+                    + "'wl-all', 'cli-all', NULL, 20520, '', 600, 900, 20530, 'ACTIVE', '', 1000, NULL)");
+            migrated.execSQL("INSERT INTO waitlist_entry_services VALUES ('wl-all', 'svc-all')");
+            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM waitlist_entries")) {
                 cursor.moveToFirst();
                 assertEquals(1, cursor.getInt(0));
             }
