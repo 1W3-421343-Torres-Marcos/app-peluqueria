@@ -254,4 +254,30 @@
     <string name="agenda_week_occupied_minutes">%1$d min ocupados</string>
     <string name="agenda_week_has_blocks">Con bloqueo activo</string>
     <string name="agenda_week_summary_with_block">%1$s · %2$s</string>
+
+    <!-- Crear / editar turno (F3.7) -->
+    <string name="appointment_create_title">Nuevo turno</string>
+    <string name="appointment_edit_title">Editar turno</string>
+    <string name="appointment_section_client">1. Cliente</string>
+    <string name="appointment_quick_client_btn">+ Alta rápida</string>
+    <string name="appointment_client_selected">Seleccionado: %1$s</string>
+    <string name="appointment_client_option_format">%1$s · %2$s</string>
+    <string name="appointment_service_chip_format">%1$s · %2$d min · %3$s</string>
+    <string name="appointment_client_no_matches">No hay clientes activos que coincidan.</string>
+    <string name="appointment_section_services">2. Servicios</string>
+    <string name="appointment_services_summary">Duración: %1$d min</string>
+    <string name="appointment_services_empty">Cargá servicios activos primero en Más &gt; Servicios.</string>
+    <string name="appointment_section_professional">3. Profesional</string>
+    <string name="appointment_no_eligible_professionals">Ningún profesional activo realiza todos los servicios seleccionados.</string>
+    <string name="appointment_section_schedule">4. Fecha y horario</string>
+    <string name="appointment_change_date">Cambiar fecha</string>
+    <string name="appointment_no_slots_hint">No hay horarios disponibles para esta duración en la fecha elegida.</string>
+    <string name="appointment_notes_label">Notas del turno (opcional)</string>
+    <string name="appointment_confirm_immediately">Marcar como confirmado al guardar</string>
+    <string name="appointment_save_create">Confirmar turno</string>
+    <string name="appointment_save_edit">Guardar cambios</string>
+    <string name="appointment_saved">Turno guardado</string>
+    <string name="appointment_error_validation">Completá cliente, al menos un servicio, profesional y horario.</string>
+    <string name="appointment_error_conflict">El horario o estado ya no está disponible.</string>
+    <string name="appointment_error_unexpected">No se pudo guardar el turno.</string>
 </resources>

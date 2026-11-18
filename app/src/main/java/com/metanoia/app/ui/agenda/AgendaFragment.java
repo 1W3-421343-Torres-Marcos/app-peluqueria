@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.chip.Chip;
@@ -20,6 +21,7 @@ import com.metanoia.app.data.db.projection.AppointmentCardProjection;
 import com.metanoia.app.databinding.FragmentAgendaBinding;
 import com.metanoia.app.ui.agenda.AgendaViewModel.AgendaFilter;
 import com.metanoia.app.ui.agenda.AgendaViewModel.ViewMode;
+import com.metanoia.app.ui.agenda.create.AppointmentCreateFragment;
 import com.metanoia.app.util.Formats;
 
 import java.util.Collections;
@@ -84,8 +86,17 @@ public class AgendaFragment extends Fragment {
         binding.btnAgendaToday.setOnClickListener(v -> viewModel.jumpToToday());
         binding.btnAgendaBlocks.setOnClickListener(v -> Toast.makeText(
                 requireContext(), R.string.agenda_blocks_pending_step, Toast.LENGTH_SHORT).show());
-        binding.fabNewAppointment.setOnClickListener(v -> Toast.makeText(
-                requireContext(), R.string.agenda_create_pending_step, Toast.LENGTH_SHORT).show());
+        binding.fabNewAppointment.setOnClickListener(v -> openCreateAppointment());
+    }
+
+    private void openCreateAppointment() {
+        Bundle args = new Bundle();
+        args.putLong(AppointmentCreateFragment.ARG_INITIAL_DAY, viewModel.currentSelectedDay());
+        String proId = viewModel.currentProfessionalId();
+        if (proId != null) {
+            args.putString(AppointmentCreateFragment.ARG_INITIAL_PROFESSIONAL_ID, proId);
+        }
+        NavHostFragment.findNavController(this).navigate(R.id.action_agenda_to_create, args);
     }
 
     private void observeData() {

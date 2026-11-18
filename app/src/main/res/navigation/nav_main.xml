@@ -7,7 +7,16 @@
     <fragment
         android:id="@+id/nav_agenda"
         android:name="com.metanoia.app.ui.agenda.AgendaFragment"
-        android:label="@string/nav_agenda" />
+        android:label="@string/nav_agenda">
+        <action
+            android:id="@+id/action_agenda_to_create"
+            app:destination="@id/nav_appointment_create" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_appointment_create"
+        android:name="com.metanoia.app.ui.agenda.create.AppointmentCreateFragment"
+        android:label="@string/appointment_create_title" />
 
     <fragment
         android:id="@+id/nav_clients"

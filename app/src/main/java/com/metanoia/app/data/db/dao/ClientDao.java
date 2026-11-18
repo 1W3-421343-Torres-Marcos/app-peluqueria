@@ -33,6 +33,22 @@ public interface ClientDao {
     );
 
     @Query("SELECT id, name, phone, no_show_count, active FROM clients "
+            + "WHERE active = 1 "
+            + "AND (:query = '' "
+            + "OR name_normalized LIKE :prefixPattern ESCAPE '\\' "
+            + "OR name_normalized LIKE :wordPrefixPattern ESCAPE '\\' "
+            + "OR (:phoneContainsPattern != '' AND phone LIKE :phoneContainsPattern ESCAPE '\\')) "
+            + "ORDER BY name_normalized ASC "
+            + "LIMIT :limit")
+    LiveData<List<ClientRowProjection>> observeTopActiveSummaries(
+            String query,
+            String prefixPattern,
+            String wordPrefixPattern,
+            String phoneContainsPattern,
+            int limit
+    );
+
+    @Query("SELECT id, name, phone, no_show_count, active FROM clients "
             + "WHERE (:includeInactive = 1 OR active = 1) "
             + "AND (:query = '' "
             + "OR name_normalized LIKE :prefixPattern ESCAPE '\\' "
