@@ -22,5 +22,14 @@
     <fragment
         android:id="@+id/nav_more"
         android:name="com.metanoia.app.ui.more.MoreFragment"
-        android:label="@string/nav_more" />
+        android:label="@string/nav_more">
+        <action
+            android:id="@+id/action_more_to_catalog"
+            app:destination="@id/nav_component_catalog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_component_catalog"
+        android:name="com.metanoia.app.ui.debug.ComponentCatalogFragment"
+        android:label="@string/catalog_title" />
 </navigation>

@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.metanoia.app.BuildConfig;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.prefs.DevicePrefs;
@@ -46,6 +48,13 @@ public class MoreFragment extends Fragment {
                 prefs.setThemeMode(DevicePrefs.THEME_SYSTEM);
             }
         });
+
+        if (BuildConfig.DEBUG) {
+            binding.rowComponentCatalog.setVisibility(View.VISIBLE);
+            binding.rowComponentCatalog.setOnClickListener(v -> NavHostFragment
+                    .findNavController(this)
+                    .navigate(R.id.action_more_to_catalog));
+        }
     }
 
     private void selectCurrentThemeButton(int mode) {

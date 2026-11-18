@@ -7,7 +7,7 @@
 
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
-| F1 | Base, base de datos e identidad visual | [~] | 8/10 | 80 % |
+| F1 | Base, base de datos e identidad visual | [~] | 9/10 | 90 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [ ] | 0/8 | 0 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **8/86** | **9 %** |
+| **Total** | | | **9/86** | **10 %** |
 
 ---
 
@@ -50,7 +50,7 @@ Entregable: app instalable que abre con splash, tema claro/oscuro y navegación 
 8. [x] **F1.8 Splash y navegación principal**
    - Archivos: `MainActivity`, `res/navigation/nav_main.xml`, `res/menu/bottom_nav.xml`, fragments vacíos
    - Hecho: splash con logo < 1 s; bottom nav Agenda/Clientes/Caja/Más con estados vacíos.
-9. [ ] **F1.9 Componentes base**
+9. [x] **F1.9 Componentes base**
    - Archivos: `ui/common/{StatusChip,MoneyTextView,EmptyStateView,AlertBanner,ListRowView}`, estilos de botones
    - Hecho: pantalla de catálogo (solo debug) muestra todos los componentes en claro y oscuro según `design.md` §7.
 10. [ ] **F1.10 Verificación de fase**
@@ -331,3 +331,4 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | F1.6 | Fuentes estáticas Montserrat e Inter (SIL OFL) en `assets/fonts/` y `res/font/`, tokens `colors`/`dimens`/`type`/`themes` claro y oscuro, `DevicePrefs` tema, `readme.md` actualizado, 3 tests `ThemeAndFontResourcesTest` OK. | F1.7 |
 | 17/11/2026 | F1.7 | `LogoView` con placeholder tipográfico (`METANOIA` + `Hair Salon`) y slot reemplazable `drawable/logo_metanoia`, `LogoViewSlotTest` OK. | F1.8 |
 | 17/11/2026 | F1.8 | Splash (`core-splashscreen`), `MainActivity` single-Activity, `BottomNavigationView` (Agenda, Clientes, Caja, Más), selector de tema y fragments iniciales. | F1.9 |
+| 17/11/2026 | F1.9 | Estilos de botones (`Primary`, `Secondary`, `Text`), `StatusChip` (7 variantes), `MoneyTextView`, `EmptyStateView`, `AlertBanner`, `ListRowView`, `ComponentCatalogFragment` (solo debug), `StatusChipVariantTest` OK. | F1.10 |

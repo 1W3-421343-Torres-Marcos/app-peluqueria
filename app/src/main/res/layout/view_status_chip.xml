@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/statusChipIcon"
+        android:layout_width="@dimen/chip_icon_size"
+        android:layout_height="@dimen/chip_icon_size"
+        android:layout_marginEnd="@dimen/space_xs"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/statusChipLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Metanoia.Label" />
+</merge>

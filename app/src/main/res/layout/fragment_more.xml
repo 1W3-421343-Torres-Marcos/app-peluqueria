@@ -54,6 +54,17 @@
                 android:text="@string/theme_mode_dark" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
+        <com.metanoia.app.ui.common.ListRowView
+            android:id="@+id/rowComponentCatalog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:visibility="gone"
+            app:rowShowChevron="true"
+            app:rowShowDivider="true"
+            app:rowSubtitle="@string/more_catalog_subtitle"
+            app:rowTitle="@string/more_catalog_title" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

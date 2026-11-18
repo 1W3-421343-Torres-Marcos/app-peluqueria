@@ -38,19 +38,21 @@ public class MainActivity extends AppCompatActivity {
         }
         NavController navController = navHost.getNavController();
         NavigationUI.setupWithNavController(binding.bottomNav, navController);
+        binding.topBarBack.setOnClickListener(v -> navController.navigateUp());
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int id = destination.getId();
             boolean isHome = id == R.id.nav_agenda;
+            boolean isTopLevel = id == R.id.nav_agenda
+                    || id == R.id.nav_clients
+                    || id == R.id.nav_cash
+                    || id == R.id.nav_more;
+
+            binding.topBarBack.setVisibility(isTopLevel ? View.GONE : View.VISIBLE);
             binding.topBarLogo.setVisibility(isHome ? View.VISIBLE : View.GONE);
             binding.topBarTitle.setVisibility(isHome ? View.GONE : View.VISIBLE);
             if (!isHome) {
                 binding.topBarTitle.setText(destination.getLabel());
             }
-
-            boolean isTopLevel = id == R.id.nav_agenda
-                    || id == R.id.nav_clients
-                    || id == R.id.nav_cash
-                    || id == R.id.nav_more;
             binding.bottomNav.setVisibility(isTopLevel ? View.VISIBLE : View.GONE);
         });
     }

@@ -7,30 +7,41 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:minHeight="@dimen/touch_target_min"
+        android:orientation="horizontal"
         android:paddingHorizontal="@dimen/screen_margin"
         android:paddingVertical="@dimen/space_s">
+
+        <ImageButton
+            android:id="@+id/topBarBack"
+            android:layout_width="@dimen/touch_target_min"
+            android:layout_height="@dimen/touch_target_min"
+            android:layout_marginEnd="@dimen/space_xs"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_navigate_up"
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="gone"
+            app:tint="?attr/colorOnSurface" />
 
         <com.metanoia.app.ui.common.LogoView
             android:id="@+id/topBarLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
             app:logoSize="header" />
 
         <TextView
             android:id="@+id/topBarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
             android:textAppearance="@style/TextAppearance.Metanoia.Headline"
             android:textColor="?attr/colorOnSurface"
             android:visibility="gone" />
-    </FrameLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
