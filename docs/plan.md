@@ -7,7 +7,7 @@
 
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
-| F1 | Base, base de datos e identidad visual | [~] | 3/10 | 30 % |
+| F1 | Base, base de datos e identidad visual | [~] | 4/10 | 40 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [ ] | 0/8 | 0 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **3/86** | **3 %** |
+| **Total** | | | **4/86** | **5 %** |
 
 ---
 
@@ -35,7 +35,7 @@ Entregable: app instalable que abre con splash, tema claro/oscuro y navegación 
 3. [x] **F1.3 Manifiesto de privacidad**
    - Archivos: `AndroidManifest.xml`, `res/xml/data_extraction_rules.xml`
    - Hecho: sin permiso INTERNET en manifiesto fusionado; `allowBackup=false`; reglas de extracción excluyen todo.
-4. [ ] **F1.4 Dinero y formatos es-AR**
+4. [x] **F1.4 Dinero y formatos es-AR**
    - Archivos: `domain/model/Money`, `app/util/Formats`, tests
    - Hecho: `Money` en centavos con suma/resta/porcentaje; formatos `$ 12.345,50`, `05/03/2026`, `14:30`; tests verdes.
 5. [ ] **F1.5 Room base + auditoría**
@@ -326,3 +326,4 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | F1.1 | Proyecto Gradle multimódulo (`:domain` y `:app`), wrapper 8.13, `libs.versions.toml`, `.gitignore`, rama `fase/F1`, `assembleDebug` OK. | F1.2 |
 | 17/11/2026 | F1.2 | Esqueleto de capas (`domain`/`data`/`ui`), `Result`/`DomainError`/`Clock`/`IdGenerator`, `AppContainer`/`AppExecutors`/`MetanoiaApp`/`Event`, 6 tests `ResultTest` en verde. | F1.3 |
 | 17/11/2026 | F1.3 | Manifiesto sin permiso `INTERNET` (`tools:node="remove"`), `allowBackup="false"`, `data_extraction_rules.xml` y `backup_rules.xml`, 3 tests `ManifestPrivacyTest` OK. | F1.4 |
+| 17/11/2026 | F1.4 | `Money` inmutable en centavos con redondeo half-up, `Formats` es-AR (`$ 12.345,50`, `dd/MM/yyyy`, `HH:mm`), 5 tests `MoneyTest` y 3 tests `FormatsTest` verdes. | F1.5 |
