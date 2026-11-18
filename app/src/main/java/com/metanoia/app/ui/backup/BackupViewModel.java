@@ -15,6 +15,7 @@ import com.metanoia.app.data.backup.BackupFolderAccess;
 import com.metanoia.app.data.backup.BackupFolderAccess.FolderStatus;
 import com.metanoia.app.data.backup.BackupManager;
 import com.metanoia.app.data.backup.BackupManager.BackupCreated;
+import com.metanoia.app.data.backup.BackupScheduler;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.ui.common.Event;
 import com.metanoia.domain.common.DomainError;
@@ -138,6 +139,7 @@ public class BackupViewModel extends AndroidViewModel {
         prefs.setRetentionDays(retentionDays);
         prefs.setOnBackgroundThresholdHours(onBackgroundHours);
         prefs.setOverdueWarningDays(overdueDays);
+        BackupScheduler.schedulePeriodicAuto(getApplication(), prefs.getAutoFrequencyHours());
         feedbackEvent.setValue(new Event<>(R.string.backup_settings_saved));
         refresh();
     }

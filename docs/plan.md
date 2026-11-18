@@ -10,7 +10,7 @@
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
-| F4 | Backup y restauración | [~] | 3/8 | 38 % |
+| F4 | Backup y restauración | [~] | 4/8 | 50 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **33/86** | **38 %** |
+| **Total** | | | **34/86** | **40 %** |
 
 ---
 
@@ -134,7 +134,7 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 3. [x] **F4.3 Exportar y compartir**
    - Archivos: `ui/backup/`, `FileProvider`
    - Hecho: `ACTION_CREATE_DOCUMENT` y compartir por menú de Android funcionan.
-4. [ ] **F4.4 Backup automático, en segundo plano y retención**
+4. [x] **F4.4 Backup automático, en segundo plano y retención**
    - Archivos: `BackupWorker`, `BackupScheduler`, `domain/rules/BackupRetentionPolicy`, observer con `ProcessLifecycleOwner`
    - Hecho: AUTO periódico (diario por defecto); ON_BACKGROUND como `OneTimeWorkRequest` único (KEEP) solo si el último backup exitoso supera X horas (default 6); retención = el más reciente de cada uno de los últimos N días con backup (default 7) + últimos 3 PRE_RESTORE; tests de la política de retención y del umbral de horas; registra resultado y trigger.
 5. [ ] **F4.5 Validador y restaurador**
@@ -356,3 +356,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F4.1 | `DevicePrefs` ampliado (URI SAF, último backup y parámetros AUTO/retención/`ON_BACKGROUND`/aviso), `BackupFolderAccess` con `takePersistableUriPermission` y detección de permiso perdido, UI `BackupFragment`/`BackupViewModel` conectada desde `MoreFragment` y `nav_main.xml`. | F4.2 |
 | 18/11/2026 | F4.2 | `BackupTrigger`, `BackupManifest`, `BackupManifestCodec` + `BackupManifestCodecTest`, y `BackupManager` (checkpoint WAL `TRUNCATE`, hash SHA-256, paquete ZIP `metanoia.db` + `manifest.json`, lock mutuo, `AuditLog` y botón manual) OK. | F4.3 |
 | 18/11/2026 | F4.3 | `FileProvider` (`file_paths.xml`) en manifiesto, exportación manual con `ACTION_CREATE_DOCUMENT` y acción Compartir (`ACTION_SEND`) con ZIP en caché en `BackupFragment`/`BackupViewModel`. | F4.4 |
+| 18/11/2026 | F4.4 | `BackupRetentionPolicy` (más reciente por cada uno de los últimos N días con backup, últimos 3 `PRE_RESTORE` aparte, umbral `ON_BACKGROUND` y protección de archivos propios/nuevos) + `BackupRetentionPolicyTest` (5/5 OK), `BackupWorker`, `BackupScheduler` (`AUTO` periódico, `ON_BACKGROUND` y `CASH_CLOSE` únicos con `KEEP`) y observer `ProcessLifecycleOwner` en `MetanoiaApp`. | F4.5 |

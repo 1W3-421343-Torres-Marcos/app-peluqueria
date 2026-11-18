@@ -24,6 +24,8 @@ import com.metanoia.domain.model.Settings;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.rules.BackupManifestCodec;
+import com.metanoia.domain.rules.BackupRetentionPolicy;
+import com.metanoia.domain.rules.BackupRetentionPolicy.BackupFileEntry;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,7 +41,11 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
@@ -174,6 +180,7 @@ public final class BackupManager {
             devicePrefs.recordBackupSuccess(
                     staged.createdAtMillis, staged.fileName, trigger.name());
             recordBackupAudit(staged.fileName, staged.manifest);
+            applyRetentionPolicy(folderDoc, staged.fileName);
             return Result.success(
                     new BackupCreated(staged.manifest, staged.fileName, staged.createdAtMillis));
         } catch (IOException | RuntimeException ex) {
@@ -296,6 +303,42 @@ public final class BackupManager {
             return new StagedPackage(manifest, fileName, nowMillis, stagedZip);
         } finally {
             deleteQuietly(stagedDb);
+        }
+    }
+
+    private void applyRetentionPolicy(
+            @NonNull DocumentFile folderDoc,
+            @NonNull String newlyCreatedFileName
+    ) {
+        DocumentFile[] children = folderDoc.listFiles();
+        if (children.length == 0) {
+            return;
+        }
+        Map<String, DocumentFile> byId = new LinkedHashMap<>();
+        List<BackupFileEntry> entries = new ArrayList<>();
+        for (DocumentFile child : children) {
+            if (!child.isFile()) {
+                continue;
+            }
+            String name = child.getName();
+            if (name == null || name.trim().isEmpty()) {
+                continue;
+            }
+            String id = child.getUri().toString();
+            byId.put(id, child);
+            entries.add(new BackupFileEntry(id, name, child.lastModified()));
+        }
+        List<BackupFileEntry> toDelete = BackupRetentionPolicy.selectFilesToDelete(
+                entries,
+                devicePrefs.getRetentionDays(),
+                BackupRetentionPolicy.DEFAULT_KEEP_PRE_RESTORE_COUNT,
+                newlyCreatedFileName
+        );
+        for (BackupFileEntry item : toDelete) {
+            DocumentFile doc = byId.get(item.id());
+            if (doc != null) {
+                doc.delete();
+            }
         }
     }
 
