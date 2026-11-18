@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_agenda_to_waitlist"
             app:destination="@id/nav_waitlist" />
+        <action
+            android:id="@+id/action_agenda_to_stock"
+            app:destination="@id/nav_stock" />
     </fragment>
 
     <fragment

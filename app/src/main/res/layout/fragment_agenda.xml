@@ -144,6 +144,14 @@
             android:layout_marginTop="@dimen/space_xs"
             android:visibility="gone" />
 
+        <com.metanoia.app.ui.common.AlertBanner
+            android:id="@+id/agendaLowStockBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="@dimen/space_xs"
+            android:visibility="gone" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

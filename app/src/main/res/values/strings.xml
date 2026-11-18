@@ -733,6 +733,7 @@
     <string name="stock_low_banner_plural">%1$d productos con stock bajo o agotado.</string>
     <string name="stock_low_banner_action_only">Ver bajos</string>
     <string name="stock_low_banner_action_all">Ver todos</string>
+    <string name="stock_banner_action_view">Ver stock</string>
     <string name="stock_empty">Todavía no hay productos cargados.</string>
     <string name="stock_empty_filtered">No hay productos que coincidan con el filtro.</string>
     <string name="stock_new_fab">Nuevo producto</string>
