@@ -469,4 +469,8 @@
     <string name="charge_error_validation">Revisá los importes ingresados, el saldo disponible y el motivo si aplicaste un ajuste.</string>
     <string name="charge_error_conflict">El turno ya no admite cobros o la caja de hoy está cerrada.</string>
     <string name="charge_error_unexpected">No se pudo registrar el cobro.</string>
+    <string name="receivables_title">Turnos por cobrar</string>
+    <string name="receivables_empty">No hay turnos completados con saldo pendiente.</string>
+    <string name="receivables_professional_date_format">%1$s · %2$s</string>
+    <string name="cash_receivables_button_format">Por cobrar (%1$d)</string>
 </resources>

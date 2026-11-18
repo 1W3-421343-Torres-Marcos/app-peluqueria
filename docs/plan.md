@@ -11,7 +11,7 @@
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
-| F5 | Caja | [~] | 4/10 | 40 % |
+| F5 | Caja | [~] | 5/10 | 50 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **42/86** | **49 %** |
+| **Total** | | | **43/86** | **50 %** |
 
 ---
 
@@ -164,7 +164,7 @@ Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 4. [x] **F5.4 "Completar y cobrar"**
    - Archivos: `CompleteAndChargeUseCase`, detalle de turno
    - Hecho: desde PENDING/CONFIRMED completa + cobra en una única transacción Room; pago simple en ≤ 3 toques; test instrumentado de atomicidad (falla del cobro ⇒ turno sigue sin completar).
-5. [ ] **F5.5 Lista "Por cobrar"**
+5. [x] **F5.5 Lista "Por cobrar"**
    - Archivos: `ui/cash/receivables/`, consulta con proyección liviana
    - Hecho: turnos COMPLETED con saldo > 0 y monto adeudado; toque abre el cobro; contador en la pestaña Caja.
 6. [ ] **F5.6 Ventas sueltas y gastos**
@@ -365,3 +365,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F5.2 | Persistencia Room v7 (`CashClosingEntity`, `CashMovementEntity` con FK `RESTRICT`, `CashDao`, `CashMapper`, `CashRepositoryImpl`, `Migration_6_7`, `7.json`), proyección `paid_cents` y consultas "Por cobrar" en `AppointmentDao`/`AppointmentCardProjection`, `BackupManager` v7, `SchemaExportTest` (7/7 OK) y `MigrationTest` v7 compilado. | F5.3 |
 | 18/11/2026 | F5.3 | `CashPaymentSupport`, `ChargeAppointmentUseCase` + `ChargeAppointmentUseCaseTest` (3/3 OK), `ChargeAppointmentDialogFragment` (parcial/dividido/ajuste con motivo), pagos registrados y reverso en `AppointmentDetailFragment`. | F5.4 |
 | 18/11/2026 | F5.4 | `CompleteAndChargeUseCase` atómico en una sola transacción (congela comisiones + registra cobro), acción en <= 3 toques desde `AppointmentDetailFragment` (`PENDING`/`CONFIRMED`), `CompleteAndChargeUseCaseTest` (3/3 OK) y test instrumentado `CompleteAndChargeAtomicityTest` compilado. | F5.5 |
+| 18/11/2026 | F5.5 | `ReceivablesViewModel`, `ReceivablesAdapter` (reutilizando `AppointmentCardView.bindForReceivable`), `ReceivablesFragment` + `fragment_receivables.xml` conectados en `nav_main.xml` (`nav_receivables`), apertura directa del cobro y contador reactivo `Por cobrar (N)` en `CashFragment`. | F5.6 |

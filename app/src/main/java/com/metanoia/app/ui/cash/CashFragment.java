@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import com.metanoia.app.R;
 import com.metanoia.app.databinding.FragmentCashBinding;
 
 /**
- * Pantalla de caja (estado vacío inicial en F1).
+ * Pantalla de Caja (movimientos del día, cobros pendientes y cierre diario).
  */
 public class CashFragment extends Fragment {
 
@@ -24,6 +27,19 @@ public class CashFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
         binding = FragmentCashBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        CashViewModel viewModel = new ViewModelProvider(this).get(CashViewModel.class);
+        viewModel.getReceivablesCount().observe(getViewLifecycleOwner(), count -> {
+            int safeCount = count == null ? 0 : count;
+            binding.btnCashReceivables.setText(
+                    getString(R.string.cash_receivables_button_format, safeCount));
+        });
+        binding.btnCashReceivables.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_cash_to_receivables));
     }
 
     @Override
