@@ -15,11 +15,11 @@
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
-| F9 | Stock | [~] | 5/6 | 83 % |
+| F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **68/86** | **79 %** |
+| **Total** | | | **69/86** | **80 %** |
 
 ---
 
@@ -236,7 +236,7 @@ Módulo: `lista-espera`.
 4. [x] **F8.4 Verificación de fase**
    - Hecho: criterios de `lista-espera/skills.md` OK; `versionName 0.8.0`; merge de `fase/F8` a `main`, tag `fase-F8` y entrada en `docs/changelog.md`.
 
-## F9 — Stock `[~]`
+## F9 — Stock `[x]`
 Módulo: `stock`.
 
 1. [x] **F9.1 Modelo y persistencia**
@@ -254,7 +254,7 @@ Módulo: `stock`.
 5. [x] **F9.5 Integración con caja**
    - Archivos: venta suelta de caja
    - Hecho: vender producto descuenta stock y registra movimiento de caja en una única transacción.
-6. [ ] **F9.6 Verificación de fase**
+6. [x] **F9.6 Verificación de fase**
    - Hecho: criterios de `stock/skills.md` OK; `versionName 0.9.0`; merge de `fase/F9` a `main`, tag `fase-F9` y entrada en `docs/changelog.md`.
 
 ## F10 — Comisiones `[ ]`
@@ -391,3 +391,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F9.3 | `RecordStockMovementUseCase` + `RecordStockMovementUseCaseTest` (3/3 OK: suma de movimientos, ajuste con motivo obligatorio, stock negativo permitido con advertencia y auditoría), detalle `ProductDetailFragment` / `ProductDetailViewModel`, historial `StockMovementsAdapter` y formulario `StockMovementFormDialogFragment` (`IN`/`OUT_USE`/`ADJUSTMENT`), conectado desde `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.4 |
 | 18/11/2026 | F9.4 | `LowStockRuleTest` (3/3 OK: límite `<= minStock`, negativos, suma firmada, exclusión de inactivos en conteo y orden con bajos primero) y `AlertBanner` reactivo de stock bajo en `AgendaFragment` / `AgendaViewModel` con acceso directo a `nav_stock`, sumado a `StatusChip` y banner en `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.5 |
 | 18/11/2026 | F9.5 | `SellProductUseCase` (venta + descuento `OUT_SALE` atómicos en una única transacción, rechazo de productos `USE` y días cerrados), reposición automática de stock en `ReverseMovementUseCase` al revertir `PRODUCT_SALE`, `SellProductUseCaseTest` (4/4 OK con rollback transaccional), `ReverseMovementUseCaseTest` (4/4 OK), `ProductSaleAtomicityTest` (`androidTest`) y selector de productos `SALE`/`BOTH` con cantidad y alerta negativa en `CashMovementFormDialogFragment`/`CashViewModel`; build y tests OK. | F9.6 |
+| 18/11/2026 | F9.6 | Verificación de fase F9: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 162 tests unitarios: 139 en `:domain` + 23 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `stock/skills.md` (5/5) marcados `[x]`, `versionCode 9` / `versionName "0.9.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F9` y `v0.9.0`. | F10.1 |
