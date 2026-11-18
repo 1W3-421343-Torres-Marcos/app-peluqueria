@@ -7,7 +7,7 @@
 
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
-| F1 | Base, base de datos e identidad visual | [~] | 5/10 | 50 % |
+| F1 | Base, base de datos e identidad visual | [~] | 6/10 | 60 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [ ] | 0/8 | 0 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **5/86** | **6 %** |
+| **Total** | | | **6/86** | **7 %** |
 
 ---
 
@@ -41,7 +41,7 @@ Entregable: app instalable que abre con splash, tema claro/oscuro y navegación 
 5. [x] **F1.5 Room base + auditoría**
    - Archivos: `data/db/AppDatabase` (v1), `AuditLogEntity`, `AuditLogDao`, `app/schemas/`, test de migración base
    - Hecho: BD creada con `exportSchema`; `AuditLog` insertable; `MigrationTestHelper` configurado; sin migración destructiva.
-6. [ ] **F1.6 Tema Metanoia claro/oscuro**
+6. [x] **F1.6 Tema Metanoia claro/oscuro**
    - Archivos: `res/values/{colors,themes,dimens,type}.xml`, `values-night/`, `res/font/` (Montserrat, Inter)
    - Hecho: tokens de `design.md` §2–4 implementados; cambio Sistema/Claro/Oscuro funciona.
 7. [ ] **F1.7 Logo reemplazable**
@@ -328,3 +328,4 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | F1.3 | Manifiesto sin permiso `INTERNET` (`tools:node="remove"`), `allowBackup="false"`, `data_extraction_rules.xml` y `backup_rules.xml`, 3 tests `ManifestPrivacyTest` OK. | F1.4 |
 | 17/11/2026 | F1.4 | `Money` inmutable en centavos con redondeo half-up, `Formats` es-AR (`$ 12.345,50`, `dd/MM/yyyy`, `HH:mm`), 5 tests `MoneyTest` y 3 tests `FormatsTest` verdes. | F1.5 |
 | 17/11/2026 | F1.5 | Room v1 (`AppDatabase`, `AuditLogEntity`, `AuditLogDao`), esquema `1.json` exportado, `MigrationTest` y `SchemaExportTest` OK. | F1.6 |
+| 17/11/2026 | F1.6 | Fuentes estáticas Montserrat e Inter (SIL OFL) en `assets/fonts/` y `res/font/`, tokens `colors`/`dimens`/`type`/`themes` claro y oscuro, `DevicePrefs` tema, `readme.md` actualizado, 3 tests `ThemeAndFontResourcesTest` OK. | F1.7 |

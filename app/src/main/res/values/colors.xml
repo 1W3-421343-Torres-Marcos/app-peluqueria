@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Neutros base (design.md §2) -->
+    <color name="ink">#111111</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray50">#F5F5F5</color>
+    <color name="gray100">#EBEBEB</color>
+    <color name="gray200">#D6D6D6</color>
+    <color name="gray300_dark">#BDBDBD</color>
+    <color name="gray400">#9E9E9E</color>
+    <color name="gray600">#616161</color>
+    <color name="gray800">#2B2B2B</color>
+    <color name="gray900">#1C1C1C</color>
+
+    <!-- Acento Bordó (claro / oscuro) -->
+    <color name="accent_light">#8C2F39</color>
+    <color name="on_accent_light">#FFFFFF</color>
+    <color name="accent_container_light">#F3E3E5</color>
+    <color name="accent_dark">#D9727D</color>
+    <color name="on_accent_dark">#111111</color>
+    <color name="accent_container_dark">#3A1E22</color>
+
+    <!-- Tokens semánticos (modo claro por defecto) -->
+    <color name="accent">@color/accent_light</color>
+    <color name="on_accent">@color/on_accent_light</color>
+    <color name="accent_container">@color/accent_container_light</color>
+    <color name="accent_cancelled">@color/accent_light</color>
+    <color name="divider_subtle">@color/gray100</color>
+    <color name="absent_chip_bg">@color/gray100</color>
+    <color name="absent_bar">@color/gray200</color>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Escala de espaciado base 4 dp (design.md §4) -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_s">8dp</dimen>
+    <dimen name="space_m">16dp</dimen>
+    <dimen name="space_l">24dp</dimen>
+    <dimen name="space_xl">32dp</dimen>
+    <dimen name="space_xxl">48dp</dimen>
+
+    <dimen name="screen_margin">16dp</dimen>
+    <dimen name="card_spacing">8dp</dimen>
+
+    <!-- Radios y bordes -->
+    <dimen name="radius_s">8dp</dimen>
+    <dimen name="radius_m">12dp</dimen>
+    <dimen name="radius_pill">999dp</dimen>
+    <dimen name="stroke_width">1dp</dimen>
+    <dimen name="card_status_bar_width">4dp</dimen>
+
+    <!-- Componentes y objetivos táctiles (design.md §4, §6, §7) -->
+    <dimen name="touch_target_min">48dp</dimen>
+    <dimen name="button_primary_height">56dp</dimen>
+    <dimen name="button_secondary_height">48dp</dimen>
+    <dimen name="chip_height">28dp</dimen>
+    <dimen name="chip_icon_size">16dp</dimen>
+    <dimen name="icon_size">24dp</dimen>
+    <dimen name="empty_state_icon_size">48dp</dimen>
+    <dimen name="list_row_min_height">64dp</dimen>
+    <dimen name="bottom_sheet_row_height">56dp</dimen>
+    <dimen name="logo_splash_width">160dp</dimen>
+    <dimen name="logo_header_height">32dp</dimen>
+    <dimen name="logo_min_height">24dp</dimen>
+</resources>
