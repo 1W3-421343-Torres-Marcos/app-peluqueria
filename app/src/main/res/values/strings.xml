@@ -425,4 +425,10 @@
     <string name="backup_restore_running">Restaurando base de datos…</string>
     <string name="backup_restore_success">Restauración completa. Reiniciando Metanoia…</string>
     <string name="backup_restore_failed">No se pudo restaurar el backup. Tus datos actuales siguen intactos.</string>
+    <string name="backup_overdue_no_folder">Todavía no configuraste una carpeta de backup para resguardar tus datos.</string>
+    <string name="backup_overdue_lost_folder">Se perdió el acceso a tu carpeta de backup. Volvé a elegirla.</string>
+    <string name="backup_overdue_never_run">Todavía no hiciste ninguna copia de seguridad. Hacé una ahora.</string>
+    <string name="backup_overdue_days_format">El último backup tiene más de %1$d días. Hacé una copia ahora.</string>
+    <string name="backup_banner_action_configure">Configurar</string>
+    <string name="backup_banner_action_now">Respaldar</string>
 </resources>
