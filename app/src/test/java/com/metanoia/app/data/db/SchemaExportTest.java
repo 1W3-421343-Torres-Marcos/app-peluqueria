@@ -39,6 +39,14 @@ public class SchemaExportTest {
         assertTrue(content.contains("\"tableName\": \"professional_services\""));
     }
 
+    @Test
+    public void roomSchemaV5_isExportedWithClientsTableAndIndices() throws Exception {
+        String content = readSchema(5);
+        assertTrue(content.contains("\"tableName\": \"clients\""));
+        assertTrue(content.contains("index_clients_name_normalized"));
+        assertTrue(content.contains("index_clients_phone"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

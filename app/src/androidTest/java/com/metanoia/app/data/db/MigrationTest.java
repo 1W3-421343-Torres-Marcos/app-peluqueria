@@ -14,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.metanoia.app.data.db.migration.Migration_1_2;
 import com.metanoia.app.data.db.migration.Migration_2_3;
 import com.metanoia.app.data.db.migration.Migration_3_4;
+import com.metanoia.app.data.db.migration.Migration_4_5;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -122,6 +123,52 @@ public class MigrationTest {
                 cursor.moveToFirst();
                 assertEquals("Ana", cursor.getString(0));
                 assertEquals(4000, cursor.getInt(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate4To5_createsClientsTableWithIndices() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 4)) {
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '3515551234', '', 4000, 1, 1000, 1000)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 5, true, Migration_4_5.INSTANCE)) {
+            migrated.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'María José', 'maria jose', '5491122334455', 14, 7, NULL, "
+                    + "'', 0, 1, 1000, 1000)");
+
+            try (Cursor cursor = migrated.query(
+                    "SELECT name, phone, no_show_count FROM clients WHERE name_normalized LIKE 'maria%'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("María José", cursor.getString(0));
+                assertEquals("5491122334455", cursor.getString(1));
+                assertEquals(0, cursor.getInt(2));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To5_allMigrations_passValidation() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
+            db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB,
+                5,
+                true,
+                AppDatabase.allMigrations()
+        )) {
+            migrated.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-all', 'Sofía Gómez', 'sofia gomez', '5491144556677', NULL, NULL, NULL, "
+                    + "'Notas', 1, 1, 1000, 1000)");
+            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM clients")) {
+                cursor.moveToFirst();
+                assertEquals(1, cursor.getInt(0));
             }
         }
     }

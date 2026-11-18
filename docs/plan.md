@@ -8,7 +8,7 @@
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
-| F2 | Configuración base, servicios, profesionales y clientes | [~] | 5/8 | 63 % |
+| F2 | Configuración base, servicios, profesionales y clientes | [~] | 6/8 | 75 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **15/86** | **17 %** |
+| **Total** | | | **16/86** | **19 %** |
 
 ---
 
@@ -74,7 +74,7 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 5. [x] **F2.5 Profesionales: UI**
    - Archivos: `ui/professionals/`
    - Hecho: alta/edición con editor de horario semanal; criterios de `profesionales/skills.md` OK.
-6. [ ] **F2.6 Clientes: dominio y datos**
+6. [x] **F2.6 Clientes: dominio y datos**
    - Archivos: `Client`, `ClientEntity/Dao`, `TextNormalizer`, `PhoneNormalizer`, migración
    - Hecho: búsqueda por nombre normalizado/teléfono con índices; teléfono E.164; tests.
 7. [ ] **F2.7 Clientes: UI**
@@ -338,3 +338,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F2.3 | UI de Servicios (`ServicesFragment`, `ServicesViewModel`, `ServicesAdapter`, `ServiceFormDialogFragment`), enlace desde Más, criterios marcados en `servicios/skills.md`, build y tests OK. | F2.4 |
 | 18/11/2026 | F2.4 | `Professional`, `ProfessionalValidator`, `SaveProfessionalUseCase`/`SetProfessionalActiveUseCase`/`ManageProfessionalDayOffUseCase`, Room v4 (`Migration_3_4`, `4.json` con FK RESTRICT), 46 tests unitarios OK + `MigrationTest` compilado. | F2.5 |
 | 18/11/2026 | F2.5 | UI de Profesionales (`ProfessionalsFragment`, `ProfessionalsViewModel`, `ProfessionalsAdapter`, `ProfessionalFormFragment` con checklist de servicios, `WeeklyScheduleEditorView` y días libres), enlace desde Más, `Formats.formatPercent` + test OK. | F2.6 |
+| 18/11/2026 | F2.6 | `Client`, `ClientSummary`, `PhoneNormalizer`, `ClientValidator`, `SaveClientUseCase`/`SetClientActiveUseCase` (auditoría y conflicto teléfono activo), Room v5 (`ClientEntity`, `ClientRowProjection`, `ClientDao`, `Migration_4_5`, `5.json`), 58 tests unitarios OK + `MigrationTest` compilado. | F2.7 |
