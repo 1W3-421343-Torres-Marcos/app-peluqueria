@@ -757,4 +757,37 @@
     <string name="product_error_validation">Revisá los datos: nombre, tipo, precios y cantidades válidas.</string>
     <string name="product_error_not_found">Producto no encontrado.</string>
     <string name="product_error_unexpected">No se pudo guardar el producto.</string>
+
+    <!-- Movimientos y detalle de producto (F9.3) -->
+    <string name="product_detail_title">Detalle de producto</string>
+    <string name="product_detail_not_found">No se encontró el producto.</string>
+    <string name="product_detail_current_stock_label">Stock actual</string>
+    <string name="product_detail_min_stock_label">Mínimo: %1$s</string>
+    <string name="product_detail_action_in">Ingreso (+)</string>
+    <string name="product_detail_action_out_use">Uso (-)</string>
+    <string name="product_detail_action_adjust">Ajuste (±)</string>
+    <string name="product_detail_movements_title">Historial de movimientos</string>
+    <string name="product_detail_movements_empty">Todavía no hay movimientos registrados.</string>
+    <string name="product_detail_negative_warning">El stock quedó en negativo. Registrá el ingreso pendiente o revisá el inventario.</string>
+    <string name="stock_movement_type_in">Ingreso</string>
+    <string name="stock_movement_type_out_use">Uso interno</string>
+    <string name="stock_movement_type_out_sale">Venta</string>
+    <string name="stock_movement_type_adjustment">Ajuste</string>
+    <string name="stock_movement_operator_format">%1$s · %2$s</string>
+    <string name="stock_movement_form_in_title">Registrar ingreso</string>
+    <string name="stock_movement_form_out_use_title">Registrar uso interno</string>
+    <string name="stock_movement_form_adjust_title">Ajuste de stock</string>
+    <string name="stock_movement_adjust_direction_label">Sentido del ajuste</string>
+    <string name="stock_movement_adjust_add">Sumar (+)</string>
+    <string name="stock_movement_adjust_subtract">Restar (-)</string>
+    <string name="stock_movement_quantity_label">Cantidad (%1$s)</string>
+    <string name="stock_movement_reason_optional_label">Motivo o nota (opcional)</string>
+    <string name="stock_movement_reason_required_label">Motivo del ajuste (obligatorio)</string>
+    <string name="stock_movement_negative_preview">Atención: el stock quedará en %1$s (negativo) y se marcará para revisión.</string>
+    <string name="stock_movement_save_btn">Guardar movimiento</string>
+    <string name="stock_movement_saved">Movimiento de stock guardado</string>
+    <string name="stock_movement_saved_negative">Movimiento guardado. El stock quedó en negativo para revisar.</string>
+    <string name="stock_movement_error_validation">Revisá la cantidad y el motivo del movimiento.</string>
+    <string name="stock_movement_error_inactive">Reactivá el producto para registrar movimientos.</string>
+    <string name="stock_movement_error_unexpected">No se pudo registrar el movimiento.</string>
 </resources>

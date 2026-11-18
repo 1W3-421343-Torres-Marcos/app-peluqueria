@@ -53,6 +53,7 @@ import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.OfferWaitlistEntryUseCase;
 import com.metanoia.domain.usecase.RecordReminderSentUseCase;
+import com.metanoia.domain.usecase.RecordStockMovementUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 import com.metanoia.domain.usecase.ReverseMovementUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
@@ -124,6 +125,7 @@ public final class AppContainer {
     private final AssignWaitlistEntryUseCase assignWaitlistEntryUseCase;
     private final SaveProductUseCase saveProductUseCase;
     private final SetProductActiveUseCase setProductActiveUseCase;
+    private final RecordStockMovementUseCase recordStockMovementUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -236,6 +238,8 @@ public final class AppContainer {
         this.saveProductUseCase = new SaveProductUseCase(
                 stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.setProductActiveUseCase = new SetProductActiveUseCase(
+                stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.recordStockMovementUseCase = new RecordStockMovementUseCase(
                 stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
@@ -454,5 +458,9 @@ public final class AppContainer {
 
     public SetProductActiveUseCase setProductActiveUseCase() {
         return setProductActiveUseCase;
+    }
+
+    public RecordStockMovementUseCase recordStockMovementUseCase() {
+        return recordStockMovementUseCase;
     }
 }

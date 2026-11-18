@@ -10,12 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.ProductEntity;
 import com.metanoia.app.databinding.FragmentStockBinding;
 import com.metanoia.app.ui.stock.StockViewModel.TypeFilter;
+import com.metanoia.app.ui.stock.movements.ProductDetailFragment;
 
 /**
  * Pantalla de catálogo de stock con filtro por tipo, búsqueda, alertas bajas y CRUD.
@@ -46,7 +48,7 @@ public class StockFragment extends Fragment {
         adapter = new ProductsAdapter(new ProductsAdapter.OnProductActionListener() {
             @Override
             public void onProductClick(@NonNull ProductEntity product) {
-                openEditProduct(product);
+                openProductDetail(product.id);
             }
 
             @Override
@@ -146,6 +148,13 @@ public class StockFragment extends Fragment {
     private void openEditProduct(@NonNull ProductEntity product) {
         ProductFormDialogFragment.newEditInstance(product)
                 .show(getChildFragmentManager(), TAG_PRODUCT_FORM);
+    }
+
+    private void openProductDetail(@NonNull String productId) {
+        Bundle args = new Bundle();
+        args.putString(ProductDetailFragment.ARG_PRODUCT_ID, productId);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_stock_to_product_detail, args);
     }
 
     @Override

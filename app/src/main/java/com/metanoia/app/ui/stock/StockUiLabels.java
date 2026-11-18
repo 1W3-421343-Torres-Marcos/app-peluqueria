@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.metanoia.app.R;
 import com.metanoia.domain.model.ProductType;
 import com.metanoia.domain.model.ProductUnit;
+import com.metanoia.domain.model.StockMovementType;
 
 /**
  * Etiquetas y formateo de tipos, unidades y cantidades de stock para la interfaz.
@@ -83,6 +84,33 @@ public final class StockUiLabels {
             return ProductUnit.valueOf(raw);
         } catch (IllegalArgumentException ex) {
             return ProductUnit.UNIT;
+        }
+    }
+
+    @NonNull
+    public static StockMovementType parseMovementType(@NonNull String raw) {
+        try {
+            return StockMovementType.valueOf(raw);
+        } catch (IllegalArgumentException ex) {
+            return StockMovementType.ADJUSTMENT;
+        }
+    }
+
+    @NonNull
+    public static String movementTypeLabel(
+            @NonNull Context context,
+            @NonNull StockMovementType type
+    ) {
+        switch (type) {
+            case IN:
+                return context.getString(R.string.stock_movement_type_in);
+            case OUT_USE:
+                return context.getString(R.string.stock_movement_type_out_use);
+            case OUT_SALE:
+                return context.getString(R.string.stock_movement_type_out_sale);
+            case ADJUSTMENT:
+            default:
+                return context.getString(R.string.stock_movement_type_adjustment);
         }
     }
 }
