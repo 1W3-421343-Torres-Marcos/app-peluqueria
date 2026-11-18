@@ -21,12 +21,19 @@ import java.util.List;
 @Dao
 public interface AppointmentDao {
 
-    @Query("SELECT a.id, a.client_id, c.name AS client_name, "
+    String PAID_CENTS_EXPR = "COALESCE((SELECT SUM("
+            + "CASE WHEN cm.type = 'APPOINTMENT_PAYMENT' THEN cm.amount_cents "
+            + "WHEN cm.type = 'REVERSAL' THEN -cm.amount_cents ELSE 0 END) "
+            + "FROM cash_movements cm WHERE cm.appointment_id = a.id), 0)";
+
+    String CARD_COLUMNS = "a.id, a.client_id, c.name AS client_name, "
             + "a.professional_id, p.name AS professional_name, "
             + "a.day, a.start_min, a.end_min, a.status, "
             + "COALESCE(GROUP_CONCAT(ai.service_name_snapshot, ' + '), '') AS services_summary, "
             + "COALESCE(SUM(ai.price_cents_snapshot), 0) AS items_subtotal_cents, "
-            + "a.adjustment_cents, a.recurrence_rule_id "
+            + "a.adjustment_cents, " + PAID_CENTS_EXPR + " AS paid_cents, a.recurrence_rule_id";
+
+    @Query("SELECT " + CARD_COLUMNS + " "
             + "FROM appointments a "
             + "INNER JOIN clients c ON c.id = a.client_id "
             + "INNER JOIN professionals p ON p.id = a.professional_id "
@@ -40,12 +47,7 @@ public interface AppointmentDao {
             @Nullable String professionalId
     );
 
-    @Query("SELECT a.id, a.client_id, c.name AS client_name, "
-            + "a.professional_id, p.name AS professional_name, "
-            + "a.day, a.start_min, a.end_min, a.status, "
-            + "COALESCE(GROUP_CONCAT(ai.service_name_snapshot, ' + '), '') AS services_summary, "
-            + "COALESCE(SUM(ai.price_cents_snapshot), 0) AS items_subtotal_cents, "
-            + "a.adjustment_cents, a.recurrence_rule_id "
+    @Query("SELECT " + CARD_COLUMNS + " "
             + "FROM appointments a "
             + "INNER JOIN clients c ON c.id = a.client_id "
             + "INNER JOIN professionals p ON p.id = a.professional_id "
@@ -60,12 +62,7 @@ public interface AppointmentDao {
             @Nullable String professionalId
     );
 
-    @Query("SELECT a.id, a.client_id, c.name AS client_name, "
-            + "a.professional_id, p.name AS professional_name, "
-            + "a.day, a.start_min, a.end_min, a.status, "
-            + "COALESCE(GROUP_CONCAT(ai.service_name_snapshot, ' + '), '') AS services_summary, "
-            + "COALESCE(SUM(ai.price_cents_snapshot), 0) AS items_subtotal_cents, "
-            + "a.adjustment_cents, a.recurrence_rule_id "
+    @Query("SELECT " + CARD_COLUMNS + " "
             + "FROM appointments a "
             + "INNER JOIN clients c ON c.id = a.client_id "
             + "INNER JOIN professionals p ON p.id = a.professional_id "
@@ -75,9 +72,30 @@ public interface AppointmentDao {
             + "ORDER BY a.day DESC, a.start_min DESC")
     LiveData<List<AppointmentCardProjection>> observeClientVisitCards(String clientId);
 
-    @Query("SELECT COALESCE(SUM(MAX(0, "
+    @Query("SELECT " + CARD_COLUMNS + " "
+            + "FROM appointments a "
+            + "INNER JOIN clients c ON c.id = a.client_id "
+            + "INNER JOIN professionals p ON p.id = a.professional_id "
+            + "LEFT JOIN appointment_items ai ON ai.appointment_id = a.id "
+            + "WHERE a.status = 'COMPLETED' "
+            + "AND MAX(0, COALESCE((SELECT SUM(ai2.price_cents_snapshot) "
+            + "FROM appointment_items ai2 WHERE ai2.appointment_id = a.id), 0) "
+            + "+ a.adjustment_cents) > " + PAID_CENTS_EXPR + " "
+            + "GROUP BY a.id "
+            + "ORDER BY a.day ASC, a.start_min ASC")
+    LiveData<List<AppointmentCardProjection>> observeReceivableCards();
+
+    @Query("SELECT COUNT(*) FROM appointments a "
+            + "WHERE a.status = 'COMPLETED' "
+            + "AND MAX(0, COALESCE((SELECT SUM(ai.price_cents_snapshot) "
+            + "FROM appointment_items ai WHERE ai.appointment_id = a.id), 0) "
+            + "+ a.adjustment_cents) > " + PAID_CENTS_EXPR)
+    LiveData<Integer> observeReceivablesCount();
+
+    @Query("SELECT COALESCE(SUM(MAX(0, MAX(0, "
             + "COALESCE((SELECT SUM(ai.price_cents_snapshot) FROM appointment_items ai "
-            + "WHERE ai.appointment_id = a.id), 0) + a.adjustment_cents)), 0) "
+            + "WHERE ai.appointment_id = a.id), 0) + a.adjustment_cents) - "
+            + PAID_CENTS_EXPR + ")), 0) "
             + "FROM appointments a "
             + "WHERE a.client_id = :clientId AND a.status = 'COMPLETED'")
     LiveData<Long> observeClientPendingBalanceCents(String clientId);

@@ -58,6 +58,17 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_appointments_client_id_day"));
     }
 
+    @Test
+    public void roomSchemaV7_isExportedWithCashTablesAndIndices() throws Exception {
+        String content = readSchema(7);
+        assertTrue(content.contains("\"tableName\": \"cash_closings\""));
+        assertTrue(content.contains("\"tableName\": \"cash_movements\""));
+        assertTrue(content.contains("index_cash_closings_day"));
+        assertTrue(content.contains("index_cash_movements_day"));
+        assertTrue(content.contains("index_cash_movements_method"));
+        assertTrue(content.contains("index_cash_movements_appointment_id"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

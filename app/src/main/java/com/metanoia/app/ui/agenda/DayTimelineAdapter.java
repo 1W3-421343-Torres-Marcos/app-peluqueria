@@ -201,7 +201,8 @@ public class DayTimelineAdapter extends
                                 && a.clientName.equals(b.clientName)
                                 && a.professionalName.equals(b.professionalName)
                                 && a.servicesSummary.equals(b.servicesSummary)
-                                && a.totalCents() == b.totalCents();
+                                && a.totalCents() == b.totalCents()
+                                && a.paidCents == b.paidCents;
                     }
                     return false;
                 }

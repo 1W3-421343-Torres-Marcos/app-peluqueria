@@ -24,6 +24,7 @@ import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.Client;
 import com.metanoia.domain.model.Professional;
+import com.metanoia.domain.rules.AppointmentPaymentCalculator;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 
@@ -111,8 +112,11 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
             @Nullable String cancelReason
     ) {
         container.executors().io().execute(() -> {
+            long paidCents = AppointmentPaymentCalculator.netPaid(
+                    container.cashRepository().findMovementsByAppointmentId(appointmentId)
+            ).cents();
             Result<Appointment> result = container.changeAppointmentStatusUseCase()
-                    .execute(appointmentId, targetStatus, cancelReason);
+                    .execute(appointmentId, targetStatus, cancelReason, paidCents);
             if (result.isSuccess()) {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_status_updated));
             } else if (result.getError() == DomainError.VALIDATION_ERROR) {

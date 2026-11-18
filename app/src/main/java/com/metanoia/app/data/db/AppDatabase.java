@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.metanoia.app.data.db.dao.AppointmentDao;
 import com.metanoia.app.data.db.dao.AuditLogDao;
+import com.metanoia.app.data.db.dao.CashDao;
 import com.metanoia.app.data.db.dao.ClientDao;
 import com.metanoia.app.data.db.dao.ProfessionalDao;
 import com.metanoia.app.data.db.dao.RecurrenceRuleDao;
@@ -20,6 +21,8 @@ import com.metanoia.app.data.db.dao.SettingsDao;
 import com.metanoia.app.data.db.entity.AppointmentEntity;
 import com.metanoia.app.data.db.entity.AppointmentItemEntity;
 import com.metanoia.app.data.db.entity.AuditLogEntity;
+import com.metanoia.app.data.db.entity.CashClosingEntity;
+import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.data.db.entity.ClientEntity;
 import com.metanoia.app.data.db.entity.ProfessionalDayOffEntity;
 import com.metanoia.app.data.db.entity.ProfessionalEntity;
@@ -35,6 +38,7 @@ import com.metanoia.app.data.db.migration.Migration_2_3;
 import com.metanoia.app.data.db.migration.Migration_3_4;
 import com.metanoia.app.data.db.migration.Migration_4_5;
 import com.metanoia.app.data.db.migration.Migration_5_6;
+import com.metanoia.app.data.db.migration.Migration_6_7;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -53,9 +57,11 @@ import com.metanoia.app.data.db.migration.Migration_5_6;
                 RecurrenceRuleEntity.class,
                 AppointmentEntity.class,
                 AppointmentItemEntity.class,
-                ScheduleBlockEntity.class
+                ScheduleBlockEntity.class,
+                CashClosingEntity.class,
+                CashMovementEntity.class
         },
-        version = 6,
+        version = 7,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -78,13 +84,16 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract RecurrenceRuleDao recurrenceRuleDao();
 
+    public abstract CashDao cashDao();
+
     public static Migration[] allMigrations() {
         return new Migration[]{
                 Migration_1_2.INSTANCE,
                 Migration_2_3.INSTANCE,
                 Migration_3_4.INSTANCE,
                 Migration_4_5.INSTANCE,
-                Migration_5_6.INSTANCE
+                Migration_5_6.INSTANCE,
+                Migration_6_7.INSTANCE
         };
     }
 

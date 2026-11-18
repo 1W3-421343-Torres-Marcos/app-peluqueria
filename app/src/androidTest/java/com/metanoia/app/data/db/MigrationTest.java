@@ -16,6 +16,7 @@ import com.metanoia.app.data.db.migration.Migration_2_3;
 import com.metanoia.app.data.db.migration.Migration_3_4;
 import com.metanoia.app.data.db.migration.Migration_4_5;
 import com.metanoia.app.data.db.migration.Migration_5_6;
+import com.metanoia.app.data.db.migration.Migration_6_7;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -185,14 +186,47 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To6_allMigrations_passValidation() throws IOException {
+    public void migrate6To7_createsCashTablesAndPreservesAppointments() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 6)) {
+            db.execSQL("INSERT INTO salon_services VALUES ("
+                    + "'svc-1', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '', '', 4000, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'Sofía', 'sofia', '5491122334455', NULL, NULL, NULL, "
+                    + "'', 0, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO appointments VALUES ("
+                    + "'apt-1', 'cli-1', 'pro-1', 20500, 540, 570, 'COMPLETED', 0, '', "
+                    + "NULL, NULL, 1000, 1000, 'Dueño')");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 7, true, Migration_6_7.INSTANCE)) {
+            migrated.execSQL("INSERT INTO cash_movements VALUES ("
+                    + "'mov-1', 20500, 2000, 'APPOINTMENT_PAYMENT', 'CASH', 1500000, "
+                    + "'Cobro turno', 'apt-1', 'cli-1', NULL, NULL, NULL, 'Dueño', NULL)");
+            migrated.execSQL("INSERT INTO cash_closings VALUES ("
+                    + "'close-1', 20500, 1500000, 0, 0, 0, 1500000, 0, 0, 0, 0, '', 3000, 'Dueño')");
+
+            try (Cursor cursor = migrated.query(
+                    "SELECT amount_cents, method FROM cash_movements WHERE appointment_id = 'apt-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals(1_500_000L, cursor.getLong(0));
+                assertEquals("CASH", cursor.getString(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To7_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                6,
+                7,
                 true,
                 AppDatabase.allMigrations()
         )) {
