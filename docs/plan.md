@@ -11,7 +11,7 @@
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
-| F5 | Caja | [ ] | 0/10 | 0 % |
+| F5 | Caja | [~] | 1/10 | 10 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **38/86** | **44 %** |
+| **Total** | | | **39/86** | **45 %** |
 
 ---
 
@@ -149,10 +149,10 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 8. [x] **F4.8 Verificación de fase**
    - Hecho: prueba ida y vuelta (backup → borrar app → restaurar) sin pérdida; criterios de `backup/skills.md` OK; `versionName 0.4.0`; merge de `fase/F4` a `main`, tag `fase-F4` y entrada en `docs/changelog.md`.
 
-## F5 — Caja `[ ]`
+## F5 — Caja `[~]`
 Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 
-1. [ ] **F5.1 Modelo de caja**
+1. [x] **F5.1 Modelo de caja**
    - Archivos: `CashMovement`, `PaymentMethod`, `ReverseMovementUseCase`
    - Hecho: movimientos inmutables con reverso; cada uno genera `AuditLog`; `paidCents`/`balanceCents` derivados de movimientos; tests.
 2. [ ] **F5.2 Persistencia de caja**
@@ -361,3 +361,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F4.6 | Flujo completo de restauración en `BackupFragment`/`BackupViewModel` (`OpenDocument`, inspección previa, diálogo de resumen y confirmación, `PRE_RESTORE` automático, reinicio de `AppContainer` y `MainActivity`). | F4.7 |
 | 18/11/2026 | F4.7 | `AlertBanner` en `fragment_agenda.xml` y `AgendaFragment` para alertar carpeta faltante, permiso perdido o último backup superior a N días configurados (default 3) con acceso directo a `BackupFragment`. | F4.8 |
 | 18/11/2026 | F4.8 | Fase F4 cerrada (`versionName 0.4.0`, `versionCode 4`): `BackupPackageRoundTripTest` y `BackupRestoreRoundTripTest` (`androidTest`), `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 95 tests unitarios OK), 9 criterios marcados en `backup/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F4` / `v0.4.0`. | F5.1 |
+| 18/11/2026 | F5.1 | Modelos inmutables `PaymentMethod`, `CashMovementType`, `CashMovement`, `CashClosing`, `AppointmentPaymentCalculator`, interfaz `CashRepository` y `ReverseMovementUseCase` (reverso con auditoría, paso automático `PAID -> COMPLETED` y cierre previo respetado) + `AppointmentPaymentCalculatorTest` (1/1 OK) y `ReverseMovementUseCaseTest` (3/3 OK). | F5.2 |
