@@ -13,13 +13,13 @@
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [x] | 10/10 | 100 % |
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
-| F7 | Ficha de color | [ ] | 0/4 | 0 % |
+| F7 | Ficha de color | [~] | 1/4 | 25 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **55/86** | **64 %** |
+| **Total** | | | **56/86** | **65 %** |
 
 ---
 
@@ -206,10 +206,10 @@ Entregable: recordar turnos y saludar cumpleaños en pocos toques. Módulos: `re
 7. [x] **F6.7 Verificación de fase**
    - Hecho: criterios de `recordatorios/skills.md` OK; `versionName 0.6.0`; merge de `fase/F6` a `main`, tag `fase-F6` y entrada en `docs/changelog.md`.
 
-## F7 — Ficha de color `[ ]`
+## F7 — Ficha de color `[~]`
 Módulo: `ficha-color`.
 
-1. [ ] **F7.1 Modelo y persistencia**
+1. [x] **F7.1 Modelo y persistencia**
    - Archivos: `ColorFormula`, `ColorFormulaComponent`, DAOs, migración
    - Hecho: fórmula con componentes, exposición, fecha y notas; tests de validación.
 2. [ ] **F7.2 UI en ficha del cliente**
@@ -378,3 +378,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F6.5 | `BirthdayRemindersAdapter` y pestaña Cumpleaños en `RemindersFragment` para saludar por WhatsApp con registro anual anti-duplicados, edad cuando hay año cargado y opción Deshacer. | F6.6 |
 | 18/11/2026 | F6.6 | `DigestScheduleCalculator` + `DigestScheduleCalculatorTest` (2/2 OK), `DevicePrefs` con hora/activación configurables, `POST_NOTIFICATIONS` con explicación previa en Android 13+, `ReminderNotificationHelper`, `ReminderDigestWorker` y `ReminderDigestScheduler` 100 % locales sin red más acceso directo desde notificación en `MainActivity`. | F6.7 |
 | 18/11/2026 | F6.7 | Verificación de fase F6: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, 129 tests unitarios: 109 en `:domain` + 20 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `recordatorios/skills.md` (6/6) y `configuracion/skills.md` (criterio 3) marcados `[x]`, `versionCode 6` / `versionName "0.6.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F6` y `v0.6.0`. | F7.1 |
+| 18/11/2026 | F7.1 | Modelos `ColorComponentUnit`, `ColorFormulaComponent` y `ColorFormula`, `ColorFormulaRules` + `ColorFormulaRulesTest` (5/5 OK), `SaveColorFormulaUseCase`, `DuplicateColorFormulaUseCase`, `DeleteColorFormulaUseCase` + `SaveColorFormulaUseCaseTest` (3/3 OK), Room v10 (`Migration_9_10`, `10.json`, `ColorFormulaDao`, upsert seguro en `AppointmentDao`), `BackupManager` v10, `SchemaExportTest` (10/10 OK) y `MigrationTest` v10 compilado. | F7.2 |

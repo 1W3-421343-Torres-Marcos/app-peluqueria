@@ -11,6 +11,7 @@ import com.metanoia.app.data.repository.AppointmentRepositoryImpl;
 import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
 import com.metanoia.app.data.repository.CashRepositoryImpl;
 import com.metanoia.app.data.repository.ClientRepositoryImpl;
+import com.metanoia.app.data.repository.ColorFormulaRepositoryImpl;
 import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
 import com.metanoia.app.data.repository.ReminderRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
@@ -22,6 +23,7 @@ import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.ClientRepository;
+import com.metanoia.domain.repository.ColorFormulaRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.ReminderRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
@@ -36,6 +38,8 @@ import com.metanoia.domain.usecase.RecordCashMovementUseCase;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
 import com.metanoia.domain.usecase.CreateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
+import com.metanoia.domain.usecase.DeleteColorFormulaUseCase;
+import com.metanoia.domain.usecase.DuplicateColorFormulaUseCase;
 import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
@@ -43,6 +47,7 @@ import com.metanoia.domain.usecase.RecordReminderSentUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 import com.metanoia.domain.usecase.ReverseMovementUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
+import com.metanoia.domain.usecase.SaveColorFormulaUseCase;
 import com.metanoia.domain.usecase.SaveProfessionalUseCase;
 import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
 import com.metanoia.domain.usecase.SetClientActiveUseCase;
@@ -70,6 +75,7 @@ public final class AppContainer {
     private final ScheduleBlockRepository scheduleBlockRepository;
     private final CashRepository cashRepository;
     private final ReminderRepository reminderRepository;
+    private final ColorFormulaRepository colorFormulaRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -93,6 +99,9 @@ public final class AppContainer {
     private final RecordCashMovementUseCase recordCashMovementUseCase;
     private final CloseCashDayUseCase closeCashDayUseCase;
     private final RecordReminderSentUseCase recordReminderSentUseCase;
+    private final SaveColorFormulaUseCase saveColorFormulaUseCase;
+    private final DuplicateColorFormulaUseCase duplicateColorFormulaUseCase;
+    private final DeleteColorFormulaUseCase deleteColorFormulaUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -114,6 +123,7 @@ public final class AppContainer {
         this.scheduleBlockRepository = new ScheduleBlockRepositoryImpl(database.scheduleBlockDao());
         this.cashRepository = new CashRepositoryImpl(database);
         this.reminderRepository = new ReminderRepositoryImpl(database.reminderDao());
+        this.colorFormulaRepository = new ColorFormulaRepositoryImpl(database.colorFormulaDao());
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -175,6 +185,14 @@ public final class AppContainer {
                 closedDayEpoch -> BackupScheduler.enqueueCashClose(appContext));
         this.recordReminderSentUseCase = new RecordReminderSentUseCase(
                 reminderRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.saveColorFormulaUseCase = new SaveColorFormulaUseCase(
+                colorFormulaRepository, clientRepository, professionalRepository,
+                appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.duplicateColorFormulaUseCase = new DuplicateColorFormulaUseCase(
+                colorFormulaRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.deleteColorFormulaUseCase = new DeleteColorFormulaUseCase(
+                colorFormulaRepository, appointmentRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
@@ -336,5 +354,21 @@ public final class AppContainer {
 
     public RecordReminderSentUseCase recordReminderSentUseCase() {
         return recordReminderSentUseCase;
+    }
+
+    public ColorFormulaRepository colorFormulaRepository() {
+        return colorFormulaRepository;
+    }
+
+    public SaveColorFormulaUseCase saveColorFormulaUseCase() {
+        return saveColorFormulaUseCase;
+    }
+
+    public DuplicateColorFormulaUseCase duplicateColorFormulaUseCase() {
+        return duplicateColorFormulaUseCase;
+    }
+
+    public DeleteColorFormulaUseCase deleteColorFormulaUseCase() {
+        return deleteColorFormulaUseCase;
     }
 }
