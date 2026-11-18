@@ -11,7 +11,7 @@
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
-| F5 | Caja | [~] | 9/10 | 90 % |
+| F5 | Caja | [x] | 10/10 | 100 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **47/86** | **55 %** |
+| **Total** | | | **48/86** | **56 %** |
 
 ---
 
@@ -149,7 +149,7 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 8. [x] **F4.8 Verificación de fase**
    - Hecho: prueba ida y vuelta (backup → borrar app → restaurar) sin pérdida; criterios de `backup/skills.md` OK; `versionName 0.4.0`; merge de `fase/F4` a `main`, tag `fase-F4` y entrada en `docs/changelog.md`.
 
-## F5 — Caja `[~]`
+## F5 — Caja `[x]`
 Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 
 1. [x] **F5.1 Modelo de caja**
@@ -179,7 +179,7 @@ Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 9. [x] **F5.9 Recibo y gastos del cliente**
    - Archivos: `ReceiptPdfBuilder`, ficha de cliente
    - Hecho: recibo PDF con logo y "Metanoia Hair Salon" compartible; historial de gastos y saldo pendiente en ficha.
-10. [ ] **F5.10 Verificación de fase**
+10. [x] **F5.10 Verificación de fase**
     - Hecho: criterios de `caja/skills.md` OK; tests verdes; `versionName 0.5.0`; merge de `fase/F5` a `main`, tag `fase-F5` y entrada en `docs/changelog.md`.
 
 ## F6 — Recordatorios por WhatsApp `[ ]`
@@ -370,3 +370,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F5.7 | `CashClosingCalculator` + `CashClosingCalculatorTest` (2/2 OK), `CloseCashDayUseCase` + `CloseCashDayUseCaseTest` (3/3 OK), `CashClosingDialogFragment` con arqueo esperado vs contado por medio en vivo, alerta `AlertBanner` de días previos sin cerrar, resumen de cierre y bloqueo de día cerrado en `CashFragment`. | F5.8 |
 | 18/11/2026 | F5.8 | `CashCloseBackupTrigger` inyectado en `CloseCashDayUseCase` y conectado en `AppContainer` a `BackupScheduler.enqueueCashClose` (`UNIQUE_WORK_CASH_CLOSE`, `KEEP`, no bloqueante); tests actualizados en `CloseCashDayUseCaseTest` (3/3 OK). | F5.9 |
 | 18/11/2026 | F5.9 | `ReceiptPdfBuilder` compartible por `FileProvider` desde `AppointmentDetailFragment` (logo reemplazable + "METANOIA Hair Salon", ítems, pagos y saldo), pestaña real de Gastos e historial en `ClientDetailFragment` (`ClientSpendingAdapter`) y criterio 4 marcado en `clientes/skills.md`. | F5.10 |
+| 18/11/2026 | F5.10 | Fase F5 cerrada (`versionName 0.5.0`, `versionCode 5`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint, 115 tests unitarios OK y tests instrumentados compilados), 11 criterios marcados en `caja/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F5` / `v0.5.0`. | F6.1 |
