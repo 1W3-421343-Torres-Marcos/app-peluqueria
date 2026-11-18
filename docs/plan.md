@@ -8,7 +8,7 @@
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
-| F2 | Configuración base, servicios, profesionales y clientes | [~] | 1/8 | 13 % |
+| F2 | Configuración base, servicios, profesionales y clientes | [~] | 2/8 | 25 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **11/86** | **13 %** |
+| **Total** | | | **12/86** | **14 %** |
 
 ---
 
@@ -62,7 +62,7 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 1. [x] **F2.1 Configuración base**
    - Archivos: `SettingsEntity`, `SettingsRepository`, `ui/settings/`
    - Hecho: datos del negocio, horario general, duración mínima de bloque y operador actual persistidos en Room; migración + test; pantalla Acerca de con `versionName`/`versionCode` desde `BuildConfig`.
-2. [ ] **F2.2 Servicios: dominio y datos**
+2. [x] **F2.2 Servicios: dominio y datos**
    - Archivos: `SalonService`, `SalonServiceEntity/Dao`, casos de uso, migración
    - Hecho: alta/edición/desactivación vía casos de uso; validaciones con tests.
 3. [ ] **F2.3 Servicios: UI**
@@ -334,3 +334,4 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | F1.9 | Estilos de botones (`Primary`, `Secondary`, `Text`), `StatusChip` (7 variantes), `MoneyTextView`, `EmptyStateView`, `AlertBanner`, `ListRowView`, `ComponentCatalogFragment` (solo debug), `StatusChipVariantTest` OK. | F1.10 |
 | 17/11/2026 | F1.10 | Fase F1 cerrada (`versionName 0.1.0`): `./gradlew check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (23 tests OK, Lint 0 errores), checklist `agents.md` §12 OK, `changelog.md` actualizado, merge a `main` y tags `fase-F1` / `v0.1.0`. | F2.1 |
 | 18/11/2026 | F2.1 | Rama `fase/F2`, `Settings`/`TimeRange`/`AuditRecord`, `ScheduleValidator`, `GetSettingsUseCase`/`UpdateSettingsUseCase`, Room v2 (`Migration_1_2`, `2.json`), `SettingsFragment`/`AboutFragment` y `WeeklyScheduleEditorView`; 31 tests unitarios OK + `MigrationTest` compilado. | F2.2 |
+| 18/11/2026 | F2.2 | `TextNormalizer`, `SalonService`, `SalonServiceValidator`, `SaveSalonServiceUseCase`/`SetSalonServiceActiveUseCase`, Room v3 (`Migration_2_3`, `3.json`), 39 tests unitarios OK + `MigrationTest` compilado. | F2.3 |

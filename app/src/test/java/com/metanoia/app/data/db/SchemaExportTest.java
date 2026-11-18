@@ -24,6 +24,12 @@ public class SchemaExportTest {
         assertTrue(content.contains("\"tableName\": \"salon_hours\""));
     }
 
+    @Test
+    public void roomSchemaV3_isExportedWithSalonServices() throws Exception {
+        String content = readSchema(3);
+        assertTrue(content.contains("\"tableName\": \"salon_services\""));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

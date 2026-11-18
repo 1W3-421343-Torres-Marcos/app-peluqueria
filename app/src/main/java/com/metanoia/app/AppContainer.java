@@ -5,12 +5,16 @@ import android.content.Context;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
+import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
 import com.metanoia.app.data.repository.SettingsRepositoryImpl;
 import com.metanoia.domain.common.Clock;
 import com.metanoia.domain.common.IdGenerator;
 import com.metanoia.domain.repository.AuditLogRepository;
+import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
+import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
+import com.metanoia.domain.usecase.SetSalonServiceActiveUseCase;
 import com.metanoia.domain.usecase.UpdateSettingsUseCase;
 
 /**
@@ -25,8 +29,11 @@ public final class AppContainer {
     private final AppDatabase database;
     private final AuditLogRepository auditLogRepository;
     private final SettingsRepository settingsRepository;
+    private final SalonServiceRepository salonServiceRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
+    private final SaveSalonServiceUseCase saveSalonServiceUseCase;
+    private final SetSalonServiceActiveUseCase setSalonServiceActiveUseCase;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -37,9 +44,14 @@ public final class AppContainer {
         this.database = AppDatabase.create(appContext);
         this.auditLogRepository = new AuditLogRepositoryImpl(database.auditLogDao());
         this.settingsRepository = new SettingsRepositoryImpl(database.settingsDao(), clock);
+        this.salonServiceRepository = new SalonServiceRepositoryImpl(database.salonServiceDao());
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
+        this.saveSalonServiceUseCase = new SaveSalonServiceUseCase(
+                salonServiceRepository, settingsRepository, clock, idGenerator);
+        this.setSalonServiceActiveUseCase = new SetSalonServiceActiveUseCase(
+                salonServiceRepository, clock);
     }
 
     public AppExecutors executors() {
@@ -70,11 +82,23 @@ public final class AppContainer {
         return settingsRepository;
     }
 
+    public SalonServiceRepository salonServiceRepository() {
+        return salonServiceRepository;
+    }
+
     public GetSettingsUseCase getSettingsUseCase() {
         return getSettingsUseCase;
     }
 
     public UpdateSettingsUseCase updateSettingsUseCase() {
         return updateSettingsUseCase;
+    }
+
+    public SaveSalonServiceUseCase saveSalonServiceUseCase() {
+        return saveSalonServiceUseCase;
+    }
+
+    public SetSalonServiceActiveUseCase setSalonServiceActiveUseCase() {
+        return setSalonServiceActiveUseCase;
     }
 }

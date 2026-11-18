@@ -12,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.metanoia.app.data.db.migration.Migration_1_2;
+import com.metanoia.app.data.db.migration.Migration_2_3;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,6 +74,26 @@ public class MigrationTest {
             try (Cursor hours = migrated.query("SELECT COUNT(*) FROM salon_hours")) {
                 hours.moveToFirst();
                 assertEquals(6, hours.getInt(0));
+            }
+        }
+    }
+
+    @Test
+    public void migrate2To3_createsSalonServicesTable() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 2)) {
+            db.execSQL("INSERT INTO settings VALUES ('default', 'Metanoia', 'Hair Salon', '', '', '', 15, 'Dueño', 'Dueño', 30, 0)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 3, true, Migration_2_3.INSTANCE)) {
+            migrated.execSQL("INSERT INTO salon_services VALUES ("
+                    + "'svc-1', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
+            try (Cursor cursor = migrated.query(
+                    "SELECT name, price_cents FROM salon_services WHERE id = 'svc-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("Corte", cursor.getString(0));
+                assertEquals(1500000L, cursor.getLong(1));
             }
         }
     }
