@@ -99,6 +99,17 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_color_formula_components_formula_id_position"));
     }
 
+    @Test
+    public void roomSchemaV11_isExportedWithWaitlistTablesAndIndices() throws Exception {
+        String content = readSchema(11);
+        assertTrue(content.contains("\"tableName\": \"waitlist_entries\""));
+        assertTrue(content.contains("\"tableName\": \"waitlist_entry_services\""));
+        assertTrue(content.contains("index_waitlist_entries_status_valid_until_day"));
+        assertTrue(content.contains("index_waitlist_entries_client_id_status"));
+        assertTrue(content.contains("index_waitlist_entries_professional_id"));
+        assertTrue(content.contains("index_waitlist_entry_services_service_id"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

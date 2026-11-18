@@ -23,6 +23,7 @@ import com.metanoia.app.ui.clients.color.ClientColorFormulasAdapter;
 import com.metanoia.app.ui.clients.color.ClientColorFormulasAdapter.FormulaRowItem;
 import com.metanoia.app.ui.clients.color.ColorFormulaDialogFragment;
 import com.metanoia.app.ui.common.ConfirmDialog;
+import com.metanoia.app.ui.waitlist.WaitlistFormDialogFragment;
 import com.metanoia.domain.model.ColorFormula;
 import com.metanoia.domain.rules.PhoneNormalizer;
 
@@ -42,6 +43,7 @@ public class ClientDetailFragment extends Fragment {
     public static final String ARG_CLIENT_ID = "client_id";
     private static final String TAG_EDIT_CLIENT = "edit_client_dialog";
     private static final String TAG_COLOR_FORMULA = "color_formula_dialog";
+    private static final String TAG_ADD_WAITLIST = "client_add_waitlist_dialog";
 
     private FragmentClientDetailBinding binding;
     private ClientsViewModel viewModel;
@@ -208,12 +210,20 @@ public class ClientDetailFragment extends Fragment {
         });
 
         binding.btnToggleClientActive.setOnClickListener(v -> toggleActiveState());
+        binding.btnClientAddWaitlist.setOnClickListener(v -> {
+            if (currentClient != null) {
+                WaitlistFormDialogFragment.newCreatePrefilledInstance(
+                        currentClient.id, currentClient.name, null, null, null)
+                        .show(getChildFragmentManager(), TAG_ADD_WAITLIST);
+            }
+        });
         setupTabs();
     }
 
     private void bindClient(@NonNull ClientEntity entity) {
         binding.clientDetailName.setText(entity.name);
         binding.clientDetailInactiveBadge.setVisibility(entity.active ? View.GONE : View.VISIBLE);
+        binding.btnClientAddWaitlist.setVisibility(entity.active ? View.VISIBLE : View.GONE);
         binding.clientDetailPhone.setText(PhoneNormalizer.formatForDisplay(entity.phone));
         binding.clientDetailNoShowsValue.setText(String.valueOf(entity.noShowCount));
         binding.clientDetailBirthdayValue.setText(formatBirthday(entity));

@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_agenda_to_reminders"
             app:destination="@id/nav_reminders" />
+        <action
+            android:id="@+id/action_agenda_to_waitlist"
+            app:destination="@id/nav_waitlist" />
     </fragment>
 
     <fragment
@@ -88,6 +91,9 @@
             android:id="@+id/action_more_to_reminders"
             app:destination="@id/nav_reminders" />
         <action
+            android:id="@+id/action_more_to_waitlist"
+            app:destination="@id/nav_waitlist" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -137,6 +143,11 @@
         android:id="@+id/nav_reminders"
         android:name="com.metanoia.app.ui.reminders.RemindersFragment"
         android:label="@string/reminders_title" />
+
+    <fragment
+        android:id="@+id/nav_waitlist"
+        android:name="com.metanoia.app.ui.waitlist.WaitlistFragment"
+        android:label="@string/waitlist_title" />
 
     <fragment
         android:id="@+id/nav_about"

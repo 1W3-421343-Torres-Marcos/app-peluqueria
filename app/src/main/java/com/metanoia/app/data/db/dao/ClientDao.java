@@ -69,6 +69,9 @@ public interface ClientDao {
     @Query("SELECT * FROM clients WHERE id = :id LIMIT 1")
     LiveData<ClientEntity> observeById(String id);
 
+    @Query("SELECT id, name, phone, no_show_count, active FROM clients WHERE id IN (:ids)")
+    LiveData<List<ClientRowProjection>> observeSummariesByIds(List<String> ids);
+
     @Query("SELECT * FROM clients WHERE active = 1 AND phone = :normalizedPhone LIMIT 1")
     ClientEntity findActiveByPhoneSync(String normalizedPhone);
 

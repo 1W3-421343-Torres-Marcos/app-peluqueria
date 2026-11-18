@@ -26,6 +26,7 @@ import com.metanoia.app.databinding.FragmentAppointmentCreateBinding;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader.SlotLoadResult;
 import com.metanoia.app.ui.clients.ClientDetailFragment;
 import com.metanoia.app.ui.clients.ClientFormDialogFragment;
+import com.metanoia.app.ui.waitlist.WaitlistFormDialogFragment;
 import com.metanoia.app.util.Formats;
 import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentItem;
@@ -53,6 +54,7 @@ public class AppointmentCreateFragment extends Fragment {
     public static final String ARG_EDIT_APPOINTMENT_ID = "edit_appointment_id";
 
     private static final String TAG_QUICK_CLIENT = "quick_client_dialog";
+    private static final String TAG_ADD_WAITLIST = "agenda_add_waitlist_dialog";
 
     private FragmentAppointmentCreateBinding binding;
     private AppointmentCreateViewModel viewModel;
@@ -163,6 +165,14 @@ public class AppointmentCreateFragment extends Fragment {
         });
 
         binding.btnConfirmAppointment.setOnClickListener(v -> submitForm(isEdit));
+        binding.btnAddToWaitlistFromAgenda.setOnClickListener(v ->
+                WaitlistFormDialogFragment.newCreatePrefilledInstance(
+                        selectedClientId,
+                        selectedClientName,
+                        new ArrayList<>(selectedServiceIds),
+                        selectedProfessionalId,
+                        selectedDayEpoch)
+                        .show(getChildFragmentManager(), TAG_ADD_WAITLIST));
     }
 
     private void observeData(boolean isEdit) {
@@ -438,11 +448,13 @@ public class AppointmentCreateFragment extends Fragment {
         if (result == null) {
             binding.aptTimeSlotGrid.setSlots(Collections.emptyList(), null);
             binding.txtNoFreeSlots.setVisibility(View.GONE);
+            binding.btnAddToWaitlistFromAgenda.setVisibility(View.GONE);
             selectedStartMin = null;
             return;
         }
         boolean noFree = result.freeStartMinutes.isEmpty();
         binding.txtNoFreeSlots.setVisibility(noFree ? View.VISIBLE : View.GONE);
+        binding.btnAddToWaitlistFromAgenda.setVisibility(noFree ? View.VISIBLE : View.GONE);
         if (noFree) {
             selectedStartMin = null;
         } else if (selectedStartMin == null || !result.freeStartMinutes.contains(selectedStartMin)) {

@@ -41,6 +41,7 @@ import com.metanoia.app.ui.cash.charge.ChargeAppointmentDialogFragment;
 import com.metanoia.app.ui.common.ConfirmDialog;
 import com.metanoia.app.ui.common.MoneyTextView;
 import com.metanoia.app.ui.common.StatusChip;
+import com.metanoia.app.ui.waitlist.WaitlistSuggestionsDialogFragment;
 import com.metanoia.app.util.Formats;
 import com.metanoia.app.util.WhatsAppLauncher;
 import com.metanoia.domain.model.Appointment;
@@ -67,6 +68,7 @@ public class AppointmentDetailFragment extends Fragment {
     public static final String ARG_APPOINTMENT_ID = "appointment_id";
     private static final String TAG_RESCHEDULE = "reschedule_appointment_dialog";
     private static final String TAG_CHARGE = "charge_appointment_dialog";
+    private static final String TAG_WAITLIST_SUGGESTIONS = "waitlist_suggestions_dialog";
 
     private FragmentAppointmentDetailBinding binding;
     private AppointmentDetailViewModel viewModel;
@@ -140,6 +142,21 @@ public class AppointmentDetailFragment extends Fragment {
             java.io.File pdfFile = event.getContentIfNotHandled();
             if (pdfFile != null) {
                 sharePdfReceipt(pdfFile);
+            }
+        });
+        viewModel.observeOpenWaitlistSuggestions().observe(getViewLifecycleOwner(), event -> {
+            if (Boolean.TRUE.equals(event.getContentIfNotHandled())) {
+                WaitlistSuggestionsDialogFragment.newInstance()
+                        .show(getChildFragmentManager(), TAG_WAITLIST_SUGGESTIONS);
+            }
+        });
+        viewModel.observeNavigateToAssignedAppointment().observe(getViewLifecycleOwner(), event -> {
+            String newId = event.getContentIfNotHandled();
+            if (newId != null) {
+                Bundle args = new Bundle();
+                args.putString(ARG_APPOINTMENT_ID, newId);
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.nav_appointment_detail, args);
             }
         });
 
