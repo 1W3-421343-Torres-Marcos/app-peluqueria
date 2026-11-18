@@ -28,8 +28,8 @@ Datos de cada profesional, su disponibilidad y su esquema de comisión.
 Validación de tramos, solapamiento de tramos, rango de comisión, bloqueo de desactivación con turnos futuros.
 
 ## Criterios de aceptación
-- [ ] Alta/edición/baja lógica de profesionales.
-- [ ] Horario semanal con múltiples tramos por día validado.
+- [x] Alta/edición/baja lógica de profesionales.
+- [x] Horario semanal con múltiples tramos por día validado.
 - [ ] Días libres cargables y respetados por la agenda.
 - [ ] Asignación de servicios que filtra el flujo de crear turno.
 - [ ] % de comisión configurable y congelado por ítem.

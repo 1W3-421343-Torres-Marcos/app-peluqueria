@@ -2,6 +2,12 @@
 
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
 
+## [0.2.0] — 18/11/2026 — F2 Configuración base, servicios, profesionales y clientes
+- Agregado (Configuración): `Settings`, `TimeRange`, `AuditRecord`, `ScheduleValidator`, `GetSettingsUseCase`/`UpdateSettingsUseCase`, Room v2 (`settings`, `salon_hours`, `Migration_1_2`), `WeeklyScheduleEditorView`, `SettingsFragment` y `AboutFragment` con versión desde `BuildConfig`.
+- Agregado (Servicios): `TextNormalizer`, `SalonService`, `SalonServiceValidator`, `SaveSalonServiceUseCase`/`SetSalonServiceActiveUseCase`, Room v3 (`salon_services`, `Migration_2_3`) y CRUD por categoría en `ServicesFragment` / `ServiceFormDialogFragment`.
+- Agregado (Profesionales): `Professional`, `ProfessionalValidator`, casos de uso de alta/baja lógica/días libres, Room v4 (`professionals`, `work_schedules`, `professional_days_off`, `professional_services` con `ForeignKey.RESTRICT`, `Migration_3_4`) y `ProfessionalsFragment` / `ProfessionalFormFragment`.
+- Agregado (Clientes): `PhoneNormalizer` (E.164 argentino `549...`), `Client`, `ClientSummary`, `ClientValidator`, `SaveClientUseCase`/`SetClientActiveUseCase`, Room v5 (`clients` con índices y proyección `ClientRowProjection`, `Migration_4_5`), `SearchField` (debounce 250 ms), `ConfirmDialog`, `ClientsFragment`, `ClientFormDialogFragment` (completo y alta rápida con advertencia de teléfono duplicado) y `ClientDetailFragment`.
+
 ## [0.1.0] — 17/11/2026 — F1 Base, base de datos e identidad visual
 - Agregado: proyecto Gradle multimódulo (`:domain` Java 17 y `:app` Android SDK 26–35 con ViewBinding), wrapper 8.13, `.gitignore` y esqueleto de arquitectura MVVM (`Result`, `DomainError`, `Clock`, `IdGenerator`, `AppContainer`, `AppExecutors`).
 - Agregado: manifiesto de privacidad sin permiso `INTERNET` (`allowBackup="false"`, reglas de extracción).

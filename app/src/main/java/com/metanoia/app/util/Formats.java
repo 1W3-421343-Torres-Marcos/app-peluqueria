@@ -54,6 +54,11 @@ public final class Formats {
         return cents < 0L ? "- $ " + formatted : "$ " + formatted;
     }
 
+    public static String formatPercent(int basisPoints) {
+        BigDecimal percent = BigDecimal.valueOf(basisPoints).movePointLeft(2);
+        return MONEY_NUMBER_FORMAT.get().format(percent) + " %";
+    }
+
     public static String formatDate(long epochDay) {
         return LocalDate.ofEpochDay(epochDay).format(DATE_FORMATTER);
     }

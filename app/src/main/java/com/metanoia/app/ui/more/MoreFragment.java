@@ -49,6 +49,19 @@ public class MoreFragment extends Fragment {
             }
         });
 
+        binding.rowServices.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_more_to_services));
+        binding.rowProfessionals.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_more_to_professionals));
+        binding.rowSettings.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_more_to_settings));
+        binding.rowAbout.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_more_to_about));
+
         if (BuildConfig.DEBUG) {
             binding.rowComponentCatalog.setVisibility(View.VISIBLE);
             binding.rowComponentCatalog.setOnClickListener(v -> NavHostFragment

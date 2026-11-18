@@ -12,13 +12,46 @@ public class SchemaExportTest {
 
     @Test
     public void roomSchemaV1_isExportedWithAuditLogsTable() throws Exception {
-        File schemaFile = resolveSchemaFile(
-                "schemas/com.metanoia.app.data.db.AppDatabase/1.json");
-        assertTrue("Falta el esquema exportado v1 de Room", schemaFile.exists());
-
-        String content = new String(Files.readAllBytes(schemaFile.toPath()), StandardCharsets.UTF_8);
+        String content = readSchema(1);
         assertTrue(content.contains("\"tableName\": \"audit_logs\""));
         assertTrue(content.contains("\"identityHash\""));
+    }
+
+    @Test
+    public void roomSchemaV2_isExportedWithSettingsAndSalonHours() throws Exception {
+        String content = readSchema(2);
+        assertTrue(content.contains("\"tableName\": \"settings\""));
+        assertTrue(content.contains("\"tableName\": \"salon_hours\""));
+    }
+
+    @Test
+    public void roomSchemaV3_isExportedWithSalonServices() throws Exception {
+        String content = readSchema(3);
+        assertTrue(content.contains("\"tableName\": \"salon_services\""));
+    }
+
+    @Test
+    public void roomSchemaV4_isExportedWithProfessionalTables() throws Exception {
+        String content = readSchema(4);
+        assertTrue(content.contains("\"tableName\": \"professionals\""));
+        assertTrue(content.contains("\"tableName\": \"work_schedules\""));
+        assertTrue(content.contains("\"tableName\": \"professional_days_off\""));
+        assertTrue(content.contains("\"tableName\": \"professional_services\""));
+    }
+
+    @Test
+    public void roomSchemaV5_isExportedWithClientsTableAndIndices() throws Exception {
+        String content = readSchema(5);
+        assertTrue(content.contains("\"tableName\": \"clients\""));
+        assertTrue(content.contains("index_clients_name_normalized"));
+        assertTrue(content.contains("index_clients_phone"));
+    }
+
+    private static String readSchema(int version) throws Exception {
+        File schemaFile = resolveSchemaFile(
+                "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");
+        assertTrue("Falta el esquema exportado v" + version + " de Room", schemaFile.exists());
+        return new String(Files.readAllBytes(schemaFile.toPath()), StandardCharsets.UTF_8);
     }
 
     private static File resolveSchemaFile(String relativePath) {

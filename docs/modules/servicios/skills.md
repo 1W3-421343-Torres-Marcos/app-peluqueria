@@ -24,8 +24,8 @@ Catálogo de servicios del salón con precio y duración, base para turnos, caja
 Validaciones de precio/duración/nombre, desactivación, no asignable si inactivo.
 
 ## Criterios de aceptación
-- [ ] Alta y edición de servicios con validaciones.
-- [ ] Desactivar sin borrar; historial intacto.
-- [ ] Lista agrupada por categoría con filtro.
+- [x] Alta y edición de servicios con validaciones.
+- [x] Desactivar sin borrar; historial intacto.
+- [x] Lista agrupada por categoría con filtro.
 - [ ] Cambios de precio no alteran turnos existentes.
-- [ ] Marca de coloración disponible para F7.
+- [x] Marca de coloración disponible para F7.

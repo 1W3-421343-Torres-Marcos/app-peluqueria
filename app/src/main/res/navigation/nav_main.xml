@@ -12,7 +12,16 @@
     <fragment
         android:id="@+id/nav_clients"
         android:name="com.metanoia.app.ui.clients.ClientsFragment"
-        android:label="@string/nav_clients" />
+        android:label="@string/nav_clients">
+        <action
+            android:id="@+id/action_clients_to_detail"
+            app:destination="@id/nav_client_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_client_detail"
+        android:name="com.metanoia.app.ui.clients.ClientDetailFragment"
+        android:label="@string/client_detail_title" />
 
     <fragment
         android:id="@+id/nav_cash"
@@ -24,9 +33,50 @@
         android:name="com.metanoia.app.ui.more.MoreFragment"
         android:label="@string/nav_more">
         <action
+            android:id="@+id/action_more_to_services"
+            app:destination="@id/nav_services" />
+        <action
+            android:id="@+id/action_more_to_professionals"
+            app:destination="@id/nav_professionals" />
+        <action
+            android:id="@+id/action_more_to_settings"
+            app:destination="@id/nav_settings" />
+        <action
+            android:id="@+id/action_more_to_about"
+            app:destination="@id/nav_about" />
+        <action
             android:id="@+id/action_more_to_catalog"
             app:destination="@id/nav_component_catalog" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_services"
+        android:name="com.metanoia.app.ui.services.ServicesFragment"
+        android:label="@string/services_title" />
+
+    <fragment
+        android:id="@+id/nav_professionals"
+        android:name="com.metanoia.app.ui.professionals.ProfessionalsFragment"
+        android:label="@string/professionals_title">
+        <action
+            android:id="@+id/action_professionals_to_form"
+            app:destination="@id/nav_professional_form" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_professional_form"
+        android:name="com.metanoia.app.ui.professionals.ProfessionalFormFragment"
+        android:label="@string/professionals_title" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.metanoia.app.ui.settings.SettingsFragment"
+        android:label="@string/settings_title" />
+
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.metanoia.app.ui.settings.AboutFragment"
+        android:label="@string/about_title" />
 
     <fragment
         android:id="@+id/nav_component_catalog"

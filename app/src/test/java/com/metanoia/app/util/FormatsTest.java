@@ -20,6 +20,8 @@ public class FormatsTest {
         assertEquals("$ 0,00", Formats.formatMoney(0L));
         assertEquals("$ 0,05", Formats.formatMoney(5L));
         assertEquals("- $ 12.345,50", Formats.formatMoney(-1_234_550L));
+        assertEquals("40,00 %", Formats.formatPercent(4_000));
+        assertEquals("12,50 %", Formats.formatPercent(1_250));
     }
 
     @Test

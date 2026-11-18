@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/serviceCategoryHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:letterSpacing="0.08"
+    android:paddingHorizontal="@dimen/screen_margin"
+    android:paddingTop="@dimen/space_m"
+    android:paddingBottom="@dimen/space_xs"
+    android:textAllCaps="true"
+    android:textAppearance="@style/TextAppearance.Metanoia.Label"
+    android:textColor="?attr/colorOnSurfaceVariant" />

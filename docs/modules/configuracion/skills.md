@@ -31,10 +31,10 @@ Parámetros del negocio y preferencias que gobiernan al resto de los módulos.
 Validación de horario general, render de plantillas por defecto, hash/verificación de PIN.
 
 ## Criterios de aceptación
-- [ ] Datos del negocio editables y usados en PDF/WhatsApp.
+- [x] Datos del negocio editables y usados en PDF/WhatsApp.
 - [ ] Horario general y bloque mínimo aplicados en la agenda.
 - [ ] Plantillas de mensajes editables.
-- [ ] Operador actual registrado en auditoría.
-- [ ] Tema Sistema/Claro/Oscuro.
-- [ ] Acerca de muestra `versionName` y `versionCode` actuales.
+- [x] Operador actual registrado en auditoría.
+- [x] Tema Sistema/Claro/Oscuro.
+- [x] Acerca de muestra `versionName` y `versionCode` actuales.
 - [ ] PIN/huella opcional funcionando y PIN almacenado como hash.

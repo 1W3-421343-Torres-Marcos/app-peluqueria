@@ -28,9 +28,9 @@ Registro de clientes con búsqueda instantánea y visión completa de su relaci�
 Normalización de texto y teléfono, validaciones, búsqueda (DAO) con acentos y prefijos.
 
 ## Criterios de aceptación
-- [ ] Alta, edición y baja lógica de clientes.
-- [ ] Búsqueda por nombre o teléfono responde al tipear con 5.000 clientes.
-- [ ] Teléfonos normalizados y advertencia de duplicados.
+- [x] Alta, edición y baja lógica de clientes.
+- [x] Búsqueda por nombre o teléfono responde al tipear con 5.000 clientes.
+- [x] Teléfonos normalizados y advertencia de duplicados.
 - [ ] Detalle muestra historial de visitas (COMPLETED/PAID), gastos y saldo pendiente.
-- [ ] Contador de ausencias visible y correcto.
-- [ ] Alta rápida disponible desde crear turno.
+- [x] Contador de ausencias visible y correcto.
+- [x] Alta rápida disponible desde crear turno.
