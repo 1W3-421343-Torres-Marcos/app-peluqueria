@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Metanoia</string>
+    <string name="brand_wordmark">METANOIA</string>
+    <string name="brand_subtitle">Hair Salon</string>
+    <string name="cd_metanoia_logo">Metanoia Hair Salon</string>
+    <string name="cd_navigate_up">Volver</string>
+
+    <!-- Navegación inferior -->
+    <string name="nav_agenda">Agenda</string>
+    <string name="nav_clients">Clientes</string>
+    <string name="nav_cash">Caja</string>
+    <string name="nav_more">Más</string>
+
+    <!-- Estados vacíos iniciales -->
+    <string name="empty_agenda_title">Todavía no hay turnos cargados para hoy.</string>
+    <string name="empty_clients_title">Todavía no hay clientes registrados.</string>
+    <string name="empty_cash_title">No hay movimientos de caja en el día de hoy.</string>
+
+    <!-- Pantalla Más y apariencia -->
+    <string name="more_appearance_title">Apariencia</string>
+    <string name="theme_mode_system">Sistema</string>
+    <string name="theme_mode_light">Claro</string>
+    <string name="theme_mode_dark">Oscuro</string>
+    <string name="more_upcoming_modules">Próximamente: Servicios, Profesionales, Stock, Reportes, Backup y Configuración.</string>
+    <string name="more_catalog_title">Catálogo de componentes (debug)</string>
+    <string name="more_catalog_subtitle">Vista previa de tokens y controles en claro y oscuro</string>
+
+    <!-- Chips de estado (design.md §7) -->
+    <string name="status_pending">Pendiente</string>
+    <string name="status_confirmed">Confirmado</string>
+    <string name="status_completed">Completado</string>
+    <string name="status_paid">Pagado</string>
+    <string name="status_cancelled">Cancelado</string>
+    <string name="status_no_show">Ausente</string>
+    <string name="status_low_stock">Stock bajo</string>
+
+    <!-- Catálogo de componentes (solo debug) -->
+    <string name="catalog_title">Catálogo UI</string>
+    <string name="catalog_section_theme">Tema rápido</string>
+    <string name="catalog_section_logo">Logo</string>
+    <string name="catalog_section_buttons">Botones</string>
+    <string name="catalog_btn_primary">Botón primario</string>
+    <string name="catalog_btn_secondary">Botón secundario</string>
+    <string name="catalog_btn_text">Botón de texto</string>
+    <string name="catalog_section_chips">Chips de estado</string>
+    <string name="catalog_section_money">Montos (cifras tabulares)</string>
+    <string name="catalog_section_banner">Banner de alerta</string>
+    <string name="catalog_banner_sample">El último backup tiene más de 3 días. Hacé una copia ahora.</string>
+    <string name="catalog_banner_action">Respaldar</string>
+    <string name="catalog_section_rows">Filas de lista</string>
+    <string name="catalog_row_1_title">Corte y peinado</string>
+    <string name="catalog_row_1_subtitle">45 min · Categoría Corte</string>
+    <string name="catalog_row_1_trailing">$ 18.500,00</string>
+    <string name="catalog_row_2_title">Valentina Pérez</string>
+    <string name="catalog_row_2_subtitle">Última visita: 12/11/2026</string>
+    <string name="catalog_section_empty">Estado vacío</string>
+    <string name="catalog_empty_sample">No hay resultados para esta búsqueda.</string>
+    <string name="catalog_empty_action">Reintentar</string>
+    <string name="catalog_section_typography">Tipografía</string>
+    <string name="catalog_typo_display">Display · $ 124.500,00</string>
+    <string name="catalog_typo_headline">Headline · Agenda</string>
+    <string name="catalog_typo_title">Title · Próximos turnos</string>
+    <string name="catalog_typo_subtitle">Subtitle · Sofía Gómez</string>
+    <string name="catalog_typo_body">Body · Corte + Brushing (45 min)</string>
+    <string name="catalog_typo_caption">Caption · 14:30 · Profesional: Ana</string>
+    <string name="catalog_action_feedback">Acción ejecutada</string>
+</resources>

@@ -39,7 +39,9 @@ peluqueriaAntigravity/
 │       ├── ficha-color/     ├── backup/
 │       ├── recordatorios/   └── configuracion/
 │       └── lista-espera/
-├── assets/branding/       metanoia.png (solo referencia) · logo.svg (versión limpia, pendiente)
+├── assets/
+│   ├── branding/          metanoia.png (solo referencia) · logo.svg (versión limpia, pendiente)
+│   └── fonts/             Montserrat (Bold 700, SemiBold 600) e Inter (Regular 400, Medium 500, Light 300) TTF estáticas · licenses/ (SIL OFL)
 ├── domain/                (F1) Módulo Java puro: modelos, reglas, casos de uso
 ├── app/                   (F1) Módulo Android: data (Room, backup) + ui
 └── build.gradle · settings.gradle · gradle/libs.versions.toml · .gitignore   (F1)

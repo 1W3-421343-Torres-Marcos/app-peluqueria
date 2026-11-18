@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/catalog_section_theme"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/catalogThemeToggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCatalogLight"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/theme_mode_light" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCatalogDark"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/theme_mode_dark" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_logo"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.metanoia.app.ui.common.LogoView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_s"
+            app:logoSize="splash" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_buttons"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCatalogPrimary"
+            style="@style/Widget.Metanoia.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/catalog_btn_primary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCatalogSecondary"
+            style="@style/Widget.Metanoia.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/catalog_btn_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCatalogText"
+            style="@style/Widget.Metanoia.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/catalog_btn_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_chips"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            app:chipSpacingHorizontal="@dimen/space_s"
+            app:chipSpacingVertical="@dimen/space_s">
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="pending" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="confirmed" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="completed" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="paid" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="cancelled" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="no_show" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:statusVariant="low_stock" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_money"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.metanoia.app.ui.common.MoneyTextView
+            android:id="@+id/moneySamplePositive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:textColor="?attr/colorOnSurface"
+            app:moneyCents="1234550" />
+
+        <com.metanoia.app.ui.common.MoneyTextView
+            android:id="@+id/moneySampleNegative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_banner"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.metanoia.app.ui.common.AlertBanner
+            android:id="@+id/catalogAlertBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            app:bannerActionText="@string/catalog_banner_action"
+            app:bannerMessage="@string/catalog_banner_sample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_rows"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.metanoia.app.ui.common.ListRowView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            app:rowShowChevron="false"
+            app:rowShowDivider="true"
+            app:rowSubtitle="@string/catalog_row_1_subtitle"
+            app:rowTitle="@string/catalog_row_1_title"
+            app:rowTrailingText="@string/catalog_row_1_trailing" />
+
+        <com.metanoia.app.ui.common.ListRowView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:rowShowChevron="true"
+            app:rowShowDivider="false"
+            app:rowSubtitle="@string/catalog_row_2_subtitle"
+            app:rowTitle="@string/catalog_row_2_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_empty"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <com.metanoia.app.ui.common.EmptyStateView
+            android:id="@+id/catalogEmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:emptyActionText="@string/catalog_empty_action"
+            app:emptyMessage="@string/catalog_empty_sample" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/catalog_section_typography"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/catalog_typo_display"
+            android:textAppearance="@style/TextAppearance.Metanoia.Display"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/catalog_typo_headline"
+            android:textAppearance="@style/TextAppearance.Metanoia.Headline"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/catalog_typo_title"
+            android:textAppearance="@style/TextAppearance.Metanoia.Title"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/catalog_typo_subtitle"
+            android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/catalog_typo_body"
+            android:textAppearance="@style/TextAppearance.Metanoia.Body"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/catalog_typo_caption"
+            android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+    </LinearLayout>
+</ScrollView>

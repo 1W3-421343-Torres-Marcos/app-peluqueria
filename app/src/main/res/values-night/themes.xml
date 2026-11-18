@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Metanoia" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/ink</item>
+        <item name="colorSecondary">@color/accent_dark</item>
+        <item name="colorOnSecondary">@color/on_accent_dark</item>
+        <item name="colorSecondaryContainer">@color/accent_container_dark</item>
+        <item name="colorOnSecondaryContainer">@color/accent_dark</item>
+
+        <item name="android:colorBackground">@color/ink</item>
+        <item name="colorSurface">@color/ink</item>
+        <item name="colorSurfaceContainer">@color/gray900</item>
+        <item name="colorSurfaceVariant">@color/gray900</item>
+        <item name="colorOutline">@color/gray800</item>
+        <item name="colorOutlineVariant">@color/gray800</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/gray300_dark</item>
+        <item name="colorError">@color/accent_dark</item>
+        <item name="colorOnError">@color/on_accent_dark</item>
+
+        <item name="android:statusBarColor">@color/ink</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Metanoia.Body</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Metanoia.BodySmall</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Metanoia.Caption</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Metanoia.Label</item>
+    </style>
+
+    <style name="Theme.Metanoia.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ink</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Metanoia</item>
+    </style>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Metanoia.Button.Primary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/accent</item>
+        <item name="android:textColor">@color/on_accent</item>
+        <item name="android:textAppearance">@style/TextAppearance.Metanoia.Button</item>
+        <item name="android:minHeight">@dimen/button_primary_height</item>
+        <item name="cornerRadius">@dimen/radius_s</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Metanoia.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="strokeWidth">@dimen/stroke_width</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/TextAppearance.Metanoia.Button</item>
+        <item name="android:minHeight">@dimen/button_secondary_height</item>
+        <item name="cornerRadius">@dimen/radius_s</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Metanoia.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/TextAppearance.Metanoia.Button</item>
+        <item name="android:minHeight">@dimen/touch_target_min</item>
+    </style>
+</resources>

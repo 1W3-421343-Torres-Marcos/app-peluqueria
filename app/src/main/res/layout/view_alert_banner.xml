@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/alertBannerIcon"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_warning"
+        app:tint="@color/accent" />
+
+    <TextView
+        android:id="@+id/alertBannerMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_s"
+        android:layout_weight="1"
+        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+        android:textColor="@color/accent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/alertBannerAction"
+        style="@style/Widget.Metanoia.Button.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_xs"
+        android:textColor="@color/accent"
+        android:visibility="gone" />
+</merge>

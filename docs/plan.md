@@ -7,7 +7,7 @@
 
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
-| F1 | Base, base de datos e identidad visual | [ ] | 0/10 | 0 % |
+| F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [ ] | 0/8 | 0 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
@@ -19,41 +19,41 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **0/86** | **0 %** |
+| **Total** | | | **10/86** | **12 %** |
 
 ---
 
-## F1 — Base, base de datos e identidad visual `[ ]`
+## F1 — Base, base de datos e identidad visual `[x]`
 Entregable: app instalable que abre con splash, tema claro/oscuro y navegación vacía. Módulos: `agents.md`, `design.md`.
 
-1. [ ] **F1.1 Crear repositorio y proyecto Gradle**
+1. [x] **F1.1 Crear repositorio y proyecto Gradle**
    - Archivos: `.gitignore`, `settings.gradle`, `build.gradle`, `gradle/libs.versions.toml`, `app/build.gradle`, `domain/build.gradle`
    - Hecho: `git init` si no existe repo; `.gitignore` según `agents.md` §11 (sin keystores ni contraseñas); commit inicial de `docs/` en `main` y rama `fase/F1` creada; módulos `:app` (Android) y `:domain` (java-library), Java 17, minSdk 26, targetSdk 35, ViewBinding activo; `versionCode 1` y `versionName "0.0.0"` solo en `app/build.gradle`; version catalog sin Paging, Guava ni RxJava (incluye `lifecycle-process` y WorkManager); `assembleDebug` OK; cero archivos Kotlin.
-2. [ ] **F1.2 Esqueleto de capas y DI manual**
+2. [x] **F1.2 Esqueleto de capas y DI manual**
    - Archivos: `MetanoiaApp`, `AppContainer`, `AppExecutors`, `domain/common/{Result,DomainError,Clock}`
    - Hecho: paquetes según `agents.md` §3.2; `AppContainer` accesible desde ViewModels; test de `Result`.
-3. [ ] **F1.3 Manifiesto de privacidad**
+3. [x] **F1.3 Manifiesto de privacidad**
    - Archivos: `AndroidManifest.xml`, `res/xml/data_extraction_rules.xml`
    - Hecho: sin permiso INTERNET en manifiesto fusionado; `allowBackup=false`; reglas de extracción excluyen todo.
-4. [ ] **F1.4 Dinero y formatos es-AR**
+4. [x] **F1.4 Dinero y formatos es-AR**
    - Archivos: `domain/model/Money`, `app/util/Formats`, tests
    - Hecho: `Money` en centavos con suma/resta/porcentaje; formatos `$ 12.345,50`, `05/03/2026`, `14:30`; tests verdes.
-5. [ ] **F1.5 Room base + auditoría**
+5. [x] **F1.5 Room base + auditoría**
    - Archivos: `data/db/AppDatabase` (v1), `AuditLogEntity`, `AuditLogDao`, `app/schemas/`, test de migración base
    - Hecho: BD creada con `exportSchema`; `AuditLog` insertable; `MigrationTestHelper` configurado; sin migración destructiva.
-6. [ ] **F1.6 Tema Metanoia claro/oscuro**
+6. [x] **F1.6 Tema Metanoia claro/oscuro**
    - Archivos: `res/values/{colors,themes,dimens,type}.xml`, `values-night/`, `res/font/` (Montserrat, Inter)
    - Hecho: tokens de `design.md` §2–4 implementados; cambio Sistema/Claro/Oscuro funciona.
-7. [ ] **F1.7 Logo reemplazable**
+7. [x] **F1.7 Logo reemplazable**
    - Archivos: `ui/common/LogoView`, `res/drawable/` (slot `logo_metanoia`)
    - Hecho: placeholder tipográfico visible en ambos modos; reemplazar el vector no requiere tocar código.
-8. [ ] **F1.8 Splash y navegación principal**
+8. [x] **F1.8 Splash y navegación principal**
    - Archivos: `MainActivity`, `res/navigation/nav_main.xml`, `res/menu/bottom_nav.xml`, fragments vacíos
    - Hecho: splash con logo < 1 s; bottom nav Agenda/Clientes/Caja/Más con estados vacíos.
-9. [ ] **F1.9 Componentes base**
+9. [x] **F1.9 Componentes base**
    - Archivos: `ui/common/{StatusChip,MoneyTextView,EmptyStateView,AlertBanner,ListRowView}`, estilos de botones
    - Hecho: pantalla de catálogo (solo debug) muestra todos los componentes en claro y oscuro según `design.md` §7.
-10. [ ] **F1.10 Verificación de fase**
+10. [x] **F1.10 Verificación de fase**
     - Hecho: `./gradlew check` verde; APK debug instalado en dispositivo real; checklist global de `agents.md` §12 OK; `versionName 0.1.0`; merge de `fase/F1` a `main`, tag `fase-F1` y entrada en `docs/changelog.md`.
 
 ## F2 — Configuración base, servicios, profesionales y clientes `[ ]`
@@ -323,3 +323,13 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | — | Documentación inicial creada (agents, readme, plan, design, skills). | F1.1 |
 | 17/11/2026 | — | Correcciones de docs: (1) se quita Paging 3 → proyección liviana + búsqueda SQL + `LiveData<List>`; (2) backup con triggers CASH_CLOSE y ON_BACKGROUND (trabajo único KEEP) y retención por día (N=7) + 3 PRE_RESTORE; F4.4 ampliado y nuevo F5.8; (3) estado PAID separado de COMPLETED, "Completar y cobrar" (F5.4) y "Por cobrar" (F5.5), comisiones sobre PAID. F5 pasa de 7 a 10 pasos (total 86). | F1.1 |
 | 17/11/2026 | — | Docs: nueva sección "Control de versiones y versionado de la app" en `agents.md` §11 (Git, commits por paso, ramas `fase/F<n>`, tags `fase-F<n>`/`v<versionName>`, versión 0.<fase>.0 → 1.0.0, keystore fuera del repo). F1.1 incluye `git init` y `.gitignore`; cada verificación de fase incluye merge, tag y changelog; F12.5 genera v1.0.0 firmada. Creado `docs/changelog.md`. Sin cambios en cantidad de pasos (total 86). | F1.1 |
+| 17/11/2026 | F1.1 | Proyecto Gradle multimódulo (`:domain` y `:app`), wrapper 8.13, `libs.versions.toml`, `.gitignore`, rama `fase/F1`, `assembleDebug` OK. | F1.2 |
+| 17/11/2026 | F1.2 | Esqueleto de capas (`domain`/`data`/`ui`), `Result`/`DomainError`/`Clock`/`IdGenerator`, `AppContainer`/`AppExecutors`/`MetanoiaApp`/`Event`, 6 tests `ResultTest` en verde. | F1.3 |
+| 17/11/2026 | F1.3 | Manifiesto sin permiso `INTERNET` (`tools:node="remove"`), `allowBackup="false"`, `data_extraction_rules.xml` y `backup_rules.xml`, 3 tests `ManifestPrivacyTest` OK. | F1.4 |
+| 17/11/2026 | F1.4 | `Money` inmutable en centavos con redondeo half-up, `Formats` es-AR (`$ 12.345,50`, `dd/MM/yyyy`, `HH:mm`), 5 tests `MoneyTest` y 3 tests `FormatsTest` verdes. | F1.5 |
+| 17/11/2026 | F1.5 | Room v1 (`AppDatabase`, `AuditLogEntity`, `AuditLogDao`), esquema `1.json` exportado, `MigrationTest` y `SchemaExportTest` OK. | F1.6 |
+| 17/11/2026 | F1.6 | Fuentes estáticas Montserrat e Inter (SIL OFL) en `assets/fonts/` y `res/font/`, tokens `colors`/`dimens`/`type`/`themes` claro y oscuro, `DevicePrefs` tema, `readme.md` actualizado, 3 tests `ThemeAndFontResourcesTest` OK. | F1.7 |
+| 17/11/2026 | F1.7 | `LogoView` con placeholder tipográfico (`METANOIA` + `Hair Salon`) y slot reemplazable `drawable/logo_metanoia`, `LogoViewSlotTest` OK. | F1.8 |
+| 17/11/2026 | F1.8 | Splash (`core-splashscreen`), `MainActivity` single-Activity, `BottomNavigationView` (Agenda, Clientes, Caja, Más), selector de tema y fragments iniciales. | F1.9 |
+| 17/11/2026 | F1.9 | Estilos de botones (`Primary`, `Secondary`, `Text`), `StatusChip` (7 variantes), `MoneyTextView`, `EmptyStateView`, `AlertBanner`, `ListRowView`, `ComponentCatalogFragment` (solo debug), `StatusChipVariantTest` OK. | F1.10 |
+| 17/11/2026 | F1.10 | Fase F1 cerrada (`versionName 0.1.0`): `./gradlew check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (23 tests OK, Lint 0 errores), checklist `agents.md` §12 OK, `changelog.md` actualizado, merge a `main` y tags `fase-F1` / `v0.1.0`. | F2.1 |

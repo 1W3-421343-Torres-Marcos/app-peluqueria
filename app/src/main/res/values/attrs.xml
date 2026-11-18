@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LogoView">
+        <attr name="logoSize" format="enum">
+            <enum name="header" value="0" />
+            <enum name="splash" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="StatusChip">
+        <attr name="statusVariant" format="enum">
+            <enum name="pending" value="0" />
+            <enum name="confirmed" value="1" />
+            <enum name="completed" value="2" />
+            <enum name="paid" value="3" />
+            <enum name="cancelled" value="4" />
+            <enum name="no_show" value="5" />
+            <enum name="low_stock" value="6" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="MoneyTextView">
+        <attr name="moneyCents" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="EmptyStateView">
+        <attr name="emptyMessage" format="string" />
+        <attr name="emptyActionText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="AlertBanner">
+        <attr name="bannerMessage" format="string" />
+        <attr name="bannerActionText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ListRowView">
+        <attr name="rowTitle" format="string" />
+        <attr name="rowSubtitle" format="string" />
+        <attr name="rowTrailingText" format="string" />
+        <attr name="rowShowChevron" format="boolean" />
+        <attr name="rowShowDivider" format="boolean" />
+    </declare-styleable>
+</resources>

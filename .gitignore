@@ -1,0 +1,26 @@
+# Gradle & build
+build/
+.gradle/
+*.iml
+
+# IDE
+.idea/
+*.hprof
+.DS_Store
+Thumbs.db
+
+# Local config & secrets (never commit keystores or passwords)
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# Build outputs
+*.apk
+*.aab
+*.ap_
+
+# Captures & temporary files
+captures/
+*.log
+*.tmp
