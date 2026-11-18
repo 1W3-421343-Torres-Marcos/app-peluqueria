@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_margin">
+
+        <TextView
+            android:id="@+id/txtChargeTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/charge_dialog_title"
+            android:textAppearance="@style/TextAppearance.Metanoia.Headline"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/txtChargeClient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/txtChargeSubtotalSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/charge_balance_label"
+                android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                android:textColor="?attr/colorOnSurface" />
+
+            <com.metanoia.app.ui.common.MoneyTextView
+                android:id="@+id/txtChargeRemainingBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Metanoia.Title"
+                android:textColor="@color/accent" />
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchChargeAdjustment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:minHeight="@dimen/touch_target_min"
+            android:text="@string/charge_adjustment_switch" />
+
+        <LinearLayout
+            android:id="@+id/chargeAdjustmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/chargeAdjustmentSignGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAdjustmentDiscount"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/touch_target_min"
+                    android:text="@string/charge_adjustment_discount" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAdjustmentSurcharge"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/touch_target_min"
+                    android:text="@string/charge_adjustment_surcharge" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:hint="@string/charge_adjustment_amount_label">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputAdjustmentAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:hint="@string/charge_adjustment_reason_label">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputAdjustmentReason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:maxLength="120"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:text="@string/charge_method_primary_label"
+            android:textAppearance="@style/TextAppearance.Metanoia.Label"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chargePrimaryMethodGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            app:selectionRequired="true"
+            app:singleSelection="true" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:hint="@string/charge_amount_primary_label">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputPrimaryChargeAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchSplitPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:minHeight="@dimen/touch_target_min"
+            android:text="@string/charge_split_switch" />
+
+        <LinearLayout
+            android:id="@+id/chargeSecondaryContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/charge_method_secondary_label"
+                android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chargeSecondaryMethodGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                app:selectionRequired="true"
+                app:singleSelection="true" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:hint="@string/charge_amount_secondary_label">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputSecondaryChargeAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmCharge"
+            style="@style/Widget.Metanoia.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:text="@string/charge_confirm_btn" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

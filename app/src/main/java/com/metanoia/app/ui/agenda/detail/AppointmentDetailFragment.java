@@ -18,14 +18,20 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.metanoia.app.R;
+import com.metanoia.app.data.db.entity.CashMovementEntity;
+import com.metanoia.app.data.mapper.CashMapper;
 import com.metanoia.app.databinding.DialogCancelReasonBinding;
+import com.metanoia.app.databinding.DialogReverseReasonBinding;
 import com.metanoia.app.databinding.FragmentAppointmentDetailBinding;
 import com.metanoia.app.ui.agenda.create.AppointmentCreateFragment;
 import com.metanoia.app.ui.agenda.detail.AppointmentDetailViewModel.DetailUiState;
+import com.metanoia.app.ui.cash.CashUiLabels;
+import com.metanoia.app.ui.cash.charge.ChargeAppointmentDialogFragment;
 import com.metanoia.app.ui.common.ConfirmDialog;
 import com.metanoia.app.ui.common.MoneyTextView;
 import com.metanoia.app.ui.common.StatusChip;
@@ -34,10 +40,17 @@ import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentBalance;
 import com.metanoia.domain.model.AppointmentItem;
 import com.metanoia.domain.model.AppointmentStatus;
+import com.metanoia.domain.model.CashMovement;
+import com.metanoia.domain.model.CashMovementType;
 import com.metanoia.domain.model.Money;
+import com.metanoia.domain.rules.AppointmentPaymentCalculator;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Pantalla de detalle y acciones sobre un turno según su estado actual.
@@ -46,11 +59,15 @@ public class AppointmentDetailFragment extends Fragment {
 
     public static final String ARG_APPOINTMENT_ID = "appointment_id";
     private static final String TAG_RESCHEDULE = "reschedule_appointment_dialog";
+    private static final String TAG_CHARGE = "charge_appointment_dialog";
 
     private FragmentAppointmentDetailBinding binding;
     private AppointmentDetailViewModel viewModel;
     @Nullable
     private Appointment currentAppointment;
+    @Nullable
+    private DetailUiState latestDetailState;
+    private List<CashMovement> latestMovements = Collections.emptyList();
 
     @Nullable
     @Override
@@ -73,11 +90,27 @@ public class AppointmentDetailFragment extends Fragment {
             return;
         }
 
+        String trimmedId = appointmentId.trim();
         viewModel = new ViewModelProvider(this).get(AppointmentDetailViewModel.class);
-        viewModel.observeRawAppointment(appointmentId.trim())
+        viewModel.observeRawAppointment(trimmedId)
                 .observe(getViewLifecycleOwner(), viewModel::resolveDetail);
+        viewModel.observeAppointmentMovements(trimmedId).observe(
+                getViewLifecycleOwner(),
+                entities -> {
+                    List<CashMovement> mapped = new ArrayList<>();
+                    if (entities != null) {
+                        for (CashMovementEntity entity : entities) {
+                            mapped.add(CashMapper.toDomain(entity));
+                        }
+                    }
+                    latestMovements = mapped;
+                    if (latestDetailState != null) {
+                        bindState(latestDetailState);
+                    }
+                });
         viewModel.observeDetailState().observe(getViewLifecycleOwner(), state -> {
             if (state != null) {
+                latestDetailState = state;
                 currentAppointment = state.appointment;
                 bindState(state);
             }
@@ -93,6 +126,12 @@ public class AppointmentDetailFragment extends Fragment {
     }
 
     private void setupActionListeners() {
+        binding.btnActionCharge.setOnClickListener(v -> {
+            if (currentAppointment != null) {
+                ChargeAppointmentDialogFragment.newInstance(currentAppointment.id())
+                        .show(getChildFragmentManager(), TAG_CHARGE);
+            }
+        });
         binding.btnActionConfirm.setOnClickListener(v -> {
             if (currentAppointment != null) {
                 viewModel.changeStatus(
@@ -163,12 +202,11 @@ public class AppointmentDetailFragment extends Fragment {
                 apt.recurrenceRuleId().isPresent() ? View.VISIBLE : View.GONE);
 
         renderItems(apt);
-        AppointmentBalance balance = AppointmentBalance.of(
-                apt,
-                apt.status() == AppointmentStatus.PAID ? apt.totalAmount() : Money.zero());
+        AppointmentBalance balance = AppointmentPaymentCalculator.balanceOf(apt, latestMovements);
         binding.detailTotalValue.setMoney(balance.total());
         binding.detailPaidValue.setMoney(balance.paid());
         binding.detailBalanceValue.setMoney(balance.balance());
+        renderPayments(latestMovements);
 
         if (apt.status() == AppointmentStatus.CANCELLED && apt.cancelReason().isPresent()) {
             binding.detailNotesCard.setVisibility(View.VISIBLE);
@@ -182,7 +220,7 @@ public class AppointmentDetailFragment extends Fragment {
             binding.detailNotesCard.setVisibility(View.GONE);
         }
 
-        updateActionButtonsVisibility(apt.status());
+        updateActionButtonsVisibility(apt.status(), balance);
     }
 
     private void renderItems(@NonNull Appointment apt) {
@@ -230,19 +268,105 @@ public class AppointmentDetailFragment extends Fragment {
         }
     }
 
-    private void updateActionButtonsVisibility(@NonNull AppointmentStatus status) {
+    private void renderPayments(@NonNull List<CashMovement> movements) {
+        if (movements.isEmpty()) {
+            binding.detailPaymentsCard.setVisibility(View.GONE);
+            binding.detailPaymentsContainer.removeAllViews();
+            return;
+        }
+        binding.detailPaymentsCard.setVisibility(View.VISIBLE);
+        binding.detailPaymentsContainer.removeAllViews();
+        Set<String> reversedIds = new HashSet<>();
+        for (CashMovement m : movements) {
+            m.reversesMovementId().ifPresent(reversedIds::add);
+        }
+        int rowBottomMargin = getResources().getDimensionPixelSize(R.dimen.space_xs);
+        for (CashMovement movement : movements) {
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.bottomMargin = rowBottomMargin;
+            row.setLayoutParams(params);
+
+            TextView labelView = new TextView(requireContext());
+            TextViewCompat.setTextAppearance(labelView, R.style.TextAppearance_Metanoia_BodySmall);
+            labelView.setTextColor(MaterialColors.getColor(
+                    labelView, com.google.android.material.R.attr.colorOnSurface, 0));
+            labelView.setLayoutParams(new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            String methodName = CashUiLabels.methodLabel(requireContext(), movement.method());
+            if (movement.type() == CashMovementType.REVERSAL) {
+                labelView.setText(getString(
+                        R.string.appointment_detail_reversal_row_prefix, methodName));
+            } else {
+                labelView.setText(getString(
+                        R.string.appointment_detail_payment_line_format,
+                        methodName,
+                        Formats.formatDateTime(movement.timestamp())));
+            }
+
+            MoneyTextView amountView = new MoneyTextView(requireContext());
+            long signedCents = movement.type() == CashMovementType.REVERSAL
+                    ? -movement.amount().cents()
+                    : movement.amount().cents();
+            amountView.setMoneyCents(signedCents);
+            row.addView(labelView);
+            row.addView(amountView);
+
+            if (movement.type() == CashMovementType.APPOINTMENT_PAYMENT
+                    && !reversedIds.contains(movement.id())) {
+                MaterialButton reverseBtn = new MaterialButton(
+                        requireContext(),
+                        null,
+                        com.google.android.material.R.attr.borderlessButtonStyle);
+                reverseBtn.setText(R.string.cash_reverse_action);
+                reverseBtn.setOnClickListener(v -> openReverseDialog(movement.id()));
+                row.addView(reverseBtn);
+            }
+            binding.detailPaymentsContainer.addView(row);
+        }
+    }
+
+    private void openReverseDialog(@NonNull String movementId) {
+        DialogReverseReasonBinding dialogBinding = DialogReverseReasonBinding.inflate(
+                getLayoutInflater());
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.cash_reverse_dialog_title)
+                .setView(dialogBinding.getRoot())
+                .setNegativeButton(R.string.common_cancel, null)
+                .setPositiveButton(R.string.cash_reverse_confirm_btn, (d, which) -> {
+                    CharSequence cs = dialogBinding.inputReverseReason.getText();
+                    String reason = cs == null ? "" : cs.toString().trim();
+                    viewModel.reverseMovement(movementId, reason);
+                })
+                .create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.accent));
+    }
+
+    private void updateActionButtonsVisibility(
+            @NonNull AppointmentStatus status,
+            @NonNull AppointmentBalance balance
+    ) {
         boolean isPending = status == AppointmentStatus.PENDING;
         boolean isConfirmed = status == AppointmentStatus.CONFIRMED;
         boolean isCompleted = status == AppointmentStatus.COMPLETED;
         boolean isEditable = isPending || isConfirmed;
 
+        binding.btnActionCharge.setVisibility(
+                isCompleted && balance.balance().isPositive() ? View.VISIBLE : View.GONE);
         binding.btnActionConfirm.setVisibility(isPending ? View.VISIBLE : View.GONE);
         binding.btnActionComplete.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionEdit.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionReschedule.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionNoShow.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionCancel.setVisibility(isEditable ? View.VISIBLE : View.GONE);
-        binding.btnActionRevertCompleted.setVisibility(isCompleted ? View.VISIBLE : View.GONE);
+        binding.btnActionRevertCompleted.setVisibility(
+                isCompleted && !balance.hasPayments() ? View.VISIBLE : View.GONE);
     }
 
     private void openRescheduleDialog() {

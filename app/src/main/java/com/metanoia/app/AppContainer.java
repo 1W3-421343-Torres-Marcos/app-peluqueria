@@ -26,6 +26,7 @@ import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.ChangeAppointmentStatusUseCase;
+import com.metanoia.domain.usecase.ChargeAppointmentUseCase;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
 import com.metanoia.domain.usecase.CreateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
@@ -79,6 +80,7 @@ public final class AppContainer {
     private final GenerateRecurringAppointmentsUseCase generateRecurringAppointmentsUseCase;
     private final CancelRecurringSeriesUseCase cancelRecurringSeriesUseCase;
     private final ReverseMovementUseCase reverseMovementUseCase;
+    private final ChargeAppointmentUseCase chargeAppointmentUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -145,6 +147,9 @@ public final class AppContainer {
                 appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.reverseMovementUseCase = new ReverseMovementUseCase(
                 cashRepository, appointmentRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
+        this.chargeAppointmentUseCase = new ChargeAppointmentUseCase(
+                appointmentRepository, cashRepository, settingsRepository,
                 auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
@@ -283,5 +288,9 @@ public final class AppContainer {
 
     public ReverseMovementUseCase reverseMovementUseCase() {
         return reverseMovementUseCase;
+    }
+
+    public ChargeAppointmentUseCase chargeAppointmentUseCase() {
+        return chargeAppointmentUseCase;
     }
 }
