@@ -35,6 +35,7 @@ import com.metanoia.domain.model.AppointmentBalance;
 import com.metanoia.domain.model.AppointmentItem;
 import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.Money;
+import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 
 import java.util.ArrayList;
 
@@ -158,6 +159,8 @@ public class AppointmentDetailFragment extends Fragment {
                 getString(R.string.agenda_block_header, dateText, timeText));
         binding.detailProfessionalName.setText(
                 getString(R.string.appointment_detail_professional_format, state.professionalName));
+        binding.detailRecurringBadge.setVisibility(
+                apt.recurrenceRuleId().isPresent() ? View.VISIBLE : View.GONE);
 
         renderItems(apt);
         AppointmentBalance balance = AppointmentBalance.of(
@@ -265,8 +268,10 @@ public class AppointmentDetailFragment extends Fragment {
             return;
         }
         String appointmentId = currentAppointment.id();
+        boolean isRecurring = currentAppointment.recurrenceRuleId().isPresent();
         DialogCancelReasonBinding dialogBinding = DialogCancelReasonBinding.inflate(
                 getLayoutInflater());
+        dialogBinding.radioGroupCancelScope.setVisibility(isRecurring ? View.VISIBLE : View.GONE);
         TextInputEditText reasonInput = dialogBinding.inputCancelReason;
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
@@ -276,7 +281,15 @@ public class AppointmentDetailFragment extends Fragment {
                 .setPositiveButton(R.string.appointment_cancel_confirm_btn, (d, which) -> {
                     CharSequence cs = reasonInput.getText();
                     String reason = cs == null ? "" : cs.toString().trim();
-                    viewModel.changeStatus(appointmentId, AppointmentStatus.CANCELLED, reason);
+                    if (isRecurring) {
+                        CancelRecurringSeriesUseCase.Scope scope =
+                                dialogBinding.radioCancelFollowing.isChecked()
+                                        ? CancelRecurringSeriesUseCase.Scope.THIS_AND_FOLLOWING
+                                        : CancelRecurringSeriesUseCase.Scope.ONLY_THIS;
+                        viewModel.cancelRecurring(appointmentId, scope, reason);
+                    } else {
+                        viewModel.changeStatus(appointmentId, AppointmentStatus.CANCELLED, reason);
+                    }
                 })
                 .create();
         dialog.show();

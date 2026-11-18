@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [~] | 9/12 | 75 % |
+| F3 | Agenda de turnos | [~] | 10/12 | 83 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **27/86** | **31 %** |
+| **Total** | | | **28/86** | **33 %** |
 
 ---
 
@@ -113,7 +113,7 @@ Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agen
 9. [x] **F3.9 Bloqueos de agenda**
    - Archivos: `ScheduleBlock`, `ui/agenda/blocks/`
    - Hecho: bloqueos por profesional o generales (vacaciones, almuerzo, feriado); se muestran en la agenda y bloquean turnos.
-10. [ ] **F3.10 Turnos recurrentes**
+10. [x] **F3.10 Turnos recurrentes**
     - Archivos: `RecurrenceRule`, `GenerateRecurringAppointmentsUseCase`
     - Hecho: serie cada N semanas hasta fecha/cantidad; conflictos reportados sin crear el turno conflictivo; editar/cancelar "este" o "este y siguientes"; tests.
 11. [ ] **F3.11 Historial del cliente y rendimiento**
@@ -350,3 +350,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F3.7 | `TimeSlotGrid`, `SlotAvailabilityLoader`, `AppointmentCreateViewModel`/`AppointmentCreateFragment` (buscador `LIMIT 12` + alta rápida de cliente, multi-servicios, filtro de profesionales habilitados, grilla libre/ocupada y edición), conectado en `nav_main.xml` y FAB de `AgendaFragment`. | F3.8 |
 | 18/11/2026 | F3.8 | `ChangeAppointmentStatusUseCase` (confirmar, completar congelando comisiones, ausente incrementando cliente, cancelar con motivo y revertir completado sin cobros), `RescheduleAppointmentUseCase`, detalle `AppointmentDetailFragment` y `RescheduleDialogFragment`, 80 tests unitarios OK. | F3.9 |
 | 18/11/2026 | F3.9 | `CreateScheduleBlockUseCase` (aviso de turnos afectados) y `DeactivateScheduleBlockUseCase`, UI `ScheduleBlocksFragment`/`ScheduleBlockFormDialogFragment`, enlace en `AgendaFragment` y `nav_main.xml`, 82 tests unitarios OK. | F3.10 |
+| 18/11/2026 | F3.10 | `RecurrenceRule`, `GenerateRecurringAppointmentsUseCase` (series cada N semanas y reporte de fechas en conflicto) y `CancelRecurringSeriesUseCase` (cancelación única o este y siguientes), UI en `AppointmentCreateFragment` y `AppointmentDetailFragment`, 84 tests unitarios OK. | F3.11 |

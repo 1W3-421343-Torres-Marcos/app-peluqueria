@@ -20,10 +20,12 @@ import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.ChangeAppointmentStatusUseCase;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
 import com.metanoia.domain.usecase.CreateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
+import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
@@ -68,6 +70,8 @@ public final class AppContainer {
     private final RescheduleAppointmentUseCase rescheduleAppointmentUseCase;
     private final CreateScheduleBlockUseCase createScheduleBlockUseCase;
     private final DeactivateScheduleBlockUseCase deactivateScheduleBlockUseCase;
+    private final GenerateRecurringAppointmentsUseCase generateRecurringAppointmentsUseCase;
+    private final CancelRecurringSeriesUseCase cancelRecurringSeriesUseCase;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -123,6 +127,12 @@ public final class AppContainer {
         this.deactivateScheduleBlockUseCase = new DeactivateScheduleBlockUseCase(
                 scheduleBlockRepository, settingsRepository, auditLogRepository,
                 clock, idGenerator);
+        this.generateRecurringAppointmentsUseCase = new GenerateRecurringAppointmentsUseCase(
+                appointmentRepository, clientRepository, professionalRepository,
+                salonServiceRepository, scheduleBlockRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
+        this.cancelRecurringSeriesUseCase = new CancelRecurringSeriesUseCase(
+                appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
     }
 
     public AppExecutors executors() {
@@ -231,5 +241,13 @@ public final class AppContainer {
 
     public DeactivateScheduleBlockUseCase deactivateScheduleBlockUseCase() {
         return deactivateScheduleBlockUseCase;
+    }
+
+    public GenerateRecurringAppointmentsUseCase generateRecurringAppointmentsUseCase() {
+        return generateRecurringAppointmentsUseCase;
+    }
+
+    public CancelRecurringSeriesUseCase cancelRecurringSeriesUseCase() {
+        return cancelRecurringSeriesUseCase;
     }
 }

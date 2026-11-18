@@ -23,6 +23,8 @@ import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
+import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
+import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase.RecurringResult;
 import com.metanoia.domain.usecase.UpdateAppointmentUseCase;
 
 import java.util.List;
@@ -45,6 +47,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
     private final MutableLiveData<Appointment> editingAppointment = new MutableLiveData<>();
     private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
     private final MutableLiveData<Event<Boolean>> savedSuccessEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<RecurringResult>> recurringResultEvent =
+            new MutableLiveData<>();
 
     public AppointmentCreateViewModel(@NonNull Application application) {
         super(application);
@@ -97,6 +101,10 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
 
     public LiveData<Event<Boolean>> observeSavedSuccess() {
         return savedSuccessEvent;
+    }
+
+    public LiveData<Event<RecurringResult>> observeRecurringResult() {
+        return recurringResultEvent;
     }
 
     public long todayEpochDay() {
@@ -153,6 +161,54 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
                     )
             );
             handleSaveResult(result);
+        });
+    }
+
+    public void createRecurringAppointment(
+            @Nullable String clientId,
+            @Nullable String professionalId,
+            long startDayEpoch,
+            @Nullable Integer startMin,
+            @NonNull List<String> serviceIds,
+            @NonNull String notes,
+            boolean confirmed,
+            int intervalWeeks,
+            int maxOccurrences
+    ) {
+        if (clientId == null || professionalId == null || startMin == null
+                || serviceIds.isEmpty() || intervalWeeks < 1 || maxOccurrences < 1) {
+            feedbackEvent.setValue(new Event<>(R.string.appointment_error_validation));
+            return;
+        }
+        container.executors().io().execute(() -> {
+            Result<RecurringResult> result = container.generateRecurringAppointmentsUseCase()
+                    .execute(new GenerateRecurringAppointmentsUseCase.Request(
+                            clientId,
+                            professionalId,
+                            startDayEpoch,
+                            startMin,
+                            serviceIds,
+                            notes,
+                            confirmed,
+                            intervalWeeks,
+                            null,
+                            maxOccurrences
+                    ));
+            if (result.isSuccess()) {
+                RecurringResult value = result.getValue();
+                if (value.conflicts().isEmpty()) {
+                    feedbackEvent.postValue(new Event<>(R.string.appointment_recurring_saved));
+                    savedSuccessEvent.postValue(new Event<>(true));
+                } else {
+                    recurringResultEvent.postValue(new Event<>(value));
+                }
+            } else if (result.getError() == DomainError.CONFLICT) {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_error_conflict));
+            } else if (result.getError() == DomainError.VALIDATION_ERROR) {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_error_validation));
+            } else {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_error_unexpected));
+            }
         });
     }
 

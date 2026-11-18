@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.ProfessionalServiceCrossRef;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
@@ -27,6 +28,8 @@ import com.metanoia.app.util.Formats;
 import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentItem;
 import com.metanoia.domain.rules.PhoneNormalizer;
+import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase.RecurringResult;
+import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase.SkippedOccurrence;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -111,6 +114,24 @@ public class AppointmentCreateFragment extends Fragment {
         binding.sectionClientPicker.setVisibility(isEdit ? View.GONE : View.VISIBLE);
         binding.sectionProAndSchedule.setVisibility(isEdit ? View.GONE : View.VISIBLE);
         binding.switchAptConfirmed.setVisibility(isEdit ? View.GONE : View.VISIBLE);
+        binding.switchAptRepeat.setVisibility(isEdit ? View.GONE : View.VISIBLE);
+        if (isEdit) {
+            binding.aptRepeatOptionsContainer.setVisibility(View.GONE);
+        } else {
+            if (binding.inputAptRepeatWeeks.getText() == null
+                    || binding.inputAptRepeatWeeks.getText().toString().trim().isEmpty()) {
+                binding.inputAptRepeatWeeks.setText("2");
+            }
+            if (binding.inputAptRepeatCount.getText() == null
+                    || binding.inputAptRepeatCount.getText().toString().trim().isEmpty()) {
+                binding.inputAptRepeatCount.setText("4");
+            }
+            binding.aptRepeatOptionsContainer.setVisibility(
+                    binding.switchAptRepeat.isChecked() ? View.VISIBLE : View.GONE);
+            binding.switchAptRepeat.setOnCheckedChangeListener((buttonView, isChecked) ->
+                    binding.aptRepeatOptionsContainer.setVisibility(
+                            isChecked ? View.VISIBLE : View.GONE));
+        }
         binding.btnConfirmAppointment.setText(isEdit
                 ? R.string.appointment_save_edit
                 : R.string.appointment_save_create);
@@ -185,6 +206,12 @@ public class AppointmentCreateFragment extends Fragment {
         viewModel.observeSavedSuccess().observe(getViewLifecycleOwner(), event -> {
             if (Boolean.TRUE.equals(event.getContentIfNotHandled())) {
                 NavHostFragment.findNavController(this).navigateUp();
+            }
+        });
+        viewModel.observeRecurringResult().observe(getViewLifecycleOwner(), event -> {
+            RecurringResult result = event.getContentIfNotHandled();
+            if (result != null) {
+                showRecurringConflictsDialog(result);
             }
         });
     }
@@ -420,6 +447,20 @@ public class AppointmentCreateFragment extends Fragment {
         if (isEdit && editingAppointmentId != null) {
             viewModel.updateAppointment(editingAppointmentId, new ArrayList<>(selectedServiceIds),
                     notes);
+        } else if (binding.switchAptRepeat.isChecked()) {
+            int intervalWeeks = parsePositiveInt(binding.inputAptRepeatWeeks.getText());
+            int occurrences = parsePositiveInt(binding.inputAptRepeatCount.getText());
+            viewModel.createRecurringAppointment(
+                    selectedClientId,
+                    selectedProfessionalId,
+                    selectedDayEpoch,
+                    selectedStartMin,
+                    new ArrayList<>(selectedServiceIds),
+                    notes,
+                    binding.switchAptConfirmed.isChecked(),
+                    intervalWeeks,
+                    occurrences
+            );
         } else {
             viewModel.createAppointment(
                     selectedClientId,
@@ -431,6 +472,41 @@ public class AppointmentCreateFragment extends Fragment {
                     binding.switchAptConfirmed.isChecked()
             );
         }
+    }
+
+    private int parsePositiveInt(@Nullable CharSequence raw) {
+        if (raw == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(raw.toString().trim());
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private void showRecurringConflictsDialog(@NonNull RecurringResult result) {
+        StringBuilder skippedDates = new StringBuilder();
+        for (int i = 0; i < result.conflicts().size(); i++) {
+            SkippedOccurrence skipped = result.conflicts().get(i);
+            if (i > 0) {
+                skippedDates.append('\n');
+            }
+            skippedDates.append("• ").append(Formats.formatDayWithShortWeekday(skipped.dayEpoch()));
+        }
+        String message = getString(
+                R.string.appointment_recurring_created_with_conflicts,
+                result.createdAppointments().size(),
+                result.conflicts().size(),
+                skippedDates.toString()
+        );
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.appointment_recurring_created_title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.common_ok,
+                        (dialog, which) -> NavHostFragment.findNavController(this).navigateUp())
+                .show();
     }
 
     @Override

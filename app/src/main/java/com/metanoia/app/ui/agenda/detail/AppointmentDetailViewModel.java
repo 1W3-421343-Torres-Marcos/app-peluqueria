@@ -24,6 +24,7 @@ import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.Client;
 import com.metanoia.domain.model.Professional;
+import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 
 import java.util.List;
@@ -112,6 +113,26 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
         container.executors().io().execute(() -> {
             Result<Appointment> result = container.changeAppointmentStatusUseCase()
                     .execute(appointmentId, targetStatus, cancelReason);
+            if (result.isSuccess()) {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_status_updated));
+            } else if (result.getError() == DomainError.VALIDATION_ERROR) {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_cancel_reason_required));
+            } else if (result.getError() == DomainError.CONFLICT) {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_error_status_conflict));
+            } else {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_error_unexpected));
+            }
+        });
+    }
+
+    public void cancelRecurring(
+            @NonNull String appointmentId,
+            @NonNull CancelRecurringSeriesUseCase.Scope scope,
+            @Nullable String cancelReason
+    ) {
+        container.executors().io().execute(() -> {
+            Result<List<Appointment>> result = container.cancelRecurringSeriesUseCase()
+                    .execute(appointmentId, scope, cancelReason);
             if (result.isSuccess()) {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_status_updated));
             } else if (result.getError() == DomainError.VALIDATION_ERROR) {

@@ -217,6 +217,54 @@
                     android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="gone" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchAptRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_m"
+                    android:minHeight="@dimen/touch_target_min"
+                    android:text="@string/appointment_repeat_switch" />
+
+                <LinearLayout
+                    android:id="@+id/aptRepeatOptionsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/appointment_repeat_interval_label">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputAptRepeatWeeks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_s"
+                        android:layout_weight="1"
+                        android:hint="@string/appointment_repeat_occurrences_label">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputAptRepeatCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout

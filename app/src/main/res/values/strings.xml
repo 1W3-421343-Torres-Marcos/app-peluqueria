@@ -345,4 +345,15 @@
     </plurals>
     <string name="schedule_block_date_range">%1$s al %2$s</string>
     <string name="schedule_block_error_validation">Revisá fechas, rango horario (HH:mm) y motivo (2–120 caracteres).</string>
+
+    <!-- Recurrencias (F3.10) -->
+    <string name="appointment_repeat_switch">Repetir turno periódicamente</string>
+    <string name="appointment_repeat_interval_label">Cada cuántas semanas (1–12)</string>
+    <string name="appointment_repeat_occurrences_label">Cantidad de sesiones (2–52)</string>
+    <string name="appointment_recurring_saved">Serie de turnos creada</string>
+    <string name="appointment_recurring_created_title">Serie creada con conflictos</string>
+    <string name="appointment_recurring_created_with_conflicts">Se crearon %1$d turnos y se omitieron %2$d fechas ocupadas o bloqueadas:\n%3$s</string>
+    <string name="appointment_cancel_scope_only_this">Solo este turno</string>
+    <string name="appointment_cancel_scope_following">Este y los siguientes</string>
+    <string name="appointment_detail_recurring_badge">Serie recurrente</string>
 </resources>

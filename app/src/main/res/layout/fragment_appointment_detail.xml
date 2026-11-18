@@ -48,6 +48,16 @@
             android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
+        <TextView
+            android:id="@+id/detailRecurringBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/appointment_detail_recurring_badge"
+            android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone" />
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
