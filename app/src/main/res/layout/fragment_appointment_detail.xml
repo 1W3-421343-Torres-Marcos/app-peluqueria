@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/detailClientName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Metanoia.Headline"
+                android:textColor="?attr/colorOnSurface" />
+
+            <com.metanoia.app.ui.common.StatusChip
+                android:id="@+id/detailStatusChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                app:statusVariant="pending" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/detailDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:textAppearance="@style/TextAppearance.Metanoia.Money"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:id="@+id/detailProfessionalName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <TextView
+            android:id="@+id/detailRecurringBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/appointment_detail_recurring_badge"
+            android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="@dimen/radius_m"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="@dimen/stroke_width">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/space_m">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/appointment_detail_items_section"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <LinearLayout
+                    android:id="@+id/detailItemsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_s"
+                    android:orientation="vertical" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/stroke_width"
+                    android:layout_marginVertical="@dimen/space_s"
+                    android:background="@color/divider_subtle" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/appointment_detail_total_label"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/detailTotalValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/appointment_detail_paid_label"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/detailPaidValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/appointment_detail_balance_label"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/detailBalanceValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                        android:textColor="@color/accent" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/detailNotesCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="@dimen/radius_m"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="@dimen/stroke_width">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/space_m">
+
+                <TextView
+                    android:id="@+id/detailNotesLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/appointment_detail_notes_section"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <TextView
+                    android:id="@+id/detailNotesValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                    android:textColor="?attr/colorOnSurface" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/detailActionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionConfirm"
+                style="@style/Widget.Metanoia.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment_action_confirm"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionComplete"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_complete"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionEdit"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_edit"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionReschedule"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_reschedule"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionNoShow"
+                style="@style/Widget.Metanoia.Button.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_no_show"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionCancel"
+                style="@style/Widget.Metanoia.Button.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment_action_cancel"
+                android:textColor="@color/accent"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionRevertCompleted"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_revert_completed"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

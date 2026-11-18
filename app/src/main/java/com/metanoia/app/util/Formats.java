@@ -28,6 +28,14 @@ public final class Formats {
             .ofPattern("dd/MM/uuuu", ES_AR)
             .withResolverStyle(ResolverStyle.STRICT);
 
+    private static final DateTimeFormatter SHORT_WEEKDAY_DATE_FORMATTER = DateTimeFormatter
+            .ofPattern("EEE dd/MM/uuuu", ES_AR)
+            .withResolverStyle(ResolverStyle.STRICT);
+
+    private static final DateTimeFormatter FULL_WEEKDAY_DAY_MONTH_FORMATTER = DateTimeFormatter
+            .ofPattern("EEEE dd/MM", ES_AR)
+            .withResolverStyle(ResolverStyle.STRICT);
+
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter
             .ofPattern("HH:mm", ES_AR)
             .withResolverStyle(ResolverStyle.STRICT);
@@ -61,6 +69,22 @@ public final class Formats {
 
     public static String formatDate(long epochDay) {
         return LocalDate.ofEpochDay(epochDay).format(DATE_FORMATTER);
+    }
+
+    public static String formatDayWithShortWeekday(long epochDay) {
+        return capitalizeFirst(LocalDate.ofEpochDay(epochDay).format(SHORT_WEEKDAY_DATE_FORMATTER));
+    }
+
+    public static String formatWeekdayAndDayMonth(long epochDay) {
+        return capitalizeFirst(
+                LocalDate.ofEpochDay(epochDay).format(FULL_WEEKDAY_DAY_MONTH_FORMATTER));
+    }
+
+    private static String capitalizeFirst(String raw) {
+        if (raw == null || raw.isEmpty()) {
+            return "";
+        }
+        return Character.toUpperCase(raw.charAt(0)) + raw.substring(1);
     }
 
     public static Optional<Long> parseDate(String text) {

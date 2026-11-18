@@ -11,13 +11,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.ClientEntity;
 import com.metanoia.app.databinding.FragmentClientDetailBinding;
+import com.metanoia.app.ui.agenda.detail.AppointmentDetailFragment;
 import com.metanoia.app.ui.common.ConfirmDialog;
 import com.metanoia.domain.rules.PhoneNormalizer;
+
+import java.util.Collections;
 
 /**
  * Ficha de cliente: datos básicos, contador de ausencias, saldo pendiente y pestañas de historial.
@@ -51,13 +55,39 @@ public class ClientDetailFragment extends Fragment {
             return;
         }
 
+        String trimmedClientId = clientId.trim();
+        ClientVisitsAdapter visitsAdapter = new ClientVisitsAdapter(card -> {
+            Bundle args = new Bundle();
+            args.putString(AppointmentDetailFragment.ARG_APPOINTMENT_ID, card.id);
+            NavHostFragment.findNavController(this).navigate(R.id.nav_appointment_detail, args);
+        });
+        binding.clientVisitsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.clientVisitsRecycler.setAdapter(visitsAdapter);
+
         viewModel = new ViewModelProvider(this).get(ClientsViewModel.class);
-        viewModel.observeClientById(clientId.trim()).observe(getViewLifecycleOwner(), entity -> {
+        viewModel.observeClientById(trimmedClientId).observe(getViewLifecycleOwner(), entity -> {
             currentClient = entity;
             if (entity != null) {
                 bindClient(entity);
             }
         });
+        viewModel.observeClientVisits(trimmedClientId).observe(getViewLifecycleOwner(), visits -> {
+            boolean hasVisits = visits != null && !visits.isEmpty();
+            visitsAdapter.submitList(hasVisits ? visits : Collections.emptyList());
+            binding.clientVisitsRecycler.setVisibility(hasVisits ? View.VISIBLE : View.GONE);
+            binding.clientTabVisitsEmpty.setVisibility(hasVisits ? View.GONE : View.VISIBLE);
+            if (hasVisits) {
+                binding.clientDetailVisitsCount.setVisibility(View.VISIBLE);
+                binding.clientDetailVisitsCount.setText(
+                        getString(R.string.client_detail_visits_count_format, visits.size()));
+            } else {
+                binding.clientDetailVisitsCount.setVisibility(View.GONE);
+            }
+        });
+        viewModel.observeClientPendingBalanceCents(trimmedClientId).observe(
+                getViewLifecycleOwner(),
+                pendingCents -> binding.clientDetailBalanceValue.setMoneyCents(
+                        pendingCents == null ? 0L : pendingCents));
         viewModel.observeFeedback().observe(getViewLifecycleOwner(), event -> {
             Integer resId = event.getContentIfNotHandled();
             if (resId != null) {
@@ -94,7 +124,6 @@ public class ClientDetailFragment extends Fragment {
         binding.clientDetailInactiveBadge.setVisibility(entity.active ? View.GONE : View.VISIBLE);
         binding.clientDetailPhone.setText(PhoneNormalizer.formatForDisplay(entity.phone));
         binding.clientDetailNoShowsValue.setText(String.valueOf(entity.noShowCount));
-        binding.clientDetailBalanceValue.setMoneyCents(0L);
         binding.clientDetailBirthdayValue.setText(formatBirthday(entity));
         binding.clientDetailNotesValue.setText(
                 entity.notes.isEmpty()
@@ -156,7 +185,7 @@ public class ClientDetailFragment extends Fragment {
     }
 
     private void showTabPanel(int index) {
-        binding.clientTabVisitsEmpty.setVisibility(index == 0 ? View.VISIBLE : View.GONE);
+        binding.clientTabVisitsPanel.setVisibility(index == 0 ? View.VISIBLE : View.GONE);
         binding.clientTabSpendingEmpty.setVisibility(index == 1 ? View.VISIBLE : View.GONE);
         binding.clientTabColorEmpty.setVisibility(index == 2 ? View.VISIBLE : View.GONE);
     }

@@ -223,4 +223,148 @@
     <string name="client_reactivated">Cliente reactivado</string>
     <string name="client_deactivated">Cliente dado de baja</string>
     <string name="client_reactivate_conflict">Ya existe otro cliente activo con ese teléfono.</string>
+
+    <!-- Agenda (F3.5 - F3.6) -->
+    <string name="agenda_mode_day">Día</string>
+    <string name="agenda_mode_week">Semana</string>
+    <string name="agenda_today">Hoy</string>
+    <string name="agenda_prev_day">Día anterior</string>
+    <string name="agenda_next_day">Día siguiente</string>
+    <string name="agenda_blocks_button">Bloqueos</string>
+    <string name="agenda_filter_all_professionals">Todos</string>
+    <string name="agenda_new_appointment_fab">Nuevo turno</string>
+    <string name="agenda_empty_filtered">No hay turnos ni bloqueos para este filtro en la fecha elegida.</string>
+    <string name="agenda_time_stacked">%1$s\n%2$s</string>
+    <string name="agenda_time_inline">%1$s – %2$s</string>
+    <string name="agenda_block_scope_all">Todo el salón</string>
+    <string name="agenda_block_full_day">Todo el día</string>
+    <string name="agenda_block_header">%1$s · %2$s</string>
+    <string name="agenda_detail_pending_step">El detalle de turno estará disponible en el siguiente paso.</string>
+    <string name="agenda_create_pending_step">El alta de turno se habilitará en el paso F3.7.</string>
+    <string name="agenda_blocks_pending_step">La gestión de bloqueos se habilitará en el paso F3.9.</string>
+
+    <!-- Agenda semanal (F3.6) -->
+    <string name="agenda_week_day_today">%1$s · Hoy</string>
+    <string name="agenda_week_no_appointments">Sin turnos</string>
+    <plurals name="agenda_week_appointments_count">
+        <item quantity="one">%1$d turno</item>
+        <item quantity="other">%1$d turnos</item>
+    </plurals>
+    <string name="agenda_week_occupied_hours">%1$d h %2$02d min ocupados</string>
+    <string name="agenda_week_occupied_minutes">%1$d min ocupados</string>
+    <string name="agenda_week_has_blocks">Con bloqueo activo</string>
+    <string name="agenda_week_summary_with_block">%1$s · %2$s</string>
+
+    <!-- Crear / editar turno (F3.7) -->
+    <string name="appointment_create_title">Nuevo turno</string>
+    <string name="appointment_edit_title">Editar turno</string>
+    <string name="appointment_section_client">1. Cliente</string>
+    <string name="appointment_quick_client_btn">+ Alta rápida</string>
+    <string name="appointment_client_selected">Seleccionado: %1$s</string>
+    <string name="appointment_client_option_format">%1$s · %2$s</string>
+    <string name="appointment_service_chip_format">%1$s · %2$d min · %3$s</string>
+    <string name="appointment_client_no_matches">No hay clientes activos que coincidan.</string>
+    <string name="appointment_section_services">2. Servicios</string>
+    <string name="appointment_services_summary">Duración: %1$d min</string>
+    <string name="appointment_services_empty">Cargá servicios activos primero en Más &gt; Servicios.</string>
+    <string name="appointment_section_professional">3. Profesional</string>
+    <string name="appointment_no_eligible_professionals">Ningún profesional activo realiza todos los servicios seleccionados.</string>
+    <string name="appointment_section_schedule">4. Fecha y horario</string>
+    <string name="appointment_change_date">Cambiar fecha</string>
+    <string name="appointment_no_slots_hint">No hay horarios disponibles para esta duración en la fecha elegida.</string>
+    <string name="appointment_notes_label">Notas del turno (opcional)</string>
+    <string name="appointment_confirm_immediately">Marcar como confirmado al guardar</string>
+    <string name="appointment_save_create">Confirmar turno</string>
+    <string name="appointment_save_edit">Guardar cambios</string>
+    <string name="appointment_saved">Turno guardado</string>
+    <string name="appointment_error_validation">Completá cliente, al menos un servicio, profesional y horario.</string>
+    <string name="appointment_error_conflict">El horario o estado ya no está disponible.</string>
+    <string name="appointment_error_unexpected">No se pudo guardar el turno.</string>
+
+    <!-- Detalle y gestión de turno (F3.8) -->
+    <string name="appointment_detail_title">Detalle de turno</string>
+    <string name="appointment_detail_not_found">No se encontró el turno.</string>
+    <string name="appointment_detail_professional_format">Profesional: %1$s</string>
+    <string name="appointment_detail_items_section">Servicios congelados</string>
+    <string name="appointment_detail_item_format">%1$s (%2$d min)</string>
+    <string name="appointment_detail_commission_frozen">Comisión congelada: %1$s</string>
+    <string name="appointment_detail_total_label">Total</string>
+    <string name="appointment_detail_paid_label">Pagado</string>
+    <string name="appointment_detail_balance_label">Saldo pendiente</string>
+    <string name="appointment_detail_notes_section">Notas</string>
+    <string name="appointment_detail_cancel_reason_section">Motivo de cancelación</string>
+    <string name="appointment_action_confirm">Confirmar turno</string>
+    <string name="appointment_action_complete">Completar servicio</string>
+    <string name="appointment_action_edit">Editar</string>
+    <string name="appointment_action_reschedule">Reprogramar</string>
+    <string name="appointment_action_no_show">Ausente</string>
+    <string name="appointment_action_cancel">Cancelar turno</string>
+    <string name="appointment_action_revert_completed">Revertir a confirmado</string>
+    <string name="appointment_revert_confirm_title">¿Revertir a confirmado?</string>
+    <string name="appointment_revert_confirm_message">Esta corrección se registra en auditoría y libera las comisiones congeladas del turno.</string>
+    <string name="appointment_no_show_confirm_title">¿Marcar cliente ausente?</string>
+    <string name="appointment_no_show_confirm_message">Se liberará el horario y se sumará una ausencia al historial del cliente.</string>
+    <string name="appointment_cancel_dialog_title">Cancelar turno</string>
+    <string name="appointment_cancel_reason_label">Motivo de cancelación</string>
+    <string name="appointment_cancel_confirm_btn">Confirmar cancelación</string>
+    <string name="appointment_cancel_reason_required">Indicá un motivo de al menos 2 caracteres.</string>
+    <string name="appointment_reschedule_title">Reprogramar turno</string>
+    <string name="appointment_reschedule_confirm">Confirmar nuevo horario</string>
+    <string name="appointment_status_updated">Estado actualizado</string>
+    <string name="appointment_rescheduled">Turno reprogramado</string>
+    <string name="appointment_error_status_conflict">No se pudo cambiar el estado en la situación actual del turno.</string>
+
+    <!-- Bloqueos de agenda (F3.9) -->
+    <string name="common_ok">Entendido</string>
+    <string name="schedule_blocks_title">Bloqueos de agenda</string>
+    <string name="schedule_blocks_empty">Todavía no hay bloqueos activos en la agenda.</string>
+    <string name="schedule_blocks_new_fab">Nuevo bloqueo</string>
+    <string name="schedule_block_form_title">Nuevo bloqueo</string>
+    <string name="schedule_block_scope_label">Alcance</string>
+    <string name="schedule_block_type_label">Tipo de bloqueo</string>
+    <string name="block_type_vacation">Vacaciones</string>
+    <string name="block_type_lunch">Almuerzo</string>
+    <string name="block_type_holiday">Feriado</string>
+    <string name="block_type_other">Otro</string>
+    <string name="schedule_block_from_date">Desde: %1$s</string>
+    <string name="schedule_block_to_date">Hasta: %1$s</string>
+    <string name="schedule_block_full_day_switch">Todo el día</string>
+    <string name="schedule_block_from_time">Hora inicio</string>
+    <string name="schedule_block_to_time">Hora fin</string>
+    <string name="schedule_block_reason_label">Motivo</string>
+    <string name="schedule_block_save">Guardar bloqueo</string>
+    <string name="schedule_block_saved">Bloqueo guardado</string>
+    <string name="schedule_block_deactivated">Bloqueo desactivado</string>
+    <string name="schedule_block_deactivate_title">¿Quitar este bloqueo?</string>
+    <string name="schedule_block_deactivate_message">El rango volverá a quedar disponible para nuevos turnos.</string>
+    <string name="schedule_block_deactivate_btn">Quitar bloqueo</string>
+    <string name="schedule_block_affected_title">Turnos superpuestos</string>
+    <plurals name="schedule_block_affected_message">
+        <item quantity="one">El bloqueo se guardó, pero hay %1$d turno existente en esa franja horaria. Reprogramalo o cancelalo desde la agenda.</item>
+        <item quantity="other">El bloqueo se guardó, pero hay %1$d turnos existentes en esa franja horaria. Reprogramalos o cancelalos desde la agenda.</item>
+    </plurals>
+    <string name="schedule_block_date_range">%1$s al %2$s</string>
+    <string name="schedule_block_error_validation">Revisá fechas, rango horario (HH:mm) y motivo (2–120 caracteres).</string>
+
+    <!-- Recurrencias (F3.10) -->
+    <string name="appointment_repeat_switch">Repetir turno periódicamente</string>
+    <string name="appointment_repeat_interval_label">Cada cuántas semanas (1–12)</string>
+    <string name="appointment_repeat_occurrences_label">Cantidad de sesiones (2–52)</string>
+    <string name="appointment_recurring_saved">Serie de turnos creada</string>
+    <string name="appointment_recurring_created_title">Serie creada con conflictos</string>
+    <string name="appointment_recurring_created_with_conflicts">Se crearon %1$d turnos y se omitieron %2$d fechas ocupadas o bloqueadas:\n%3$s</string>
+    <string name="appointment_cancel_scope_only_this">Solo este turno</string>
+    <string name="appointment_cancel_scope_following">Este y los siguientes</string>
+    <string name="appointment_detail_recurring_badge">Serie recurrente</string>
+
+    <!-- Historial de cliente y herramientas debug (F3.11) -->
+    <string name="client_detail_visits_count_format">%1$d visitas registradas</string>
+    <string name="catalog_section_debug_tools">Herramientas de prueba (debug)</string>
+    <string name="debug_seed_volume_button">Sembrar volumen (5.000 clientes / 50.000 turnos)</string>
+    <string name="debug_seed_confirm_title">¿Generar datos masivos de prueba?</string>
+    <string name="debug_seed_confirm_message">Se insertarán hasta 5.000 clientes y 50.000 turnos de prueba en la base local para validar rendimiento.</string>
+    <string name="debug_seed_confirm_positive">Generar</string>
+    <string name="debug_seed_running">Generando datos de prueba…</string>
+    <string name="debug_seed_success">Listo: %1$d clientes y %2$d turnos en %3$d ms</string>
+    <string name="debug_seed_error">No se pudieron generar los datos de prueba.</string>
 </resources>

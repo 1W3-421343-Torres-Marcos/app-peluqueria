@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_margin">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/appointment_cancel_reason_label">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputCancelReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            android:maxLength="200" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroupCancelScope"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_s"
+        android:visibility="gone">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radioCancelOnlyThis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:minHeight="@dimen/touch_target_min"
+            android:text="@string/appointment_cancel_scope_only_this" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radioCancelFollowing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/touch_target_min"
+            android:text="@string/appointment_cancel_scope_following" />
+    </RadioGroup>
+</LinearLayout>

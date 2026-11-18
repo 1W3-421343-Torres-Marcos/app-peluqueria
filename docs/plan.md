@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
+| F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **18/86** | **21 %** |
+| **Total** | | | **30/86** | **35 %** |
 
 ---
 
@@ -83,43 +83,43 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 8. [x] **F2.8 Verificación de fase**
    - Hecho: tests verdes; tests de migración v1→actual; flujo manual completo en dispositivo; `versionName 0.2.0`; merge de `fase/F2` a `main`, tag `fase-F2` y entrada en `docs/changelog.md`.
 
-## F3 — Agenda de turnos `[ ]`
-Entregable: agenda operativa diaria/semanal con turnos válidos. Módulo: `agenda`.
+## F3 — Agenda de turnos `[x]`
+Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agenda`.
 
-1. [ ] **F3.1 Modelo de turno y estados**
+1. [x] **F3.1 Modelo de turno y estados**
    - Archivos: `Appointment`, `AppointmentItem`, `AppointmentStatus` (PENDING, CONFIRMED, COMPLETED, PAID, CANCELLED, NO_SHOW), `StatusTransitions`, `AppointmentBalance`
    - Hecho: duración = suma de ítems; tests de todas las transiciones válidas e inválidas, del paso automático COMPLETED ↔ PAID según `paidCents`/`balanceCents` derivados, de la corrección COMPLETED → CONFIRMED (solo sin cobros) y del congelado de comisión al completar.
-2. [ ] **F3.2 Validador de disponibilidad**
+2. [x] **F3.2 Validador de disponibilidad**
    - Archivos: `domain/rules/AvailabilityChecker`, tests
    - Hecho: rechaza solapamientos (COMPLETED y PAID ocupan agenda), fuera de horario, días libres y bloqueos; bordes (fin = inicio) permitidos; tests exhaustivos.
-3. [ ] **F3.3 Persistencia de agenda**
+3. [x] **F3.3 Persistencia de agenda**
    - Archivos: `AppointmentEntity`, `AppointmentItemEntity`, `ScheduleBlockEntity`, DAOs, migración
    - Hecho: índices `(professionalId, day)` y `(clientId)`; FK RESTRICT; test DAO de consulta por rango.
-4. [ ] **F3.4 Caso de uso crear/editar turno**
+4. [x] **F3.4 Caso de uso crear/editar turno**
    - Archivos: `CreateAppointmentUseCase`, `UpdateAppointmentUseCase`
    - Hecho: precio/duración congelados; validación de disponibilidad; profesional habilitado para cada servicio; tests.
-5. [ ] **F3.5 Vista diaria**
+5. [x] **F3.5 Vista diaria**
    - Archivos: `ui/agenda/DayFragment`, `AppointmentCardView`
    - Hecho: línea de tiempo por bloques, navegación entre días, filtro por profesional.
-6. [ ] **F3.6 Vista semanal**
+6. [x] **F3.6 Vista semanal**
    - Archivos: `ui/agenda/WeekFragment`
    - Hecho: 7 días (lunes a domingo) con ocupación; toque abre el día.
-7. [ ] **F3.7 Flujo crear turno**
+7. [x] **F3.7 Flujo crear turno**
    - Archivos: `ui/agenda/create/`
    - Hecho: cliente → servicios → profesional → horario libre sugerido → confirmar en ≤ 4 toques desde la agenda (cliente existente).
-8. [ ] **F3.8 Gestión del turno**
+8. [x] **F3.8 Gestión del turno**
    - Archivos: `ui/agenda/detail/`, casos de uso de estado
    - Hecho: acciones según estado — editar, reprogramar y cancelar (motivo) en PENDING/CONFIRMED; confirmar; completar (congela comisión, queda con saldo); ausente (incrementa contador del cliente); corrección COMPLETED → CONFIRMED auditada sin cobros. Detalle muestra total, pagado y saldo. (Cobro y "Completar y cobrar" en F5.)
-9. [ ] **F3.9 Bloqueos de agenda**
+9. [x] **F3.9 Bloqueos de agenda**
    - Archivos: `ScheduleBlock`, `ui/agenda/blocks/`
    - Hecho: bloqueos por profesional o generales (vacaciones, almuerzo, feriado); se muestran en la agenda y bloquean turnos.
-10. [ ] **F3.10 Turnos recurrentes**
+10. [x] **F3.10 Turnos recurrentes**
     - Archivos: `RecurrenceRule`, `GenerateRecurringAppointmentsUseCase`
     - Hecho: serie cada N semanas hasta fecha/cantidad; conflictos reportados sin crear el turno conflictivo; editar/cancelar "este" o "este y siguientes"; tests.
-11. [ ] **F3.11 Historial del cliente y rendimiento**
+11. [x] **F3.11 Historial del cliente y rendimiento**
     - Archivos: `ui/clients/detail`, `DebugSeeder`
     - Hecho: historial de visitas en ficha; con 5.000 clientes y 50.000 turnos la agenda y la búsqueda responden sin trabas.
-12. [ ] **F3.12 Verificación de fase**
+12. [x] **F3.12 Verificación de fase**
     - Hecho: criterios de `agenda/skills.md` marcados; tests verdes; `versionName 0.3.0`; merge de `fase/F3` a `main`, tag `fase-F3` y entrada en `docs/changelog.md`.
 
 ## F4 — Backup y restauración `[ ]`
@@ -341,3 +341,15 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F2.6 | `Client`, `ClientSummary`, `PhoneNormalizer`, `ClientValidator`, `SaveClientUseCase`/`SetClientActiveUseCase` (auditoría y conflicto teléfono activo), Room v5 (`ClientEntity`, `ClientRowProjection`, `ClientDao`, `Migration_4_5`, `5.json`), 58 tests unitarios OK + `MigrationTest` compilado. | F2.7 |
 | 18/11/2026 | F2.7 | UI de Clientes (`SearchField` 250 ms, `ConfirmDialog`, `ClientsFragment`, `ClientsViewModel`, `ClientsAdapter` con `ClientRowProjection`, `ClientFormDialogFragment` completo/alta rápida y advertencia duplicado, `ClientDetailFragment` con pestañas vacías F3/F5/F7), criterios F2 marcados en `clientes/skills.md`, build y tests OK. | F2.8 |
 | 18/11/2026 | F2.8 | Fase F2 cerrada (`versionName 0.2.0`, `versionCode 2`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (58 unit tests OK, Lint 0 errores, migraciones v1→v5 compiladas), criterios F2 marcados en `configuracion/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F2` / `v0.2.0`. | F3.1 |
+| 18/11/2026 | F3.1 | Rama `fase/F3`; `AppointmentStatus`, `AppointmentItem`, `Appointment` (duración redondeada a `slotMinutes`), `AppointmentBalance` y `StatusTransitions` (transiciones válidas/inválidas, paso automático `COMPLETED <-> PAID`, corrección `COMPLETED -> CONFIRMED` sin cobros y congelado de comisiones), 64 tests unitarios OK. | F3.2 |
+| 18/11/2026 | F3.2 | `ScheduleBlockType`, `ScheduleBlock` y `AvailabilityChecker` (solapamientos en intervalos semiabiertos, `COMPLETED`/`PAID` bloquean, horarios salón/profesional, días libres, bloqueos generales/parciales y `suggestFreeStartMinutes`), 68 tests unitarios OK. | F3.3 |
+| 18/11/2026 | F3.3 | `RecurrenceRule`, repositorios de agenda, Room v6 (`AppointmentEntity`, `AppointmentItemEntity`, `ScheduleBlockEntity`, `RecurrenceRuleEntity`, `AppointmentCardProjection`, `AppointmentDao`, `Migration_5_6`, `6.json`, FK `RESTRICT`), enlace `hasFutureActiveAppointments`, 69 tests unitarios OK + `MigrationTest`/`AppointmentDaoTest` compilados. | F3.4 |
+| 18/11/2026 | F3.4 | `AppointmentSupport`, `CreateAppointmentUseCase` y `UpdateAppointmentUseCase` (snapshots de precios/duraciones conservados, habilitación por servicio, validación con `AvailabilityChecker` y auditoría), cableado en `AppContainer`, 75 tests unitarios OK. | F3.5 |
+| 18/11/2026 | F3.5 | `AppointmentCardView` (borde 1 dp, barra lateral por estado y rayas en `COMPLETED`, saldo adeudado), `MoneyTextView` con soporte `textAppearance`, `AgendaViewModel`, `DayTimelineAdapter` y `AgendaFragment` (selector Día/Semana, navegación fecha, filtro profesional, bloqueos diarios y FAB). | F3.6 |
+| 18/11/2026 | F3.6 | Vista semanal lunes a domingo (`WeekDaysAdapter` + `item_week_day_row.xml`) con cantidad de turnos, horas ocupadas y bloqueos, más navegación al día elegido al tocar una fila. | F3.7 |
+| 18/11/2026 | F3.7 | `TimeSlotGrid`, `SlotAvailabilityLoader`, `AppointmentCreateViewModel`/`AppointmentCreateFragment` (buscador `LIMIT 12` + alta rápida de cliente, multi-servicios, filtro de profesionales habilitados, grilla libre/ocupada y edición), conectado en `nav_main.xml` y FAB de `AgendaFragment`. | F3.8 |
+| 18/11/2026 | F3.8 | `ChangeAppointmentStatusUseCase` (confirmar, completar congelando comisiones, ausente incrementando cliente, cancelar con motivo y revertir completado sin cobros), `RescheduleAppointmentUseCase`, detalle `AppointmentDetailFragment` y `RescheduleDialogFragment`, 80 tests unitarios OK. | F3.9 |
+| 18/11/2026 | F3.9 | `CreateScheduleBlockUseCase` (aviso de turnos afectados) y `DeactivateScheduleBlockUseCase`, UI `ScheduleBlocksFragment`/`ScheduleBlockFormDialogFragment`, enlace en `AgendaFragment` y `nav_main.xml`, 82 tests unitarios OK. | F3.10 |
+| 18/11/2026 | F3.10 | `RecurrenceRule`, `GenerateRecurringAppointmentsUseCase` (series cada N semanas y reporte de fechas en conflicto) y `CancelRecurringSeriesUseCase` (cancelación única o este y siguientes), UI en `AppointmentCreateFragment` y `AppointmentDetailFragment`, 84 tests unitarios OK. | F3.11 |
+| 18/11/2026 | F3.11 | `ClientVisitsAdapter`, `AppointmentCardView.bindForClientHistory` e historial real de visitas `COMPLETED`/`PAID` más saldo pendiente reactivo en `ClientDetailFragment` / `ClientsViewModel`; `DebugSeeder` SQLite por lotes (5.000 clientes y 50.000 turnos) accesible en build debug y test DAO compilado OK. | F3.12 |
+| 18/11/2026 | F3.12 | Fase F3 cerrada (`versionName 0.3.0`, `versionCode 3`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 84 tests unitarios OK, migraciones v1→v6 compiladas), criterios marcados en `agenda/skills.md`, `configuracion/skills.md`, `servicios/skills.md` y `profesionales/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F3` / `v0.3.0`. | F4.1 |

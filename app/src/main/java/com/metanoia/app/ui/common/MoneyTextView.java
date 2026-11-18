@@ -28,7 +28,12 @@ public class MoneyTextView extends AppCompatTextView {
 
     public MoneyTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Metanoia_Money);
+        boolean hasExplicitAppearance = attrs != null && attrs.getAttributeResourceValue(
+                "http://schemas.android.com/apk/res/android", "textAppearance", 0) != 0;
+        if (!hasExplicitAppearance) {
+            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Metanoia_Money);
+        }
+        setFontFeatureSettings("tnum");
         long initialCents = 0L;
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.MoneyTextView);

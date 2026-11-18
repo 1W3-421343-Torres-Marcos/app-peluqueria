@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/screen_margin">
+
+            <TextView
+                android:id="@+id/aptCreateTitleHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment_create_title"
+                android:textAppearance="@style/TextAppearance.Metanoia.Headline"
+                android:textColor="?attr/colorOnSurface" />
+
+            <!-- 1. Cliente -->
+            <LinearLayout
+                android:id="@+id/sectionClientPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_m"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/appointment_section_client"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Title"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnQuickCreateClient"
+                        style="@style/Widget.Metanoia.Button.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/appointment_quick_client_btn" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtSelectedClient"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                    android:textColor="@color/accent"
+                    android:visibility="gone" />
+
+                <com.metanoia.app.ui.common.SearchField
+                    android:id="@+id/aptClientSearchField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    app:searchHint="@string/clients_search_hint" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/aptClientResultsGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_s"
+                    app:singleSelection="true" />
+
+                <TextView
+                    android:id="@+id/txtClientSearchEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:text="@string/appointment_client_no_matches"
+                    android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- 2. Servicios -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_l"
+                android:text="@string/appointment_section_services"
+                android:textAppearance="@style/TextAppearance.Metanoia.Title"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/txtNoActiveServices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:text="@string/appointment_services_empty"
+                android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/aptServicesChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s" />
+
+            <LinearLayout
+                android:id="@+id/aptServicesSummaryRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtAptDurationSummary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.metanoia.app.ui.common.MoneyTextView
+                    android:id="@+id/txtAptEstimatedPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                    android:textColor="?attr/colorOnSurface" />
+            </LinearLayout>
+
+            <!-- 3. Profesional y 4. Horario (ocultos al editar solo servicios/notas si fuera edición) -->
+            <LinearLayout
+                android:id="@+id/sectionProAndSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_l"
+                    android:text="@string/appointment_section_professional"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Title"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/aptProfessionalChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_s"
+                    app:selectionRequired="true"
+                    app:singleSelection="true" />
+
+                <TextView
+                    android:id="@+id/txtNoEligiblePros"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:text="@string/appointment_no_eligible_professionals"
+                    android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_l"
+                    android:text="@string/appointment_section_schedule"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Title"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtAptSelectedDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAptChangeDate"
+                        style="@style/Widget.Metanoia.Button.Secondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/appointment_change_date" />
+                </LinearLayout>
+
+                <com.metanoia.app.ui.common.TimeSlotGrid
+                    android:id="@+id/aptTimeSlotGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_s" />
+
+                <TextView
+                    android:id="@+id/txtNoFreeSlots"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:text="@string/appointment_no_slots_hint"
+                    android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchAptRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_m"
+                    android:minHeight="@dimen/touch_target_min"
+                    android:text="@string/appointment_repeat_switch" />
+
+                <LinearLayout
+                    android:id="@+id/aptRepeatOptionsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/appointment_repeat_interval_label">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputAptRepeatWeeks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_s"
+                        android:layout_weight="1"
+                        android:hint="@string/appointment_repeat_occurrences_label">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/inputAptRepeatCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:maxLines="1" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_m"
+                android:hint="@string/appointment_notes_label">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputAptNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="300" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchAptConfirmed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/appointment_confirm_immediately" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stroke_width"
+        android:background="?attr/colorOutlineVariant" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/screen_margin">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmAppointment"
+            style="@style/Widget.Metanoia.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/appointment_save_create" />
+    </FrameLayout>
+</LinearLayout>
