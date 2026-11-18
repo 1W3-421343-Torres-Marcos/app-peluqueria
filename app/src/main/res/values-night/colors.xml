@@ -8,4 +8,5 @@
     <color name="divider_subtle">@color/gray800</color>
     <color name="absent_chip_bg">@color/gray800</color>
     <color name="absent_bar">@color/gray800</color>
+    <color name="splash_icon_tint">@color/white</color>
 </resources>

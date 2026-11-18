@@ -28,4 +28,5 @@
     <color name="divider_subtle">@color/gray100</color>
     <color name="absent_chip_bg">@color/gray100</color>
     <color name="absent_bar">@color/gray200</color>
+    <color name="splash_icon_tint">@color/ink</color>
 </resources>

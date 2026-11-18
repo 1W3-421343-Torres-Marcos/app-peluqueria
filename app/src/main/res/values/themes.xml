@@ -27,4 +27,10 @@
         <item name="textAppearanceBodySmall">@style/TextAppearance.Metanoia.Caption</item>
         <item name="textAppearanceLabelLarge">@style/TextAppearance.Metanoia.Label</item>
     </style>
+
+    <style name="Theme.Metanoia.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Metanoia</item>
+    </style>
 </resources>

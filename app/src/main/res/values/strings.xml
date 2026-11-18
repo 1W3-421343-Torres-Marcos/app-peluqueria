@@ -4,4 +4,22 @@
     <string name="brand_wordmark">METANOIA</string>
     <string name="brand_subtitle">Hair Salon</string>
     <string name="cd_metanoia_logo">Metanoia Hair Salon</string>
+
+    <!-- Navegación inferior -->
+    <string name="nav_agenda">Agenda</string>
+    <string name="nav_clients">Clientes</string>
+    <string name="nav_cash">Caja</string>
+    <string name="nav_more">Más</string>
+
+    <!-- Estados vacíos iniciales -->
+    <string name="empty_agenda_title">Todavía no hay turnos cargados para hoy.</string>
+    <string name="empty_clients_title">Todavía no hay clientes registrados.</string>
+    <string name="empty_cash_title">No hay movimientos de caja en el día de hoy.</string>
+
+    <!-- Pantalla Más y apariencia -->
+    <string name="more_appearance_title">Apariencia</string>
+    <string name="theme_mode_system">Sistema</string>
+    <string name="theme_mode_light">Claro</string>
+    <string name="theme_mode_dark">Oscuro</string>
+    <string name="more_upcoming_modules">Próximamente: Servicios, Profesionales, Stock, Reportes, Backup y Configuración.</string>
 </resources>
