@@ -547,4 +547,6 @@
     <string name="templates_restore_defaults">Restaurar predeterminadas</string>
     <string name="templates_save_btn">Guardar plantillas</string>
     <string name="templates_error_empty">Ninguna plantilla puede quedar vacía.</string>
+    <string name="reminder_no_phone_hint">Sin teléfono registrado</string>
+    <string name="whatsapp_not_installed">WhatsApp no está instalado o no hay app disponible para abrir el enlace.</string>
 </resources>

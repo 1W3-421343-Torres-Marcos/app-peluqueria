@@ -12,14 +12,14 @@
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [x] | 10/10 | 100 % |
-| F6 | Recordatorios por WhatsApp | [~] | 1/7 | 14 % |
+| F6 | Recordatorios por WhatsApp | [~] | 2/7 | 29 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **49/86** | **57 %** |
+| **Total** | | | **50/86** | **58 %** |
 
 ---
 
@@ -188,7 +188,7 @@ Entregable: recordar turnos y saludar cumpleaños en pocos toques. Módulos: `re
 1. [x] **F6.1 Plantillas**
    - Archivos: `TemplateRenderer`, settings de plantillas
    - Hecho: variables `{nombre}`, `{fecha}`, `{hora}`, `{servicios}`, `{profesional}`, `{negocio}`; editor con vista previa; tests.
-2. [ ] **F6.2 Lanzador de WhatsApp**
+2. [x] **F6.2 Lanzador de WhatsApp**
    - Archivos: `util/WhatsAppLauncher`
    - Hecho: abre `https://wa.me/<tel>?text=<url-encoded>`; aviso si WhatsApp no está instalado.
 3. [ ] **F6.3 Pendientes de mañana**
@@ -372,3 +372,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F5.9 | `ReceiptPdfBuilder` compartible por `FileProvider` desde `AppointmentDetailFragment` (logo reemplazable + "METANOIA Hair Salon", ítems, pagos y saldo), pestaña real de Gastos e historial en `ClientDetailFragment` (`ClientSpendingAdapter`) y criterio 4 marcado en `clientes/skills.md`. | F5.10 |
 | 18/11/2026 | F5.10 | Fase F5 cerrada (`versionName 0.5.0`, `versionCode 5`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint, 115 tests unitarios OK y tests instrumentados compilados), 11 criterios marcados en `caja/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F5` / `v0.5.0`. | F6.1 |
 | 18/11/2026 | F6.1 | `TemplateRenderer` + `TemplateRendererTest` (4/4 OK), 3 plantillas editables en `Settings`/`UpdateSettingsUseCase`, Room v8 (`SettingsEntity`, `Migration_7_8`, `8.json`, `BackupManager` v8, `SchemaExportTest` 8/8 OK, `MigrationTest` v8 compilado) y editor `TemplatesFragment` con vista previa en vivo accesible desde `SettingsFragment`. | F6.2 |
+| 18/11/2026 | F6.2 | `WhatsAppUrlBuilder` (`https://wa.me/<tel>?text=...` UTF-8) + `WhatsAppUrlBuilderTest` (2/2 OK) y `WhatsAppLauncher` con manejo de teléfono faltante o WhatsApp no instalado, sin permiso `INTERNET`. | F6.3 |
