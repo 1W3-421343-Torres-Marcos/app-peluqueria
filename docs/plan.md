@@ -7,7 +7,7 @@
 
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
-| F1 | Base, base de datos e identidad visual | [~] | 9/10 | 90 % |
+| F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [ ] | 0/8 | 0 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
@@ -19,11 +19,11 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **9/86** | **10 %** |
+| **Total** | | | **10/86** | **12 %** |
 
 ---
 
-## F1 — Base, base de datos e identidad visual `[~]`
+## F1 — Base, base de datos e identidad visual `[x]`
 Entregable: app instalable que abre con splash, tema claro/oscuro y navegación vacía. Módulos: `agents.md`, `design.md`.
 
 1. [x] **F1.1 Crear repositorio y proyecto Gradle**
@@ -53,7 +53,7 @@ Entregable: app instalable que abre con splash, tema claro/oscuro y navegación 
 9. [x] **F1.9 Componentes base**
    - Archivos: `ui/common/{StatusChip,MoneyTextView,EmptyStateView,AlertBanner,ListRowView}`, estilos de botones
    - Hecho: pantalla de catálogo (solo debug) muestra todos los componentes en claro y oscuro según `design.md` §7.
-10. [ ] **F1.10 Verificación de fase**
+10. [x] **F1.10 Verificación de fase**
     - Hecho: `./gradlew check` verde; APK debug instalado en dispositivo real; checklist global de `agents.md` §12 OK; `versionName 0.1.0`; merge de `fase/F1` a `main`, tag `fase-F1` y entrada en `docs/changelog.md`.
 
 ## F2 — Configuración base, servicios, profesionales y clientes `[ ]`
@@ -332,3 +332,4 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | F1.7 | `LogoView` con placeholder tipográfico (`METANOIA` + `Hair Salon`) y slot reemplazable `drawable/logo_metanoia`, `LogoViewSlotTest` OK. | F1.8 |
 | 17/11/2026 | F1.8 | Splash (`core-splashscreen`), `MainActivity` single-Activity, `BottomNavigationView` (Agenda, Clientes, Caja, Más), selector de tema y fragments iniciales. | F1.9 |
 | 17/11/2026 | F1.9 | Estilos de botones (`Primary`, `Secondary`, `Text`), `StatusChip` (7 variantes), `MoneyTextView`, `EmptyStateView`, `AlertBanner`, `ListRowView`, `ComponentCatalogFragment` (solo debug), `StatusChipVariantTest` OK. | F1.10 |
+| 17/11/2026 | F1.10 | Fase F1 cerrada (`versionName 0.1.0`): `./gradlew check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (23 tests OK, Lint 0 errores), checklist `agents.md` §12 OK, `changelog.md` actualizado, merge a `main` y tags `fase-F1` / `v0.1.0`. | F2.1 |
