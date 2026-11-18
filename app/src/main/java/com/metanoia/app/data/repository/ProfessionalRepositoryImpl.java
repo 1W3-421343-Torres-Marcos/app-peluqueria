@@ -1,5 +1,6 @@
 package com.metanoia.app.data.repository;
 
+import com.metanoia.app.data.db.dao.AppointmentDao;
 import com.metanoia.app.data.db.dao.ProfessionalDao;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.mapper.ProfessionalMapper;
@@ -17,9 +18,11 @@ import java.util.Optional;
 public final class ProfessionalRepositoryImpl implements ProfessionalRepository {
 
     private final ProfessionalDao dao;
+    private final AppointmentDao appointmentDao;
 
-    public ProfessionalRepositoryImpl(ProfessionalDao dao) {
+    public ProfessionalRepositoryImpl(ProfessionalDao dao, AppointmentDao appointmentDao) {
         this.dao = Objects.requireNonNull(dao, "dao");
+        this.appointmentDao = Objects.requireNonNull(appointmentDao, "appointmentDao");
     }
 
     @Override
@@ -49,8 +52,8 @@ public final class ProfessionalRepositoryImpl implements ProfessionalRepository 
     }
 
     @Override
-    public boolean hasFutureActiveAppointments(String professionalId, long fromEpochDay) {
-        // La tabla appointments se incorpora en F3.
-        return false;
+    public boolean hasFutureActiveAppointments(String professionalId, long fromDayEpoch) {
+        return appointmentDao.existsFutureOccupyingForProfessionalSync(
+                professionalId, fromDayEpoch);
     }
 }

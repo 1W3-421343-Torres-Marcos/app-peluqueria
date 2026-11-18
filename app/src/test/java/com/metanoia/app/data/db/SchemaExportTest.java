@@ -47,6 +47,17 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_clients_phone"));
     }
 
+    @Test
+    public void roomSchemaV6_isExportedWithAgendaTablesAndIndices() throws Exception {
+        String content = readSchema(6);
+        assertTrue(content.contains("\"tableName\": \"appointments\""));
+        assertTrue(content.contains("\"tableName\": \"appointment_items\""));
+        assertTrue(content.contains("\"tableName\": \"schedule_blocks\""));
+        assertTrue(content.contains("\"tableName\": \"recurrence_rules\""));
+        assertTrue(content.contains("index_appointments_professional_id_day"));
+        assertTrue(content.contains("index_appointments_client_id_day"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

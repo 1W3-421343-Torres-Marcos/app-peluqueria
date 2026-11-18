@@ -15,6 +15,7 @@ import com.metanoia.app.data.db.migration.Migration_1_2;
 import com.metanoia.app.data.db.migration.Migration_2_3;
 import com.metanoia.app.data.db.migration.Migration_3_4;
 import com.metanoia.app.data.db.migration.Migration_4_5;
+import com.metanoia.app.data.db.migration.Migration_5_6;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -152,14 +153,46 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To5_allMigrations_passValidation() throws IOException {
+    public void migrate5To6_createsAgendaTablesWithForeignKeys() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 5)) {
+            db.execSQL("INSERT INTO salon_services VALUES ("
+                    + "'svc-1', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '', '', 4000, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'Sofía', 'sofia', '5491122334455', NULL, NULL, NULL, "
+                    + "'', 0, 1, 1000, 1000)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 6, true, Migration_5_6.INSTANCE)) {
+            migrated.execSQL("INSERT INTO appointments VALUES ("
+                    + "'apt-1', 'cli-1', 'pro-1', 20500, 540, 570, 'CONFIRMED', 0, '', "
+                    + "NULL, NULL, 1000, 1000, 'Dueño')");
+            migrated.execSQL("INSERT INTO appointment_items VALUES ("
+                    + "'item-1', 'apt-1', 'svc-1', 'Corte', 1500000, 30, NULL, NULL, 0)");
+            migrated.execSQL("INSERT INTO schedule_blocks VALUES ("
+                    + "'blk-1', NULL, 20501, 20501, NULL, NULL, 'HOLIDAY', 'Feriado', 1, 1000, 1000)");
+
+            try (Cursor cursor = migrated.query(
+                    "SELECT status, start_min FROM appointments WHERE professional_id = 'pro-1' AND day = 20500")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("CONFIRMED", cursor.getString(0));
+                assertEquals(540, cursor.getInt(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To6_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                5,
+                6,
                 true,
                 AppDatabase.allMigrations()
         )) {

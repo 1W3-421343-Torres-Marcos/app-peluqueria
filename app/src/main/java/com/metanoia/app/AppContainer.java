@@ -4,17 +4,21 @@ import android.content.Context;
 
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
+import com.metanoia.app.data.repository.AppointmentRepositoryImpl;
 import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
 import com.metanoia.app.data.repository.ClientRepositoryImpl;
 import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
+import com.metanoia.app.data.repository.ScheduleBlockRepositoryImpl;
 import com.metanoia.app.data.repository.SettingsRepositoryImpl;
 import com.metanoia.domain.common.Clock;
 import com.metanoia.domain.common.IdGenerator;
+import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.ClientRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
+import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
@@ -41,6 +45,8 @@ public final class AppContainer {
     private final SalonServiceRepository salonServiceRepository;
     private final ProfessionalRepository professionalRepository;
     private final ClientRepository clientRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final ScheduleBlockRepository scheduleBlockRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -61,8 +67,12 @@ public final class AppContainer {
         this.auditLogRepository = new AuditLogRepositoryImpl(database.auditLogDao());
         this.settingsRepository = new SettingsRepositoryImpl(database.settingsDao(), clock);
         this.salonServiceRepository = new SalonServiceRepositoryImpl(database.salonServiceDao());
-        this.professionalRepository = new ProfessionalRepositoryImpl(database.professionalDao());
+        this.professionalRepository = new ProfessionalRepositoryImpl(
+                database.professionalDao(), database.appointmentDao());
         this.clientRepository = new ClientRepositoryImpl(database.clientDao());
+        this.appointmentRepository = new AppointmentRepositoryImpl(
+                database.appointmentDao(), database.recurrenceRuleDao());
+        this.scheduleBlockRepository = new ScheduleBlockRepositoryImpl(database.scheduleBlockDao());
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -121,6 +131,14 @@ public final class AppContainer {
 
     public ClientRepository clientRepository() {
         return clientRepository;
+    }
+
+    public AppointmentRepository appointmentRepository() {
+        return appointmentRepository;
+    }
+
+    public ScheduleBlockRepository scheduleBlockRepository() {
+        return scheduleBlockRepository;
     }
 
     public GetSettingsUseCase getSettingsUseCase() {
