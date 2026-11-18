@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_agenda_to_waitlist"
             app:destination="@id/nav_waitlist" />
+        <action
+            android:id="@+id/action_agenda_to_stock"
+            app:destination="@id/nav_stock" />
     </fragment>
 
     <fragment
@@ -94,6 +97,9 @@
             android:id="@+id/action_more_to_waitlist"
             app:destination="@id/nav_waitlist" />
         <action
+            android:id="@+id/action_more_to_stock"
+            app:destination="@id/nav_stock" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -148,6 +154,20 @@
         android:id="@+id/nav_waitlist"
         android:name="com.metanoia.app.ui.waitlist.WaitlistFragment"
         android:label="@string/waitlist_title" />
+
+    <fragment
+        android:id="@+id/nav_stock"
+        android:name="com.metanoia.app.ui.stock.StockFragment"
+        android:label="@string/stock_title">
+        <action
+            android:id="@+id/action_stock_to_product_detail"
+            app:destination="@id/nav_product_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_product_detail"
+        android:name="com.metanoia.app.ui.stock.movements.ProductDetailFragment"
+        android:label="@string/product_detail_title" />
 
     <fragment
         android:id="@+id/nav_about"

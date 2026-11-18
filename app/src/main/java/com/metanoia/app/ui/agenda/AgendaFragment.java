@@ -155,6 +155,26 @@ public class AgendaFragment extends Fragment {
             latestWeekAppointments = cards == null ? Collections.emptyList() : cards;
             renderCurrentMode();
         });
+
+        viewModel.observeLowStockCount().observe(getViewLifecycleOwner(), count -> {
+            int safeCount = count == null ? 0 : count;
+            if (safeCount <= 0) {
+                binding.agendaLowStockBanner.setVisibility(View.GONE);
+                return;
+            }
+            binding.agendaLowStockBanner.setVisibility(View.VISIBLE);
+            if (safeCount == 1) {
+                binding.agendaLowStockBanner.setMessage(R.string.stock_low_banner_single);
+            } else {
+                binding.agendaLowStockBanner.setMessage(
+                        getString(R.string.stock_low_banner_plural, safeCount));
+            }
+            binding.agendaLowStockBanner.setAction(
+                    R.string.stock_banner_action_view,
+                    v -> NavHostFragment.findNavController(this)
+                            .navigate(R.id.action_agenda_to_stock)
+            );
+        });
     }
 
     private void renderFilterHeader(@NonNull AgendaFilter filter) {

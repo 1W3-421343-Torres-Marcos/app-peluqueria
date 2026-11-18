@@ -17,6 +17,7 @@ import com.metanoia.app.data.repository.ReminderRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
 import com.metanoia.app.data.repository.ScheduleBlockRepositoryImpl;
 import com.metanoia.app.data.repository.SettingsRepositoryImpl;
+import com.metanoia.app.data.repository.StockRepositoryImpl;
 import com.metanoia.app.data.repository.WaitlistRepositoryImpl;
 import com.metanoia.domain.common.Clock;
 import com.metanoia.domain.common.IdGenerator;
@@ -30,6 +31,7 @@ import com.metanoia.domain.repository.ReminderRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.repository.StockRepository;
 import com.metanoia.domain.repository.WaitlistRepository;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.AssignWaitlistEntryUseCase;
@@ -51,14 +53,18 @@ import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.OfferWaitlistEntryUseCase;
 import com.metanoia.domain.usecase.RecordReminderSentUseCase;
+import com.metanoia.domain.usecase.RecordStockMovementUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 import com.metanoia.domain.usecase.ReverseMovementUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
 import com.metanoia.domain.usecase.SaveColorFormulaUseCase;
+import com.metanoia.domain.usecase.SaveProductUseCase;
 import com.metanoia.domain.usecase.SaveProfessionalUseCase;
 import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
 import com.metanoia.domain.usecase.SaveWaitlistEntryUseCase;
+import com.metanoia.domain.usecase.SellProductUseCase;
 import com.metanoia.domain.usecase.SetClientActiveUseCase;
+import com.metanoia.domain.usecase.SetProductActiveUseCase;
 import com.metanoia.domain.usecase.SetProfessionalActiveUseCase;
 import com.metanoia.domain.usecase.SetSalonServiceActiveUseCase;
 import com.metanoia.domain.usecase.UpdateAppointmentUseCase;
@@ -85,6 +91,7 @@ public final class AppContainer {
     private final ReminderRepository reminderRepository;
     private final ColorFormulaRepository colorFormulaRepository;
     private final WaitlistRepository waitlistRepository;
+    private final StockRepository stockRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -117,6 +124,10 @@ public final class AppContainer {
     private final FindWaitlistCandidatesUseCase findWaitlistCandidatesUseCase;
     private final OfferWaitlistEntryUseCase offerWaitlistEntryUseCase;
     private final AssignWaitlistEntryUseCase assignWaitlistEntryUseCase;
+    private final SaveProductUseCase saveProductUseCase;
+    private final SetProductActiveUseCase setProductActiveUseCase;
+    private final RecordStockMovementUseCase recordStockMovementUseCase;
+    private final SellProductUseCase sellProductUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -140,6 +151,7 @@ public final class AppContainer {
         this.reminderRepository = new ReminderRepositoryImpl(database.reminderDao());
         this.colorFormulaRepository = new ColorFormulaRepositoryImpl(database.colorFormulaDao());
         this.waitlistRepository = new WaitlistRepositoryImpl(database.waitlistDao());
+        this.stockRepository = new StockRepositoryImpl(database);
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -185,7 +197,7 @@ public final class AppContainer {
         this.cancelRecurringSeriesUseCase = new CancelRecurringSeriesUseCase(
                 appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.reverseMovementUseCase = new ReverseMovementUseCase(
-                cashRepository, appointmentRepository, settingsRepository,
+                cashRepository, appointmentRepository, stockRepository, settingsRepository,
                 auditLogRepository, clock, idGenerator);
         this.chargeAppointmentUseCase = new ChargeAppointmentUseCase(
                 appointmentRepository, cashRepository, settingsRepository,
@@ -224,6 +236,15 @@ public final class AppContainer {
                 salonServiceRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.assignWaitlistEntryUseCase = new AssignWaitlistEntryUseCase(
                 waitlistRepository, createAppointmentUseCase, settingsRepository,
+                auditLogRepository, clock, idGenerator);
+        this.saveProductUseCase = new SaveProductUseCase(
+                stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.setProductActiveUseCase = new SetProductActiveUseCase(
+                stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.recordStockMovementUseCase = new RecordStockMovementUseCase(
+                stockRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.sellProductUseCase = new SellProductUseCase(
+                stockRepository, cashRepository, settingsRepository,
                 auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
@@ -430,5 +451,25 @@ public final class AppContainer {
 
     public AssignWaitlistEntryUseCase assignWaitlistEntryUseCase() {
         return assignWaitlistEntryUseCase;
+    }
+
+    public StockRepository stockRepository() {
+        return stockRepository;
+    }
+
+    public SaveProductUseCase saveProductUseCase() {
+        return saveProductUseCase;
+    }
+
+    public SetProductActiveUseCase setProductActiveUseCase() {
+        return setProductActiveUseCase;
+    }
+
+    public RecordStockMovementUseCase recordStockMovementUseCase() {
+        return recordStockMovementUseCase;
+    }
+
+    public SellProductUseCase sellProductUseCase() {
+        return sellProductUseCase;
     }
 }

@@ -15,11 +15,11 @@
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
-| F9 | Stock | [ ] | 0/6 | 0 % |
+| F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **63/86** | **73 %** |
+| **Total** | | | **69/86** | **80 %** |
 
 ---
 
@@ -236,25 +236,25 @@ Módulo: `lista-espera`.
 4. [x] **F8.4 Verificación de fase**
    - Hecho: criterios de `lista-espera/skills.md` OK; `versionName 0.8.0`; merge de `fase/F8` a `main`, tag `fase-F8` y entrada en `docs/changelog.md`.
 
-## F9 — Stock `[ ]`
+## F9 — Stock `[x]`
 Módulo: `stock`.
 
-1. [ ] **F9.1 Modelo y persistencia**
+1. [x] **F9.1 Modelo y persistencia**
    - Archivos: `Product`, `StockMovement`, DAOs, migración
    - Hecho: stock = suma de movimientos; tipos uso/venta; tests.
-2. [ ] **F9.2 UI de productos**
+2. [x] **F9.2 UI de productos**
    - Archivos: `ui/stock/`
    - Hecho: lista con filtro por tipo y búsqueda; alta/edición/desactivación.
-3. [ ] **F9.3 Movimientos**
+3. [x] **F9.3 Movimientos**
    - Archivos: `ui/stock/movements/`
    - Hecho: ingreso, egreso por uso, ajuste con motivo; auditados.
-4. [ ] **F9.4 Alertas de stock bajo**
+4. [x] **F9.4 Alertas de stock bajo**
    - Archivos: `LowStockRule`, `AlertBanner`
    - Hecho: chip y banner cuando cantidad ≤ mínimo; tests.
-5. [ ] **F9.5 Integración con caja**
+5. [x] **F9.5 Integración con caja**
    - Archivos: venta suelta de caja
    - Hecho: vender producto descuenta stock y registra movimiento de caja en una única transacción.
-6. [ ] **F9.6 Verificación de fase**
+6. [x] **F9.6 Verificación de fase**
    - Hecho: criterios de `stock/skills.md` OK; `versionName 0.9.0`; merge de `fase/F9` a `main`, tag `fase-F9` y entrada en `docs/changelog.md`.
 
 ## F10 — Comisiones `[ ]`
@@ -386,3 +386,9 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F8.2 | UI de lista de espera (`WaitlistFragment`, `WaitlistViewModel`, `WaitlistAdapter`, `WaitlistFormDialogFragment` reutilizable con prefills, `ClientDao.observeSummariesByIds`, `nav_waitlist`) y accesos desde `AgendaFragment`, `AppointmentCreateFragment` (al no haber horarios libres), `ClientDetailFragment` y `MoreFragment`; `./gradlew.bat test assembleDebug` OK. | F8.3 |
 | 18/11/2026 | F8.3 | `WaitlistMatcher` + `WaitlistMatcherTest` (2/2 OK), `FindWaitlistCandidatesUseCase`, `OfferWaitlistEntryUseCase`, `AssignWaitlistEntryUseCase` + `WaitlistActionsUseCaseTest` (2/2 OK), diálogo `WaitlistSuggestionsDialogFragment` con Ofrecer (WhatsApp)/Asignar (turno con revalidación)/Ignorar disparado al cancelar o reprogramar desde `AppointmentDetailFragment`; `./gradlew.bat test assembleDebug` OK. | F8.4 |
 | 18/11/2026 | F8.4 | Verificación de fase F8: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 147 tests unitarios: 125 en `:domain` + 22 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `lista-espera/skills.md` (5/5) marcados `[x]`, `versionCode 8` / `versionName "0.8.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F8` y `v0.8.0`. | F9.1 |
+| 18/11/2026 | F9.1 | Rama `fase/F9`; modelos `ProductType`, `ProductUnit`, `StockMovementType`, `Product` y `StockMovement`, regla `LowStockRule`, `StockRepository`, `SaveProductUseCase`, `SetProductActiveUseCase` + `SaveProductUseCaseTest` (3/3 OK), Room v12 (`ProductEntity`, `StockMovementEntity` FK RESTRICT, `StockDao`, `StockMapper`, `StockRepositoryImpl`, `Migration_11_12`, `12.json`, `BackupManager` v12), `SchemaExportTest` (12/12 OK) y `MigrationTest` v12 compilado. | F9.2 |
+| 18/11/2026 | F9.2 | UI de catálogo de stock (`StockFragment`, `StockViewModel`, `ProductsAdapter`, `ProductFormDialogFragment`, `StockUiLabels`, enlace `rowStock` en `MoreFragment` y `nav_stock`), filtro por tipo Todos/Uso/Venta/Inactivos, buscador con debounce 250 ms, orden con stock bajo primero y alta/edición/baja lógica; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.3 |
+| 18/11/2026 | F9.3 | `RecordStockMovementUseCase` + `RecordStockMovementUseCaseTest` (3/3 OK: suma de movimientos, ajuste con motivo obligatorio, stock negativo permitido con advertencia y auditoría), detalle `ProductDetailFragment` / `ProductDetailViewModel`, historial `StockMovementsAdapter` y formulario `StockMovementFormDialogFragment` (`IN`/`OUT_USE`/`ADJUSTMENT`), conectado desde `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.4 |
+| 18/11/2026 | F9.4 | `LowStockRuleTest` (3/3 OK: límite `<= minStock`, negativos, suma firmada, exclusión de inactivos en conteo y orden con bajos primero) y `AlertBanner` reactivo de stock bajo en `AgendaFragment` / `AgendaViewModel` con acceso directo a `nav_stock`, sumado a `StatusChip` y banner en `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.5 |
+| 18/11/2026 | F9.5 | `SellProductUseCase` (venta + descuento `OUT_SALE` atómicos en una única transacción, rechazo de productos `USE` y días cerrados), reposición automática de stock en `ReverseMovementUseCase` al revertir `PRODUCT_SALE`, `SellProductUseCaseTest` (4/4 OK con rollback transaccional), `ReverseMovementUseCaseTest` (4/4 OK), `ProductSaleAtomicityTest` (`androidTest`) y selector de productos `SALE`/`BOTH` con cantidad y alerta negativa en `CashMovementFormDialogFragment`/`CashViewModel`; build y tests OK. | F9.6 |
+| 18/11/2026 | F9.6 | Verificación de fase F9: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 162 tests unitarios: 139 en `:domain` + 23 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `stock/skills.md` (5/5) marcados `[x]`, `versionCode 9` / `versionName "0.9.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F9` y `v0.9.0`. | F10.1 |

@@ -17,12 +17,19 @@ import com.metanoia.domain.model.CashMovement;
 import com.metanoia.domain.model.CashMovementType;
 import com.metanoia.domain.model.Money;
 import com.metanoia.domain.model.PaymentMethod;
+import com.metanoia.domain.model.Product;
+import com.metanoia.domain.model.ProductType;
+import com.metanoia.domain.model.ProductUnit;
 import com.metanoia.domain.model.RecurrenceRule;
 import com.metanoia.domain.model.Settings;
+import com.metanoia.domain.model.StockMovement;
+import com.metanoia.domain.model.StockMovementType;
 import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.repository.StockRepository;
+import com.metanoia.domain.rules.LowStockRule;
 
 import org.junit.Test;
 
@@ -95,6 +102,63 @@ public class ReverseMovementUseCaseTest {
         assertEquals(AppointmentStatus.COMPLETED, aptRepo.findById("apt-1").get().status());
     }
 
+    @Test
+    public void reversalOfProductSale_restoresStockAtomically() {
+        InMemoryCashRepo cashRepo = new InMemoryCashRepo();
+        InMemoryAptRepo aptRepo = new InMemoryAptRepo();
+        InMemoryStockRepo stockRepo = new InMemoryStockRepo();
+        stockRepo.saveProduct(new Product.Builder()
+                .id("prod-1")
+                .name("Shampoo")
+                .type(ProductType.SALE)
+                .unit(ProductUnit.UNIT)
+                .salePrice(Money.ofCents(1_000_000L))
+                .minStock(1)
+                .currentStock(3)
+                .active(true)
+                .createdAt(1_000L)
+                .updatedAt(1_000L)
+                .build());
+        stockRepo.saveMovement(new StockMovement.Builder()
+                .id("sm-init")
+                .productId("prod-1")
+                .timestamp(1_000L)
+                .type(StockMovementType.IN)
+                .quantity(5)
+                .operator("Dueño")
+                .build());
+        stockRepo.saveMovement(new StockMovement.Builder()
+                .id("sm-sale")
+                .productId("prod-1")
+                .timestamp(2_000L)
+                .type(StockMovementType.OUT_SALE)
+                .quantity(-2)
+                .cashMovementId("mov-sale")
+                .operator("Dueño")
+                .build());
+        cashRepo.saveMovement(new CashMovement.Builder()
+                .id("mov-sale")
+                .day(20_500L)
+                .timestamp(2_000L)
+                .type(CashMovementType.PRODUCT_SALE)
+                .method(PaymentMethod.CASH)
+                .amount(Money.ofCents(2_000_000L))
+                .concept("Venta: Shampoo x2")
+                .productId("prod-1")
+                .quantity(2)
+                .operator("Dueño")
+                .build());
+
+        ReverseMovementUseCase useCase = buildUseCaseWithStock(
+                cashRepo, aptRepo, stockRepo, new ArrayList<>(), 20_500L);
+        Result<CashMovement> reversal = useCase.execute("mov-sale", "Cliente cambió de producto");
+
+        assertTrue(reversal.isSuccess());
+        assertEquals(5, stockRepo.findProductById("prod-1").get().currentStock());
+        assertEquals(5, stockRepo.sumMovementsByProductId("prod-1"));
+        assertEquals(3, stockRepo.movements.size());
+    }
+
     private static ReverseMovementUseCase buildUseCase(
             InMemoryCashRepo cashRepo,
             InMemoryAptRepo aptRepo,
@@ -137,6 +201,51 @@ public class ReverseMovementUseCaseTest {
         IdGenerator ids = () -> "gen-" + (++seq[0]);
         return new ReverseMovementUseCase(
                 cashRepo, aptRepo, settingsRepo, auditRepo, fixedClock, ids);
+    }
+
+    private static ReverseMovementUseCase buildUseCaseWithStock(
+            InMemoryCashRepo cashRepo,
+            InMemoryAptRepo aptRepo,
+            StockRepository stockRepo,
+            List<AuditRecord> audits,
+            long todayEpoch
+    ) {
+        SettingsRepository settingsRepo = new SettingsRepository() {
+            @Override
+            public Settings getSettings() {
+                return Settings.defaultSettings();
+            }
+
+            @Override
+            public void saveSettings(Settings settings) {
+            }
+        };
+        AuditLogRepository auditRepo = audits::add;
+        Clock fixedClock = new Clock() {
+            @Override
+            public long nowMillis() {
+                return 5_000L;
+            }
+
+            @Override
+            public long todayEpochDay() {
+                return todayEpoch;
+            }
+
+            @Override
+            public int currentMinuteOfDay() {
+                return 600;
+            }
+
+            @Override
+            public ZoneId zoneId() {
+                return ARGENTINA_ZONE;
+            }
+        };
+        int[] seq = {0};
+        IdGenerator ids = () -> "gen-" + (++seq[0]);
+        return new ReverseMovementUseCase(
+                cashRepo, aptRepo, stockRepo, settingsRepo, auditRepo, fixedClock, ids);
     }
 
     private static Appointment paidAppointment(String id, long cents) {
@@ -305,6 +414,63 @@ public class ReverseMovementUseCaseTest {
 
         @Override
         public void saveRecurrenceRule(RecurrenceRule rule) {
+        }
+    }
+
+    private static final class InMemoryStockRepo implements StockRepository {
+        final Map<String, Product> products = new LinkedHashMap<>();
+        final List<StockMovement> movements = new ArrayList<>();
+
+        @Override
+        public Optional<Product> findProductById(String id) {
+            return Optional.ofNullable(products.get(id));
+        }
+
+        @Override
+        public List<Product> findAllProducts(boolean includeInactive) {
+            return new ArrayList<>(products.values());
+        }
+
+        @Override
+        public List<Product> findActiveSaleProducts() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<StockMovement> findMovementsByProductId(String productId) {
+            List<StockMovement> list = new ArrayList<>();
+            for (StockMovement m : movements) {
+                if (productId.equals(m.productId())) {
+                    list.add(m);
+                }
+            }
+            return list;
+        }
+
+        @Override
+        public int sumMovementsByProductId(String productId) {
+            return LowStockRule.calculateStock(findMovementsByProductId(productId));
+        }
+
+        @Override
+        public void saveProduct(Product product) {
+            products.put(product.id(), product);
+        }
+
+        @Override
+        public void saveMovement(StockMovement movement) {
+            movements.add(movement);
+        }
+
+        @Override
+        public void recordMovementAndUpdateProduct(StockMovement movement, Product updatedProduct) {
+            movements.add(movement);
+            products.put(updatedProduct.id(), updatedProduct);
+        }
+
+        @Override
+        public void runInTransaction(Runnable action) {
+            action.run();
         }
     }
 }

@@ -21,6 +21,7 @@ import com.metanoia.app.data.db.migration.Migration_7_8;
 import com.metanoia.app.data.db.migration.Migration_8_9;
 import com.metanoia.app.data.db.migration.Migration_9_10;
 import com.metanoia.app.data.db.migration.Migration_10_11;
+import com.metanoia.app.data.db.migration.Migration_11_12;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -332,14 +333,40 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To11_allMigrations_passValidation() throws IOException {
+    public void migrate11To12_createsStockTablesWithIndices() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 11)) {
+            db.execSQL("INSERT INTO cash_movements VALUES ("
+                    + "'mov-1', 20500, 2000, 'PRODUCT_SALE', 'CASH', 1500000, "
+                    + "'Venta shampoo', NULL, NULL, 'prod-1', 1, NULL, 'Dueño', NULL)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 12, true, Migration_11_12.INSTANCE)) {
+            migrated.execSQL("INSERT INTO products VALUES ("
+                    + "'prod-1', 'Shampoo Nutritivo', 'shampoo nutritivo', 'Kérastase', "
+                    + "'BOTH', 'MILLILITER', 1500000, 2, 4, 1, 1000, 1000)");
+            migrated.execSQL("INSERT INTO stock_movements VALUES ("
+                    + "'sm-1', 'prod-1', 2000, 'OUT_SALE', -1, 'Venta: Shampoo Nutritivo x1', "
+                    + "'mov-1', 'Dueño')");
+            try (Cursor cursor = migrated.query(
+                    "SELECT current_stock, sale_price_cents FROM products WHERE id = 'prod-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals(4, cursor.getInt(0));
+                assertEquals(1_500_000L, cursor.getLong(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To12_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                11,
+                12,
                 true,
                 AppDatabase.allMigrations()
         )) {
@@ -351,7 +378,11 @@ public class MigrationTest {
             migrated.execSQL("INSERT INTO waitlist_entries VALUES ("
                     + "'wl-all', 'cli-all', NULL, 20520, '', 600, 900, 20530, 'ACTIVE', '', 1000, NULL)");
             migrated.execSQL("INSERT INTO waitlist_entry_services VALUES ('wl-all', 'svc-all')");
-            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM waitlist_entries")) {
+            migrated.execSQL("INSERT INTO products VALUES ("
+                    + "'prod-all', 'Tintura 7.1', 'tintura 7.1', NULL, 'USE', 'GRAM', NULL, 3, 5, 1, 1000, 1000)");
+            migrated.execSQL("INSERT INTO stock_movements VALUES ("
+                    + "'sm-all', 'prod-all', 1000, 'IN', 5, 'Stock inicial', NULL, 'Dueño')");
+            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM products")) {
                 cursor.moveToFirst();
                 assertEquals(1, cursor.getInt(0));
             }

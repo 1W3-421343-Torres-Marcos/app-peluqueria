@@ -26,8 +26,8 @@ Controlar productos de uso interno y de venta, con alertas de reposición.
 Cálculo de stock, regla de stock bajo, transacción venta+caja (rollback), ajuste con motivo.
 
 ## Criterios de aceptación
-- [ ] Alta/edición/baja lógica de productos de uso y de venta.
-- [ ] Movimientos de ingreso, egreso y ajuste auditados.
-- [ ] Aviso de stock bajo visible.
-- [ ] Venta desde caja descuenta stock atómicamente.
-- [ ] Tests de stock verdes.
+- [x] Alta/edición/baja lógica de productos de uso y de venta.
+- [x] Movimientos de ingreso, egreso y ajuste auditados.
+- [x] Aviso de stock bajo visible.
+- [x] Venta desde caja descuenta stock atómicamente.
+- [x] Tests de stock verdes.

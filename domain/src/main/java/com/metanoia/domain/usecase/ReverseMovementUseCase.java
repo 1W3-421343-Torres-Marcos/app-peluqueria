@@ -10,10 +10,14 @@ import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.AuditRecord;
 import com.metanoia.domain.model.CashMovement;
 import com.metanoia.domain.model.CashMovementType;
+import com.metanoia.domain.model.Product;
+import com.metanoia.domain.model.StockMovement;
+import com.metanoia.domain.model.StockMovementType;
 import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.repository.StockRepository;
 import com.metanoia.domain.rules.AppointmentPaymentCalculator;
 import com.metanoia.domain.rules.StatusTransitions;
 
@@ -32,6 +36,7 @@ public final class ReverseMovementUseCase {
 
     private final CashRepository cashRepository;
     private final AppointmentRepository appointmentRepository;
+    private final StockRepository stockRepository;
     private final SettingsRepository settingsRepository;
     private final AuditLogRepository auditLogRepository;
     private final Clock clock;
@@ -45,9 +50,39 @@ public final class ReverseMovementUseCase {
             Clock clock,
             IdGenerator idGenerator
     ) {
+        this(cashRepository, appointmentRepository, null,
+                settingsRepository, auditLogRepository, clock, idGenerator, false);
+    }
+
+    public ReverseMovementUseCase(
+            CashRepository cashRepository,
+            AppointmentRepository appointmentRepository,
+            StockRepository stockRepository,
+            SettingsRepository settingsRepository,
+            AuditLogRepository auditLogRepository,
+            Clock clock,
+            IdGenerator idGenerator
+    ) {
+        this(cashRepository, appointmentRepository, stockRepository,
+                settingsRepository, auditLogRepository, clock, idGenerator, true);
+    }
+
+    private ReverseMovementUseCase(
+            CashRepository cashRepository,
+            AppointmentRepository appointmentRepository,
+            StockRepository stockRepository,
+            SettingsRepository settingsRepository,
+            AuditLogRepository auditLogRepository,
+            Clock clock,
+            IdGenerator idGenerator,
+            boolean requireStockRepo
+    ) {
         this.cashRepository = Objects.requireNonNull(cashRepository, "cashRepository");
         this.appointmentRepository = Objects.requireNonNull(
                 appointmentRepository, "appointmentRepository");
+        this.stockRepository = requireStockRepo
+                ? Objects.requireNonNull(stockRepository, "stockRepository")
+                : stockRepository;
         this.settingsRepository = Objects.requireNonNull(settingsRepository, "settingsRepository");
         this.auditLogRepository = Objects.requireNonNull(auditLogRepository, "auditLogRepository");
         this.clock = Objects.requireNonNull(clock, "clock");
@@ -137,6 +172,36 @@ public final class ReverseMovementUseCase {
                                 .updatedAt(now)
                                 .build();
                         appointmentRepository.save(updatedApt);
+                    }
+                }
+            } else if (stockRepository != null
+                    && original.type() == CashMovementType.PRODUCT_SALE
+                    && original.productId().isPresent()
+                    && original.quantity().isPresent()) {
+                String productId = original.productId().get();
+                int qty = original.quantity().get();
+                if (qty > 0) {
+                    Optional<Product> productOpt = stockRepository.findProductById(productId);
+                    if (productOpt.isPresent()) {
+                        Product product = productOpt.get();
+                        int newStock = Math.addExact(
+                                stockRepository.sumMovementsByProductId(productId), qty);
+                        StockMovement restoreMovement = new StockMovement.Builder()
+                                .id(idGenerator.nextId())
+                                .productId(productId)
+                                .timestamp(now)
+                                .type(StockMovementType.ADJUSTMENT)
+                                .quantity(qty)
+                                .reason("Reverso de venta: " + cleanReason)
+                                .cashMovementId(reversal.id())
+                                .operator(operator)
+                                .build();
+                        Product updatedProduct = product.toBuilder()
+                                .currentStock(newStock)
+                                .updatedAt(now)
+                                .build();
+                        stockRepository.recordMovementAndUpdateProduct(
+                                restoreMovement, updatedProduct);
                     }
                 }
             }
