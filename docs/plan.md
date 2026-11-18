@@ -8,7 +8,7 @@
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
-| F2 | Configuración base, servicios, profesionales y clientes | [~] | 4/8 | 50 % |
+| F2 | Configuración base, servicios, profesionales y clientes | [~] | 5/8 | 63 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **14/86** | **16 %** |
+| **Total** | | | **15/86** | **17 %** |
 
 ---
 
@@ -71,7 +71,7 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 4. [x] **F2.4 Profesionales: dominio y datos**
    - Archivos: `Professional`, `WorkSchedule`, `ProfessionalServiceCrossRef`, DAOs, migración
    - Hecho: horario semanal, días libres, servicios y % comisión persistidos; validaciones con tests.
-5. [ ] **F2.5 Profesionales: UI**
+5. [x] **F2.5 Profesionales: UI**
    - Archivos: `ui/professionals/`
    - Hecho: alta/edición con editor de horario semanal; criterios de `profesionales/skills.md` OK.
 6. [ ] **F2.6 Clientes: dominio y datos**
@@ -337,3 +337,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F2.2 | `TextNormalizer`, `SalonService`, `SalonServiceValidator`, `SaveSalonServiceUseCase`/`SetSalonServiceActiveUseCase`, Room v3 (`Migration_2_3`, `3.json`), 39 tests unitarios OK + `MigrationTest` compilado. | F2.3 |
 | 18/11/2026 | F2.3 | UI de Servicios (`ServicesFragment`, `ServicesViewModel`, `ServicesAdapter`, `ServiceFormDialogFragment`), enlace desde Más, criterios marcados en `servicios/skills.md`, build y tests OK. | F2.4 |
 | 18/11/2026 | F2.4 | `Professional`, `ProfessionalValidator`, `SaveProfessionalUseCase`/`SetProfessionalActiveUseCase`/`ManageProfessionalDayOffUseCase`, Room v4 (`Migration_3_4`, `4.json` con FK RESTRICT), 46 tests unitarios OK + `MigrationTest` compilado. | F2.5 |
+| 18/11/2026 | F2.5 | UI de Profesionales (`ProfessionalsFragment`, `ProfessionalsViewModel`, `ProfessionalsAdapter`, `ProfessionalFormFragment` con checklist de servicios, `WeeklyScheduleEditorView` y días libres), enlace desde Más, `Formats.formatPercent` + test OK. | F2.6 |

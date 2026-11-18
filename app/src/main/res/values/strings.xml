@@ -29,6 +29,8 @@
     <string name="more_settings_subtitle">Negocio, horarios, duración de bloques y operadores</string>
     <string name="more_services_title">Servicios</string>
     <string name="more_services_subtitle">Catálogo de precios, duraciones y coloración</string>
+    <string name="more_professionals_title">Profesionales</string>
+    <string name="more_professionals_subtitle">Horarios, servicios habilitados y comisiones</string>
     <string name="more_about_title">Acerca de Metanoia</string>
     <string name="more_about_subtitle">Versión de la app e información local</string>
 
@@ -137,4 +139,27 @@
     <string name="service_error_conflict">Ya existe otro servicio activo con ese nombre en la categoría.</string>
     <string name="service_error_validation">Revisá los datos del servicio: nombre, categoría, precio y duración válidos.</string>
     <string name="service_error_unexpected">No se pudo guardar el servicio.</string>
+
+    <!-- Profesionales (F2.5) -->
+    <string name="professionals_title">Profesionales</string>
+    <string name="professional_form_new_title">Nuevo profesional</string>
+    <string name="professional_form_edit_title">Editar profesional</string>
+    <string name="professionals_empty">Todavía no hay profesionales cargados.</string>
+    <string name="professionals_new_fab">Nuevo profesional</string>
+    <string name="professional_name_label">Nombre del profesional</string>
+    <string name="professional_phone_label">Teléfono (opcional)</string>
+    <string name="professional_commission_label">Comisión (%)</string>
+    <string name="professional_active_switch">Profesional activo para recibir turnos</string>
+    <string name="professional_services_section">Servicios que realiza</string>
+    <string name="professional_no_services_hint">No hay servicios activos cargados aún.</string>
+    <string name="professional_schedule_section">Horario semanal de trabajo</string>
+    <string name="professional_days_off_section">Días libres puntuales</string>
+    <string name="professional_add_day_off">+ Agregar día libre</string>
+    <string name="professional_save">Guardar profesional</string>
+    <string name="professional_saved">Profesional guardado</string>
+    <string name="professional_row_meta_active">%1$d servicios</string>
+    <string name="professional_row_meta_inactive">%1$d servicios · Inactivo</string>
+    <string name="professional_error_conflict">No se puede desactivar: tiene turnos futuros activos.</string>
+    <string name="professional_error_validation">Revisá los datos: nombre, comisión (0–100 %) y horario dentro del salón.</string>
+    <string name="professional_error_unexpected">No se pudo guardar el profesional.</string>
 </resources>

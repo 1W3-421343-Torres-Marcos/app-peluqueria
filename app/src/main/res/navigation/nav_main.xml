@@ -27,6 +27,9 @@
             android:id="@+id/action_more_to_services"
             app:destination="@id/nav_services" />
         <action
+            android:id="@+id/action_more_to_professionals"
+            app:destination="@id/nav_professionals" />
+        <action
             android:id="@+id/action_more_to_settings"
             app:destination="@id/nav_settings" />
         <action
@@ -41,6 +44,20 @@
         android:id="@+id/nav_services"
         android:name="com.metanoia.app.ui.services.ServicesFragment"
         android:label="@string/services_title" />
+
+    <fragment
+        android:id="@+id/nav_professionals"
+        android:name="com.metanoia.app.ui.professionals.ProfessionalsFragment"
+        android:label="@string/professionals_title">
+        <action
+            android:id="@+id/action_professionals_to_form"
+            app:destination="@id/nav_professional_form" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_professional_form"
+        android:name="com.metanoia.app.ui.professionals.ProfessionalFormFragment"
+        android:label="@string/professionals_title" />
 
     <fragment
         android:id="@+id/nav_settings"
