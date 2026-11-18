@@ -9,7 +9,7 @@
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
-| F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
+| F3 | Agenda de turnos | [~] | 1/12 | 8 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **18/86** | **21 %** |
+| **Total** | | | **19/86** | **22 %** |
 
 ---
 
@@ -83,10 +83,10 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 8. [x] **F2.8 Verificación de fase**
    - Hecho: tests verdes; tests de migración v1→actual; flujo manual completo en dispositivo; `versionName 0.2.0`; merge de `fase/F2` a `main`, tag `fase-F2` y entrada en `docs/changelog.md`.
 
-## F3 — Agenda de turnos `[ ]`
-Entregable: agenda operativa diaria/semanal con turnos válidos. Módulo: `agenda`.
+## F3 — Agenda de turnos `[~]`
+Entregable: agenda operativa diaria/semanal con turnos válidos. Módulos: `agenda`.
 
-1. [ ] **F3.1 Modelo de turno y estados**
+1. [x] **F3.1 Modelo de turno y estados**
    - Archivos: `Appointment`, `AppointmentItem`, `AppointmentStatus` (PENDING, CONFIRMED, COMPLETED, PAID, CANCELLED, NO_SHOW), `StatusTransitions`, `AppointmentBalance`
    - Hecho: duración = suma de ítems; tests de todas las transiciones válidas e inválidas, del paso automático COMPLETED ↔ PAID según `paidCents`/`balanceCents` derivados, de la corrección COMPLETED → CONFIRMED (solo sin cobros) y del congelado de comisión al completar.
 2. [ ] **F3.2 Validador de disponibilidad**
@@ -341,3 +341,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F2.6 | `Client`, `ClientSummary`, `PhoneNormalizer`, `ClientValidator`, `SaveClientUseCase`/`SetClientActiveUseCase` (auditoría y conflicto teléfono activo), Room v5 (`ClientEntity`, `ClientRowProjection`, `ClientDao`, `Migration_4_5`, `5.json`), 58 tests unitarios OK + `MigrationTest` compilado. | F2.7 |
 | 18/11/2026 | F2.7 | UI de Clientes (`SearchField` 250 ms, `ConfirmDialog`, `ClientsFragment`, `ClientsViewModel`, `ClientsAdapter` con `ClientRowProjection`, `ClientFormDialogFragment` completo/alta rápida y advertencia duplicado, `ClientDetailFragment` con pestañas vacías F3/F5/F7), criterios F2 marcados en `clientes/skills.md`, build y tests OK. | F2.8 |
 | 18/11/2026 | F2.8 | Fase F2 cerrada (`versionName 0.2.0`, `versionCode 2`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (58 unit tests OK, Lint 0 errores, migraciones v1→v5 compiladas), criterios F2 marcados en `configuracion/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F2` / `v0.2.0`. | F3.1 |
+| 18/11/2026 | F3.1 | Rama `fase/F3`; `AppointmentStatus`, `AppointmentItem`, `Appointment` (duración redondeada a `slotMinutes`), `AppointmentBalance` y `StatusTransitions` (transiciones válidas/inválidas, paso automático `COMPLETED <-> PAID`, corrección `COMPLETED -> CONFIRMED` sin cobros y congelado de comisiones), 64 tests unitarios OK. | F3.2 |
