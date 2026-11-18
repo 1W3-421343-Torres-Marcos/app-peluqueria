@@ -9,6 +9,7 @@ import com.metanoia.domain.model.AppointmentItem;
 import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.AuditRecord;
 import com.metanoia.domain.model.Client;
+import com.metanoia.domain.model.ColorFormula;
 import com.metanoia.domain.model.Professional;
 import com.metanoia.domain.model.RecurrenceRule;
 import com.metanoia.domain.model.ScheduleBlock;
@@ -16,6 +17,7 @@ import com.metanoia.domain.model.Settings;
 import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.ClientRepository;
+import com.metanoia.domain.repository.ColorFormulaRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
@@ -23,12 +25,14 @@ import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.rules.AppointmentSupport;
 import com.metanoia.domain.rules.AvailabilityChecker;
 import com.metanoia.domain.rules.AvailabilityChecker.UnavailabilityReason;
+import com.metanoia.domain.rules.ColorFormulaRules;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Genera una serie recurrente cada N semanas hasta fecha o cantidad límite,
@@ -45,6 +49,7 @@ public final class GenerateRecurringAppointmentsUseCase {
     private final ScheduleBlockRepository scheduleBlockRepository;
     private final SettingsRepository settingsRepository;
     private final AuditLogRepository auditLogRepository;
+    private final ColorFormulaRepository colorFormulaRepository;
     private final Clock clock;
     private final IdGenerator idGenerator;
 
@@ -59,6 +64,32 @@ public final class GenerateRecurringAppointmentsUseCase {
             Clock clock,
             IdGenerator idGenerator
     ) {
+        this(
+                appointmentRepository,
+                clientRepository,
+                professionalRepository,
+                serviceRepository,
+                scheduleBlockRepository,
+                settingsRepository,
+                auditLogRepository,
+                null,
+                clock,
+                idGenerator
+        );
+    }
+
+    public GenerateRecurringAppointmentsUseCase(
+            AppointmentRepository appointmentRepository,
+            ClientRepository clientRepository,
+            ProfessionalRepository professionalRepository,
+            SalonServiceRepository serviceRepository,
+            ScheduleBlockRepository scheduleBlockRepository,
+            SettingsRepository settingsRepository,
+            AuditLogRepository auditLogRepository,
+            ColorFormulaRepository colorFormulaRepository,
+            Clock clock,
+            IdGenerator idGenerator
+    ) {
         this.appointmentRepository = Objects.requireNonNull(
                 appointmentRepository, "appointmentRepository");
         this.clientRepository = Objects.requireNonNull(clientRepository, "clientRepository");
@@ -69,6 +100,7 @@ public final class GenerateRecurringAppointmentsUseCase {
                 scheduleBlockRepository, "scheduleBlockRepository");
         this.settingsRepository = Objects.requireNonNull(settingsRepository, "settingsRepository");
         this.auditLogRepository = Objects.requireNonNull(auditLogRepository, "auditLogRepository");
+        this.colorFormulaRepository = colorFormulaRepository;
         this.clock = Objects.requireNonNull(clock, "clock");
         this.idGenerator = Objects.requireNonNull(idGenerator, "idGenerator");
     }
@@ -127,6 +159,28 @@ public final class GenerateRecurringAppointmentsUseCase {
         int endMin = Appointment.calculateEndMin(
                 request.startMin, templateResult.getValue(), settings.slotMinutes());
 
+        Set<String> colorServiceIds = Collections.emptySet();
+        ColorFormula latestFormula = null;
+        if (request.repeatLastColorFormula) {
+            if (colorFormulaRepository == null) {
+                return Result.failure(DomainError.UNEXPECTED,
+                        "Repositorio de fichas de color no configurado");
+            }
+            colorServiceIds = AppointmentSupport.collectColorServiceIds(
+                    templateResult.getValue(), serviceRepository);
+            if (colorServiceIds.isEmpty()) {
+                return Result.failure(DomainError.VALIDATION_ERROR,
+                        "Seleccioná un servicio de coloración para repetir una fórmula");
+            }
+            Optional<ColorFormula> latestOpt = colorFormulaRepository.findLatestActiveByClientId(
+                    clientOpt.get().id());
+            if (!latestOpt.isPresent()) {
+                return Result.failure(DomainError.NOT_FOUND,
+                        "El cliente no tiene fórmulas de coloración previas");
+            }
+            latestFormula = latestOpt.get();
+        }
+
         List<Long> candidateDays = buildCandidateDays(
                 request.startDay, request.intervalWeeks, request.untilDay, request.maxOccurrences);
         if (candidateDays.isEmpty()) {
@@ -152,6 +206,7 @@ public final class GenerateRecurringAppointmentsUseCase {
                 ? AppointmentStatus.CONFIRMED
                 : AppointmentStatus.PENDING;
         List<Appointment> created = new ArrayList<>();
+        List<ColorFormula> copiedFormulas = new ArrayList<>();
         List<SkippedOccurrence> conflicts = new ArrayList<>();
 
         for (long candidateDay : candidateDays) {
@@ -172,6 +227,20 @@ public final class GenerateRecurringAppointmentsUseCase {
             String aptId = idGenerator.nextId();
             List<AppointmentItem> items = cloneItemsForAppointment(
                     aptId, templateResult.getValue());
+            if (latestFormula != null) {
+                ColorFormula draft = ColorFormulaRules.duplicateAsNewDraft(
+                        latestFormula,
+                        idGenerator.nextId(),
+                        aptId,
+                        professional.id(),
+                        candidateDay,
+                        now,
+                        idGenerator
+                );
+                items = AppointmentSupport.attachColorFormulaToColorItems(
+                        items, colorServiceIds, draft.id());
+                copiedFormulas.add(draft);
+            }
             Appointment appointment = new Appointment.Builder()
                     .id(aptId)
                     .clientId(clientOpt.get().id())
@@ -198,6 +267,9 @@ public final class GenerateRecurringAppointmentsUseCase {
 
         appointmentRepository.saveRecurrenceRule(rule);
         appointmentRepository.saveAll(created);
+        for (ColorFormula draft : copiedFormulas) {
+            colorFormulaRepository.save(draft);
+        }
         auditLogRepository.record(new AuditRecord.Builder()
                 .id(idGenerator.nextId())
                 .timestamp(now)
@@ -261,6 +333,7 @@ public final class GenerateRecurringAppointmentsUseCase {
         private final int intervalWeeks;
         private final Long untilDay;
         private final Integer maxOccurrences;
+        private final boolean repeatLastColorFormula;
 
         public Request(
                 String clientId,
@@ -274,6 +347,23 @@ public final class GenerateRecurringAppointmentsUseCase {
                 Long untilDay,
                 Integer maxOccurrences
         ) {
+            this(clientId, professionalId, startDay, startMin, serviceIds, notes, confirmed,
+                    intervalWeeks, untilDay, maxOccurrences, false);
+        }
+
+        public Request(
+                String clientId,
+                String professionalId,
+                long startDay,
+                int startMin,
+                List<String> serviceIds,
+                String notes,
+                boolean confirmed,
+                int intervalWeeks,
+                Long untilDay,
+                Integer maxOccurrences,
+                boolean repeatLastColorFormula
+        ) {
             this.clientId = clientId;
             this.professionalId = professionalId;
             this.startDay = startDay;
@@ -286,6 +376,7 @@ public final class GenerateRecurringAppointmentsUseCase {
             this.intervalWeeks = intervalWeeks;
             this.untilDay = untilDay;
             this.maxOccurrences = maxOccurrences;
+            this.repeatLastColorFormula = repeatLastColorFormula;
         }
     }
 

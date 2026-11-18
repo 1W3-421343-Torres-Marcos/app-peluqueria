@@ -18,8 +18,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.entity.ProfessionalServiceCrossRef;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
+import com.metanoia.app.data.db.pojo.ColorFormulaWithComponents;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.db.projection.ClientRowProjection;
+import com.metanoia.app.data.mapper.ColorFormulaMapper;
 import com.metanoia.app.databinding.FragmentAppointmentCreateBinding;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader.SlotLoadResult;
 import com.metanoia.app.ui.clients.ClientDetailFragment;
@@ -27,6 +29,7 @@ import com.metanoia.app.ui.clients.ClientFormDialogFragment;
 import com.metanoia.app.util.Formats;
 import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentItem;
+import com.metanoia.domain.model.ColorFormula;
 import com.metanoia.domain.rules.PhoneNormalizer;
 import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase.RecurringResult;
 import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase.SkippedOccurrence;
@@ -73,6 +76,8 @@ public class AppointmentCreateFragment extends Fragment {
     private final List<String> selectedServiceIds = new ArrayList<>();
     private final Map<String, SalonServiceEntity> servicesById = new LinkedHashMap<>();
     private List<ProfessionalWithDetails> allProfessionals = Collections.emptyList();
+    @Nullable
+    private ColorFormulaWithComponents latestClientFormula;
 
     @Nullable
     @Override
@@ -162,6 +167,15 @@ public class AppointmentCreateFragment extends Fragment {
 
     private void observeData(boolean isEdit) {
         viewModel.observeClientResults().observe(getViewLifecycleOwner(), this::renderClientResults);
+        if (!isEdit) {
+            viewModel.observeLatestClientFormula().observe(getViewLifecycleOwner(), formula -> {
+                latestClientFormula = formula;
+                if (formula == null) {
+                    binding.chipRepeatLastFormula.setChecked(false);
+                }
+                updateRepeatFormulaCardVisibility();
+            });
+        }
         viewModel.observeSlotMinutes().observe(getViewLifecycleOwner(), slotMin -> {
             if (slotMin != null && slotMin > 0) {
                 currentSlotMinutes = slotMin;
@@ -242,6 +256,9 @@ public class AppointmentCreateFragment extends Fragment {
         selectedClientName = name;
         binding.txtSelectedClient.setText(getString(R.string.appointment_client_selected, name));
         binding.txtSelectedClient.setVisibility(View.VISIBLE);
+        binding.chipRepeatLastFormula.setChecked(false);
+        viewModel.setSelectedClientId(id);
+        updateRepeatFormulaCardVisibility();
     }
 
     private void renderServiceChips(@Nullable List<SalonServiceEntity> services) {
@@ -281,6 +298,7 @@ public class AppointmentCreateFragment extends Fragment {
     private int updateServicesSummary() {
         if (selectedServiceIds.isEmpty()) {
             binding.aptServicesSummaryRow.setVisibility(View.GONE);
+            updateRepeatFormulaCardVisibility();
             return 0;
         }
         int rawDuration = 0;
@@ -299,7 +317,42 @@ public class AppointmentCreateFragment extends Fragment {
         binding.txtAptDurationSummary.setText(
                 getString(R.string.appointment_services_summary, rounded));
         binding.txtAptEstimatedPrice.setMoneyCents(totalCents);
+        updateRepeatFormulaCardVisibility();
         return rounded;
+    }
+
+    private void updateRepeatFormulaCardVisibility() {
+        if (binding == null) {
+            return;
+        }
+        boolean isEdit = editingAppointmentId != null && !editingAppointmentId.isEmpty();
+        boolean hasColorService = false;
+        for (String id : selectedServiceIds) {
+            SalonServiceEntity entity = servicesById.get(id);
+            if (entity != null && entity.colorService) {
+                hasColorService = true;
+                break;
+            }
+        }
+        boolean hasPreviousFormula = latestClientFormula != null
+                && latestClientFormula.formula != null
+                && latestClientFormula.components != null
+                && !latestClientFormula.components.isEmpty();
+        boolean visible = !isEdit
+                && selectedClientId != null
+                && hasColorService
+                && hasPreviousFormula;
+        if (visible) {
+            ColorFormula formula = ColorFormulaMapper.toDomain(latestClientFormula);
+            binding.txtLatestFormulaPreview.setText(getString(
+                    R.string.appointment_repeat_formula_preview_format,
+                    Formats.formatDate(formula.day()),
+                    formula.mainShadesSummary()));
+            binding.aptColorFormulaRepeatCard.setVisibility(View.VISIBLE);
+        } else {
+            binding.aptColorFormulaRepeatCard.setVisibility(View.GONE);
+            binding.chipRepeatLastFormula.setChecked(false);
+        }
     }
 
     private void renderEligibleProfessionals() {
@@ -444,6 +497,9 @@ public class AppointmentCreateFragment extends Fragment {
     private void submitForm(boolean isEdit) {
         CharSequence notesCs = binding.inputAptNotes.getText();
         String notes = notesCs == null ? "" : notesCs.toString().trim();
+        boolean repeatLastColorFormula = !isEdit
+                && binding.aptColorFormulaRepeatCard.getVisibility() == View.VISIBLE
+                && binding.chipRepeatLastFormula.isChecked();
         if (isEdit && editingAppointmentId != null) {
             viewModel.updateAppointment(editingAppointmentId, new ArrayList<>(selectedServiceIds),
                     notes);
@@ -459,7 +515,8 @@ public class AppointmentCreateFragment extends Fragment {
                     notes,
                     binding.switchAptConfirmed.isChecked(),
                     intervalWeeks,
-                    occurrences
+                    occurrences,
+                    repeatLastColorFormula
             );
         } else {
             viewModel.createAppointment(
@@ -469,7 +526,8 @@ public class AppointmentCreateFragment extends Fragment {
                     selectedStartMin,
                     new ArrayList<>(selectedServiceIds),
                     notes,
-                    binding.switchAptConfirmed.isChecked()
+                    binding.switchAptConfirmed.isChecked(),
+                    repeatLastColorFormula
             );
         }
     }

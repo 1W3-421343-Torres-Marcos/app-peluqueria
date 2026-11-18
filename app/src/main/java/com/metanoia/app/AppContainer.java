@@ -145,7 +145,7 @@ public final class AppContainer {
         this.createAppointmentUseCase = new CreateAppointmentUseCase(
                 appointmentRepository, clientRepository, professionalRepository,
                 salonServiceRepository, scheduleBlockRepository, settingsRepository,
-                auditLogRepository, clock, idGenerator);
+                auditLogRepository, colorFormulaRepository, clock, idGenerator);
         this.updateAppointmentUseCase = new UpdateAppointmentUseCase(
                 appointmentRepository, professionalRepository, salonServiceRepository,
                 scheduleBlockRepository, settingsRepository, auditLogRepository,
@@ -165,7 +165,7 @@ public final class AppContainer {
         this.generateRecurringAppointmentsUseCase = new GenerateRecurringAppointmentsUseCase(
                 appointmentRepository, clientRepository, professionalRepository,
                 salonServiceRepository, scheduleBlockRepository, settingsRepository,
-                auditLogRepository, clock, idGenerator);
+                auditLogRepository, colorFormulaRepository, clock, idGenerator);
         this.cancelRecurringSeriesUseCase = new CancelRecurringSeriesUseCase(
                 appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.reverseMovementUseCase = new ReverseMovementUseCase(

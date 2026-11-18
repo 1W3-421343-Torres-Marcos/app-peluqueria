@@ -13,6 +13,9 @@ import com.metanoia.domain.model.AppointmentStatus;
 import com.metanoia.domain.model.AuditRecord;
 import com.metanoia.domain.model.Client;
 import com.metanoia.domain.model.ClientSummary;
+import com.metanoia.domain.model.ColorComponentUnit;
+import com.metanoia.domain.model.ColorFormula;
+import com.metanoia.domain.model.ColorFormulaComponent;
 import com.metanoia.domain.model.Money;
 import com.metanoia.domain.model.Professional;
 import com.metanoia.domain.model.RecurrenceRule;
@@ -23,10 +26,12 @@ import com.metanoia.domain.model.TimeRange;
 import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.ClientRepository;
+import com.metanoia.domain.repository.ColorFormulaRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
+import com.metanoia.domain.rules.ColorFormulaRules;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +55,7 @@ public class CreateAppointmentUseCaseTest {
     private FakeAppointmentRepo appointmentRepo;
     private FakeServiceRepo serviceRepo;
     private FakeProRepo proRepo;
+    private FakeColorFormulaRepo formulaRepo;
     private CreateAppointmentUseCase useCase;
 
     @Before
@@ -161,9 +167,10 @@ public class CreateAppointmentUseCaseTest {
             }
         };
 
+        formulaRepo = new FakeColorFormulaRepo();
         useCase = new CreateAppointmentUseCase(
                 appointmentRepo, clientRepo, proRepo, serviceRepo,
-                blockRepo, settingsRepo, auditRepo, clock, ids);
+                blockRepo, settingsRepo, auditRepo, formulaRepo, clock, ids);
     }
 
     @Test
@@ -211,6 +218,46 @@ public class CreateAppointmentUseCaseTest {
 
         assertFalse(overlap.isSuccess());
         assertEquals(DomainError.CONFLICT, overlap.getError());
+    }
+
+    @Test
+    public void execute_conRepetirUltimaFormulaEnServicioDeColor_duplicaYVincularFormulaAlItem() {
+        ColorFormula previous = new ColorFormula.Builder()
+                .id("cf-prev")
+                .clientId("cli-1")
+                .professionalId("pro-1")
+                .day(MONDAY - 30)
+                .exposureMin(35)
+                .developerVolume("20 vol")
+                .notes("Formula base")
+                .createdAt(100L)
+                .components(Collections.singletonList(new ColorFormulaComponent.Builder()
+                        .id("cmp-prev")
+                        .formulaId("cf-prev")
+                        .brand("Wella")
+                        .shade("7.1")
+                        .amountTenths(300)
+                        .unit(ColorComponentUnit.GRAMS)
+                        .position(0)
+                        .build()))
+                .build();
+        formulaRepo.save(previous);
+
+        Result<Appointment> result = useCase.execute(new CreateAppointmentUseCase.Request(
+                "cli-1", "pro-1", MONDAY, 600,
+                Arrays.asList("svc-cut", "svc-color"), "Repetir mezcla", false, true));
+
+        assertTrue(result.isSuccess());
+        Appointment saved = result.getValue();
+        assertFalse(saved.items().get(0).colorFormulaId().isPresent());
+        assertTrue(saved.items().get(1).colorFormulaId().isPresent());
+        String copiedFormulaId = saved.items().get(1).colorFormulaId().get();
+        assertFalse("cf-prev".equals(copiedFormulaId));
+
+        ColorFormula copied = formulaRepo.findById(copiedFormulaId).orElseThrow();
+        assertEquals(Optional.of(saved.id()), copied.appointmentId());
+        assertEquals(MONDAY, copied.day());
+        assertEquals("7.1", copied.components().get(0).shade());
     }
 
     private static final class FakeAppointmentRepo implements AppointmentRepository {
@@ -333,6 +380,45 @@ public class CreateAppointmentUseCaseTest {
         @Override
         public boolean hasFutureActiveAppointments(String professionalId, long fromEpochDay) {
             return false;
+        }
+    }
+
+    private static final class FakeColorFormulaRepo implements ColorFormulaRepository {
+        private final Map<String, ColorFormula> store = new LinkedHashMap<>();
+
+        @Override
+        public Optional<ColorFormula> findById(String id) {
+            return Optional.ofNullable(store.get(id));
+        }
+
+        @Override
+        public List<ColorFormula> findActiveByClientId(String clientId) {
+            List<ColorFormula> out = new ArrayList<>();
+            for (ColorFormula f : store.values()) {
+                if (clientId.equals(f.clientId()) && !f.isDeleted()) {
+                    out.add(f);
+                }
+            }
+            return out;
+        }
+
+        @Override
+        public Optional<ColorFormula> findLatestActiveByClientId(String clientId) {
+            return ColorFormulaRules.selectLatestActiveFormula(findActiveByClientId(clientId));
+        }
+
+        @Override
+        public boolean isLinkedToClosedAppointment(String formulaId) {
+            return false;
+        }
+
+        @Override
+        public void save(ColorFormula formula) {
+            store.put(formula.id(), formula);
+        }
+
+        @Override
+        public void softDelete(String formulaId, long deletedAtMillis) {
         }
     }
 }

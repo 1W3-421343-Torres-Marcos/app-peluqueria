@@ -14,6 +14,7 @@ import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
 import com.metanoia.app.data.db.dao.ClientSearchFilter;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
+import com.metanoia.app.data.db.pojo.ColorFormulaWithComponents;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.db.projection.ClientRowProjection;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader;
@@ -39,7 +40,9 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
 
     private final AppContainer container;
     private final MutableLiveData<String> clientQuery = new MutableLiveData<>("");
+    private final MutableLiveData<String> selectedClientId = new MutableLiveData<>();
     private final LiveData<List<ClientRowProjection>> clientResults;
+    private final LiveData<ColorFormulaWithComponents> latestClientFormula;
     private final LiveData<List<SalonServiceEntity>> activeServices;
     private final LiveData<List<ProfessionalWithDetails>> activeProfessionals;
     private final LiveData<Integer> slotMinutes;
@@ -63,6 +66,13 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
                     CLIENT_PICKER_LIMIT
             );
         });
+        latestClientFormula = Transformations.switchMap(selectedClientId, clientId -> {
+            if (clientId == null || clientId.trim().isEmpty()) {
+                return new MutableLiveData<>(null);
+            }
+            return container.database().colorFormulaDao()
+                    .observeLatestActiveByClientId(clientId.trim());
+        });
         activeServices = container.database().salonServiceDao().observeAll(false);
         activeProfessionals = container.database().professionalDao().observeAllWithDetails(false);
         slotMinutes = Transformations.map(
@@ -73,6 +83,17 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
 
     public LiveData<List<ClientRowProjection>> observeClientResults() {
         return clientResults;
+    }
+
+    public LiveData<ColorFormulaWithComponents> observeLatestClientFormula() {
+        return latestClientFormula;
+    }
+
+    public void setSelectedClientId(@Nullable String clientId) {
+        String safe = (clientId == null || clientId.trim().isEmpty()) ? null : clientId.trim();
+        if (!java.util.Objects.equals(safe, selectedClientId.getValue())) {
+            selectedClientId.setValue(safe);
+        }
     }
 
     public LiveData<List<SalonServiceEntity>> observeActiveServices() {
@@ -142,7 +163,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
             @Nullable Integer startMin,
             @NonNull List<String> serviceIds,
             @NonNull String notes,
-            boolean confirmed
+            boolean confirmed,
+            boolean repeatLastColorFormula
     ) {
         if (clientId == null || professionalId == null || startMin == null || serviceIds.isEmpty()) {
             feedbackEvent.setValue(new Event<>(R.string.appointment_error_validation));
@@ -157,7 +179,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
                             startMin,
                             serviceIds,
                             notes,
-                            confirmed
+                            confirmed,
+                            repeatLastColorFormula
                     )
             );
             handleSaveResult(result);
@@ -173,7 +196,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
             @NonNull String notes,
             boolean confirmed,
             int intervalWeeks,
-            int maxOccurrences
+            int maxOccurrences,
+            boolean repeatLastColorFormula
     ) {
         if (clientId == null || professionalId == null || startMin == null
                 || serviceIds.isEmpty() || intervalWeeks < 1 || maxOccurrences < 1) {
@@ -192,7 +216,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
                             confirmed,
                             intervalWeeks,
                             null,
-                            maxOccurrences
+                            maxOccurrences,
+                            repeatLastColorFormula
                     ));
             if (result.isSuccess()) {
                 RecurringResult value = result.getValue();
@@ -206,6 +231,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_error_conflict));
             } else if (result.getError() == DomainError.VALIDATION_ERROR) {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_error_validation));
+            } else if (result.getError() == DomainError.NOT_FOUND) {
+                feedbackEvent.postValue(new Event<>(R.string.color_formula_not_found));
             } else {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_error_unexpected));
             }
@@ -236,6 +263,8 @@ public class AppointmentCreateViewModel extends AndroidViewModel {
             feedbackEvent.postValue(new Event<>(R.string.appointment_error_conflict));
         } else if (result.getError() == DomainError.VALIDATION_ERROR) {
             feedbackEvent.postValue(new Event<>(R.string.appointment_error_validation));
+        } else if (result.getError() == DomainError.NOT_FOUND) {
+            feedbackEvent.postValue(new Event<>(R.string.color_formula_not_found));
         } else {
             feedbackEvent.postValue(new Event<>(R.string.appointment_error_unexpected));
         }

@@ -13,13 +13,13 @@
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [x] | 10/10 | 100 % |
 | F6 | Recordatorios por WhatsApp | [x] | 7/7 | 100 % |
-| F7 | Ficha de color | [~] | 2/4 | 50 % |
+| F7 | Ficha de color | [~] | 3/4 | 75 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **57/86** | **66 %** |
+| **Total** | | | **58/86** | **67 %** |
 
 ---
 
@@ -215,7 +215,7 @@ Módulo: `ficha-color`.
 2. [x] **F7.2 UI en ficha del cliente**
    - Archivos: `ui/clients/color/`
    - Hecho: historial de fórmulas, alta/edición, duplicar fórmula.
-3. [ ] **F7.3 Repetir última fórmula**
+3. [x] **F7.3 Repetir última fórmula**
    - Archivos: flujo crear turno
    - Hecho: al elegir servicio de coloración, botón "Repetir última fórmula" la vincula con un toque.
 4. [ ] **F7.4 Verificación de fase**
@@ -380,3 +380,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F6.7 | Verificación de fase F6: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, 129 tests unitarios: 109 en `:domain` + 20 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `recordatorios/skills.md` (6/6) y `configuracion/skills.md` (criterio 3) marcados `[x]`, `versionCode 6` / `versionName "0.6.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F6` y `v0.6.0`. | F7.1 |
 | 18/11/2026 | F7.1 | Modelos `ColorComponentUnit`, `ColorFormulaComponent` y `ColorFormula`, `ColorFormulaRules` + `ColorFormulaRulesTest` (5/5 OK), `SaveColorFormulaUseCase`, `DuplicateColorFormulaUseCase`, `DeleteColorFormulaUseCase` + `SaveColorFormulaUseCaseTest` (3/3 OK), Room v10 (`Migration_9_10`, `10.json`, `ColorFormulaDao`, upsert seguro en `AppointmentDao`), `BackupManager` v10, `SchemaExportTest` (10/10 OK) y `MigrationTest` v10 compilado. | F7.2 |
 | 18/11/2026 | F7.2 | UI en pestaña Color de `ClientDetailFragment`: `ClientColorFormulasAdapter` (`item_color_formula_row.xml`), `ColorFormulaDialogFragment` (`dialog_color_formula_form.xml`, `item_color_component_input.xml`) con filas agregables de componentes, selector de fecha/profesional, modo solo lectura + duplicado en fórmulas cerradas y baja lógica; `./gradlew.bat test assembleDebug` OK. | F7.3 |
+| 18/11/2026 | F7.3 | Repetir última fórmula en crear turno: `AppointmentSupport` + `CreateAppointmentUseCase` + `GenerateRecurringAppointmentsUseCase` con duplicado borrador y vínculo `colorFormulaId` en ítems de coloración, test en `CreateAppointmentUseCaseTest`, `AppointmentCreateFragment`/`ViewModel` (chip de 1 toque si hay servicio de coloración y fórmula previa) y etiqueta vinculada en `AppointmentDetailFragment`; `./gradlew.bat test assembleDebug` OK. | F7.4 |

@@ -632,4 +632,8 @@
     <string name="color_formula_error_unexpected">No se pudo procesar la fórmula.</string>
     <string name="color_formula_notes_prefix">Notas: %1$s</string>
     <string name="color_formula_result_prefix">Resultado: %1$s</string>
+    <string name="appointment_repeat_formula_chip">Repetir última fórmula</string>
+    <string name="appointment_repeat_formula_preview_format">Última fórmula (%1$s): %2$s</string>
+    <string name="appointment_repeat_formula_helper">Se copiará como borrador editable vinculada al turno.</string>
+    <string name="appointment_detail_color_formula_linked">Fórmula de color vinculada</string>
 </resources>
