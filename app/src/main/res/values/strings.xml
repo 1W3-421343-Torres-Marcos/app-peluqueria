@@ -162,4 +162,65 @@
     <string name="professional_error_conflict">No se puede desactivar: tiene turnos futuros activos.</string>
     <string name="professional_error_validation">Revisá los datos: nombre, comisión (0–100 %) y horario dentro del salón.</string>
     <string name="professional_error_unexpected">No se pudo guardar el profesional.</string>
+
+    <!-- Comunes / buscador -->
+    <string name="cd_search_icon">Buscar</string>
+    <string name="cd_search_clear">Limpiar búsqueda</string>
+    <string name="common_cancel">Cancelar</string>
+
+    <!-- Clientes (F2.7) -->
+    <string name="clients_search_hint">Buscar por nombre o teléfono</string>
+    <string name="clients_filter_inactive">Mostrar inactivos</string>
+    <string name="clients_new_fab">Nuevo cliente</string>
+    <string name="clients_empty_search">No hay clientes que coincidan con la búsqueda.</string>
+    <plurals name="client_no_shows_count">
+        <item quantity="one">%1$d ausencia</item>
+        <item quantity="other">%1$d ausencias</item>
+    </plurals>
+    <string name="client_inactive_tag">Inactivo</string>
+    <string name="client_row_inactive_with_absences">%1$s · %2$s</string>
+    <string name="client_form_new_title">Nuevo cliente</string>
+    <string name="client_form_edit_title">Editar cliente</string>
+    <string name="client_form_quick_title">Alta rápida de cliente</string>
+    <string name="client_name_label">Nombre y apellido</string>
+    <string name="client_phone_label">Teléfono / WhatsApp</string>
+    <string name="client_phone_helper">Ej.: 11 2233-4455 o 0351 15-555-6677</string>
+    <string name="client_birthday_section">Cumpleaños (opcional)</string>
+    <string name="client_birth_day_label">Día</string>
+    <string name="client_birth_month_label">Mes</string>
+    <string name="client_birth_year_label">Año (opc.)</string>
+    <string name="client_notes_label">Notas (alergias, preferencias)</string>
+    <string name="client_active_switch">Cliente activo</string>
+    <string name="client_save">Guardar cliente</string>
+    <string name="client_saved">Cliente guardado</string>
+    <string name="client_error_validation">Revisá los datos: nombre (2–80 caracteres), teléfono válido y fecha real.</string>
+    <string name="client_error_unexpected">No se pudo guardar el cliente.</string>
+    <string name="client_duplicate_title">Teléfono ya registrado</string>
+    <string name="client_duplicate_message">Ya existe un cliente activo con ese número de teléfono. ¿Querés abrir su ficha?</string>
+    <string name="client_duplicate_open">Abrir ficha existente</string>
+    <string name="client_detail_title">Ficha del cliente</string>
+    <string name="client_detail_edit">Editar</string>
+    <string name="client_detail_deactivate">Dar de baja</string>
+    <string name="client_detail_reactivate">Reactivar</string>
+    <string name="client_deactivate_confirm_title">¿Dar de baja al cliente?</string>
+    <string name="client_deactivate_confirm_message">Dejará de aparecer en las búsquedas habituales, pero se conservará todo su historial.</string>
+    <string name="client_detail_phone_label">Teléfono</string>
+    <string name="client_detail_birthday_label">Cumpleaños</string>
+    <string name="client_detail_birthday_empty">Sin registrar</string>
+    <string name="client_detail_birthday_day_month">%1$02d/%2$02d</string>
+    <string name="client_detail_birthday_full">%1$02d/%2$02d/%3$04d</string>
+    <string name="client_detail_notes_label">Notas y preferencias</string>
+    <string name="client_detail_notes_empty">Sin notas cargadas.</string>
+    <string name="client_detail_no_shows_label">Ausencias</string>
+    <string name="client_detail_balance_label">Saldo pendiente</string>
+    <string name="client_detail_tab_visits">Visitas</string>
+    <string name="client_detail_tab_spending">Gastos</string>
+    <string name="client_detail_tab_color">Color</string>
+    <string name="client_detail_visits_empty">Sin visitas registradas aún. El historial de turnos realizados aparecerá aquí.</string>
+    <string name="client_detail_spending_empty">Sin gastos registrados aún. Los cobros y el total acumulado aparecerán aquí.</string>
+    <string name="client_detail_color_empty">Sin fórmulas de color cargadas aún.</string>
+    <string name="client_detail_not_found">No se encontró el cliente.</string>
+    <string name="client_reactivated">Cliente reactivado</string>
+    <string name="client_deactivated">Cliente dado de baja</string>
+    <string name="client_reactivate_conflict">Ya existe otro cliente activo con ese teléfono.</string>
 </resources>

@@ -12,7 +12,16 @@
     <fragment
         android:id="@+id/nav_clients"
         android:name="com.metanoia.app.ui.clients.ClientsFragment"
-        android:label="@string/nav_clients" />
+        android:label="@string/nav_clients">
+        <action
+            android:id="@+id/action_clients_to_detail"
+            app:destination="@id/nav_client_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_client_detail"
+        android:name="com.metanoia.app.ui.clients.ClientDetailFragment"
+        android:label="@string/client_detail_title" />
 
     <fragment
         android:id="@+id/nav_cash"

@@ -40,4 +40,8 @@
         <attr name="rowShowChevron" format="boolean" />
         <attr name="rowShowDivider" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="SearchField">
+        <attr name="searchHint" format="string" />
+    </declare-styleable>
 </resources>
