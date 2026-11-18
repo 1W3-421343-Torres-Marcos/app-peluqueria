@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.metanoia.app.R;
+import com.metanoia.app.data.db.projection.BirthdayReminderProjection;
 import com.metanoia.app.data.db.projection.TomorrowReminderProjection;
 import com.metanoia.app.databinding.FragmentRemindersBinding;
 import com.metanoia.app.util.Formats;
@@ -31,6 +32,7 @@ public class RemindersFragment extends Fragment {
     private FragmentRemindersBinding binding;
     private RemindersViewModel viewModel;
     private TomorrowRemindersAdapter tomorrowAdapter;
+    private BirthdayRemindersAdapter birthdayAdapter;
     @Nullable
     private Settings latestSettings;
 
@@ -66,6 +68,23 @@ public class RemindersFragment extends Fragment {
         binding.remindersTomorrowRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.remindersTomorrowRecycler.setAdapter(tomorrowAdapter);
 
+        birthdayAdapter = new BirthdayRemindersAdapter(
+                viewModel.currentYear(),
+                new BirthdayRemindersAdapter.Listener() {
+                    @Override
+                    public void onGreetClicked(@NonNull BirthdayReminderProjection item) {
+                        sendBirthdayGreeting(item);
+                    }
+
+                    @Override
+                    public void onUndoClicked(@NonNull String reminderId) {
+                        viewModel.undoReminder(reminderId);
+                    }
+                });
+        binding.remindersBirthdaysRecycler.setLayoutManager(
+                new LinearLayoutManager(requireContext()));
+        binding.remindersBirthdaysRecycler.setAdapter(birthdayAdapter);
+
         setupTabs();
 
         viewModel.observeSettings().observe(getViewLifecycleOwner(), settings ->
@@ -76,6 +95,13 @@ public class RemindersFragment extends Fragment {
             binding.remindersTomorrowRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
             binding.remindersTomorrowEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
             tomorrowAdapter.submitList(items);
+        });
+
+        viewModel.observeTodayBirthdays().observe(getViewLifecycleOwner(), items -> {
+            boolean empty = items == null || items.isEmpty();
+            binding.remindersBirthdaysRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
+            binding.remindersBirthdaysEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+            birthdayAdapter.submitList(items);
         });
 
         viewModel.observeFeedback().observe(getViewLifecycleOwner(), event -> {
@@ -103,6 +129,33 @@ public class RemindersFragment extends Fragment {
                     return;
                 }
                 Snackbar.make(binding.getRoot(), R.string.reminder_marked_sent, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.reminder_undo_action,
+                                v -> viewModel.undoReminder(reminder.id()))
+                        .show();
+            });
+        }
+    }
+
+    private void sendBirthdayGreeting(@NonNull BirthdayReminderProjection item) {
+        Settings settings = latestSettings != null ? latestSettings : Settings.defaultSettings();
+        TemplateContext context = new TemplateContext(
+                item.clientName,
+                viewModel.todayEpochDay(),
+                600,
+                "",
+                "",
+                settings.businessDisplayName());
+        String message = TemplateRenderer.render(settings.birthdayTemplate(), context)
+                .renderedText();
+        if (WhatsAppLauncher.openChat(requireContext(), item.clientPhone, message)) {
+            viewModel.markBirthdayGreeted(item.clientId, reminder -> {
+                if (binding == null) {
+                    return;
+                }
+                Snackbar.make(
+                                binding.getRoot(),
+                                R.string.reminder_birthday_marked_sent,
+                                Snackbar.LENGTH_LONG)
                         .setAction(R.string.reminder_undo_action,
                                 v -> viewModel.undoReminder(reminder.id()))
                         .show();

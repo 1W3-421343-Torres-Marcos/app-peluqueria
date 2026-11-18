@@ -12,14 +12,14 @@
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
 | F5 | Caja | [x] | 10/10 | 100 % |
-| F6 | Recordatorios por WhatsApp | [~] | 4/7 | 57 % |
+| F6 | Recordatorios por WhatsApp | [~] | 5/7 | 71 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
 | F9 | Stock | [ ] | 0/6 | 0 % |
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **52/86** | **60 %** |
+| **Total** | | | **53/86** | **62 %** |
 
 ---
 
@@ -197,7 +197,7 @@ Entregable: recordar turnos y saludar cumpleaños en pocos toques. Módulos: `re
 4. [x] **F6.4 Recordar desde el turno**
    - Archivos: detalle de turno
    - Hecho: acción "Recordar" en ≤ 2 toques desde el detalle.
-5. [ ] **F6.5 Cumpleaños**
+5. [x] **F6.5 Cumpleaños**
    - Archivos: `ui/reminders/birthdays`
    - Hecho: lista de cumpleaños del día con saludo por plantilla; marca enviado por año.
 6. [ ] **F6.6 Aviso diario local**
@@ -375,3 +375,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F6.2 | `WhatsAppUrlBuilder` (`https://wa.me/<tel>?text=...` UTF-8) + `WhatsAppUrlBuilderTest` (2/2 OK) y `WhatsAppLauncher` con manejo de teléfono faltante o WhatsApp no instalado, sin permiso `INTERNET`. | F6.3 |
 | 18/11/2026 | F6.3 | `ReminderType`, `Reminder`, `ReminderEligibility` + `ReminderEligibilityTest` (2/2 OK), `ReminderRepository`, `RecordReminderSentUseCase` + `RecordReminderSentUseCaseTest` (2/2 OK), Room v9 (`ReminderEntity` FK RESTRICT, `ReminderDao`, `Migration_8_9`, `9.json`, `BackupManager` v9, `SchemaExportTest` 9/9 OK, `MigrationTest` v9 compilado) y pantalla `RemindersFragment` con lista de pendientes de mañana y deshacer envío. | F6.4 |
 | 18/11/2026 | F6.4 | Acción `Recordar por WhatsApp` en un toque desde `AppointmentDetailFragment` / `AppointmentDetailViewModel` con plantilla renderizada, registro de envío, deshabilitación con aviso si falta teléfono y opción Deshacer. | F6.5 |
+| 18/11/2026 | F6.5 | `BirthdayRemindersAdapter` y pestaña Cumpleaños en `RemindersFragment` para saludar por WhatsApp con registro anual anti-duplicados, edad cuando hay año cargado y opción Deshacer. | F6.6 |

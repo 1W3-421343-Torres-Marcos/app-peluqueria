@@ -568,4 +568,10 @@
     <string name="appointment_action_remind">Recordar por WhatsApp</string>
     <string name="appointment_action_remind_again">Volver a recordar por WhatsApp</string>
     <string name="appointment_detail_reminded_format">Recordado el %1$s</string>
+    <string name="reminder_birthday_detail_format">Cumpleaños %1$02d/%2$02d</string>
+    <string name="reminder_birthday_detail_age_format">Cumpleaños %1$02d/%2$02d · Cumple %3$d años</string>
+    <string name="reminder_greet_whatsapp_btn">Saludar por WhatsApp</string>
+    <string name="reminder_regreet_whatsapp_btn">Volver a saludar</string>
+    <string name="reminder_greeted_badge_format">Saludado · %1$s</string>
+    <string name="reminder_birthday_marked_sent">Saludo de cumpleaños registrado</string>
 </resources>
