@@ -22,6 +22,7 @@ import com.metanoia.domain.model.Money;
 import com.metanoia.domain.rules.AppointmentPaymentCalculator;
 import com.metanoia.domain.rules.CashPaymentSupport.PaymentSplit;
 import com.metanoia.domain.usecase.ChargeAppointmentUseCase;
+import com.metanoia.domain.usecase.CompleteAndChargeUseCase;
 
 import java.util.List;
 import java.util.Optional;
@@ -103,6 +104,26 @@ public class ChargeAppointmentViewModel extends AndroidViewModel {
             Result<ChargeAppointmentUseCase.ChargeResult> result = container
                     .chargeAppointmentUseCase()
                     .execute(new ChargeAppointmentUseCase.Request(
+                            appointmentId, requestedAdjustment, adjustmentReason, splits));
+            busy = false;
+            handleResult(result.isSuccess(), result.getError());
+        });
+    }
+
+    public void submitCompleteAndCharge(
+            @NonNull String appointmentId,
+            @Nullable Money requestedAdjustment,
+            @Nullable String adjustmentReason,
+            @NonNull List<PaymentSplit> splits
+    ) {
+        if (busy) {
+            return;
+        }
+        busy = true;
+        container.executors().io().execute(() -> {
+            Result<ChargeAppointmentUseCase.ChargeResult> result = container
+                    .completeAndChargeUseCase()
+                    .execute(new CompleteAndChargeUseCase.Request(
                             appointmentId, requestedAdjustment, adjustmentReason, splits));
             busy = false;
             handleResult(result.isSuccess(), result.getError());

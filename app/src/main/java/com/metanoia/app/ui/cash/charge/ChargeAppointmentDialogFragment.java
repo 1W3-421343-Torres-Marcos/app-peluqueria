@@ -31,17 +31,27 @@ import java.util.Optional;
 public class ChargeAppointmentDialogFragment extends BottomSheetDialogFragment {
 
     private static final String ARG_APPOINTMENT_ID = "appointment_id";
+    private static final String ARG_COMPLETE_AND_CHARGE = "complete_and_charge";
 
     private DialogChargeAppointmentBinding binding;
     private ChargeAppointmentViewModel viewModel;
     private String appointmentId;
+    private boolean completeAndCharge;
     @Nullable
     private ChargeUiSummary loadedSummary;
 
     public static ChargeAppointmentDialogFragment newInstance(@NonNull String appointmentId) {
+        return newInstance(appointmentId, false);
+    }
+
+    public static ChargeAppointmentDialogFragment newInstance(
+            @NonNull String appointmentId,
+            boolean completeAndCharge
+    ) {
         ChargeAppointmentDialogFragment fragment = new ChargeAppointmentDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_APPOINTMENT_ID, appointmentId);
+        args.putBoolean(ARG_COMPLETE_AND_CHARGE, completeAndCharge);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +75,8 @@ public class ChargeAppointmentDialogFragment extends BottomSheetDialogFragment {
             return;
         }
         appointmentId = appointmentId.trim();
+        completeAndCharge = getArguments() != null
+                && getArguments().getBoolean(ARG_COMPLETE_AND_CHARGE, false);
 
         CashUiLabels.populatePaymentMethodChips(
                 requireContext(), binding.chargePrimaryMethodGroup, PaymentMethod.CASH);
@@ -104,7 +116,9 @@ public class ChargeAppointmentDialogFragment extends BottomSheetDialogFragment {
 
     private void bindSummary(@NonNull ChargeUiSummary summary) {
         Appointment apt = summary.appointment;
-        binding.txtChargeTitle.setText(R.string.charge_dialog_title);
+        binding.txtChargeTitle.setText(completeAndCharge
+                ? R.string.charge_complete_dialog_title
+                : R.string.charge_dialog_title);
         binding.txtChargeClient.setText(summary.clientName);
         binding.txtChargeSubtotalSummary.setText(getString(
                 R.string.charge_summary_format,
@@ -173,7 +187,13 @@ public class ChargeAppointmentDialogFragment extends BottomSheetDialogFragment {
                     secondaryAmount.get()));
         }
 
-        viewModel.submitCharge(appointmentId, requestedAdjustment, adjustmentReason, splits);
+        if (completeAndCharge) {
+            viewModel.submitCompleteAndCharge(
+                    appointmentId, requestedAdjustment, adjustmentReason, splits);
+        } else {
+            viewModel.submitCharge(
+                    appointmentId, requestedAdjustment, adjustmentReason, splits);
+        }
     }
 
     @NonNull

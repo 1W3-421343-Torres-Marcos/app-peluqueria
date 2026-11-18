@@ -128,7 +128,13 @@ public class AppointmentDetailFragment extends Fragment {
     private void setupActionListeners() {
         binding.btnActionCharge.setOnClickListener(v -> {
             if (currentAppointment != null) {
-                ChargeAppointmentDialogFragment.newInstance(currentAppointment.id())
+                ChargeAppointmentDialogFragment.newInstance(currentAppointment.id(), false)
+                        .show(getChildFragmentManager(), TAG_CHARGE);
+            }
+        });
+        binding.btnActionCompleteAndCharge.setOnClickListener(v -> {
+            if (currentAppointment != null) {
+                ChargeAppointmentDialogFragment.newInstance(currentAppointment.id(), true)
                         .show(getChildFragmentManager(), TAG_CHARGE);
             }
         });
@@ -359,6 +365,7 @@ public class AppointmentDetailFragment extends Fragment {
 
         binding.btnActionCharge.setVisibility(
                 isCompleted && balance.balance().isPositive() ? View.VISIBLE : View.GONE);
+        binding.btnActionCompleteAndCharge.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionConfirm.setVisibility(isPending ? View.VISIBLE : View.GONE);
         binding.btnActionComplete.setVisibility(isEditable ? View.VISIBLE : View.GONE);
         binding.btnActionEdit.setVisibility(isEditable ? View.VISIBLE : View.GONE);

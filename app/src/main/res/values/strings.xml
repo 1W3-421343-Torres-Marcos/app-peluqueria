@@ -438,6 +438,7 @@
     <string name="cash_method_card">Tarjeta</string>
     <string name="cash_method_mercado_pago">Mercado Pago</string>
     <string name="appointment_action_charge">Cobrar saldo</string>
+    <string name="appointment_action_complete_and_charge">Completar y cobrar</string>
     <string name="appointment_detail_payments_section">Pagos registrados</string>
     <string name="appointment_detail_payment_line_format">%1$s · %2$s</string>
     <string name="appointment_detail_payment_reversed_tag">Revertido</string>

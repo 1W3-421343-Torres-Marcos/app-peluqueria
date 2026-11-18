@@ -247,10 +247,19 @@
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnActionConfirm"
+                android:id="@+id/btnActionCompleteAndCharge"
                 style="@style/Widget.Metanoia.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/appointment_action_complete_and_charge"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionConfirm"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
                 android:text="@string/appointment_action_confirm"
                 android:visibility="gone" />
 
