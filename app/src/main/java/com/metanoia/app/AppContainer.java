@@ -5,15 +5,20 @@ import android.content.Context;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
+import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
 import com.metanoia.app.data.repository.SettingsRepositoryImpl;
 import com.metanoia.domain.common.Clock;
 import com.metanoia.domain.common.IdGenerator;
 import com.metanoia.domain.repository.AuditLogRepository;
+import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
+import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
+import com.metanoia.domain.usecase.SaveProfessionalUseCase;
 import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
+import com.metanoia.domain.usecase.SetProfessionalActiveUseCase;
 import com.metanoia.domain.usecase.SetSalonServiceActiveUseCase;
 import com.metanoia.domain.usecase.UpdateSettingsUseCase;
 
@@ -30,10 +35,14 @@ public final class AppContainer {
     private final AuditLogRepository auditLogRepository;
     private final SettingsRepository settingsRepository;
     private final SalonServiceRepository salonServiceRepository;
+    private final ProfessionalRepository professionalRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
     private final SetSalonServiceActiveUseCase setSalonServiceActiveUseCase;
+    private final SaveProfessionalUseCase saveProfessionalUseCase;
+    private final SetProfessionalActiveUseCase setProfessionalActiveUseCase;
+    private final ManageProfessionalDayOffUseCase manageProfessionalDayOffUseCase;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -45,6 +54,7 @@ public final class AppContainer {
         this.auditLogRepository = new AuditLogRepositoryImpl(database.auditLogDao());
         this.settingsRepository = new SettingsRepositoryImpl(database.settingsDao(), clock);
         this.salonServiceRepository = new SalonServiceRepositoryImpl(database.salonServiceDao());
+        this.professionalRepository = new ProfessionalRepositoryImpl(database.professionalDao());
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -52,6 +62,13 @@ public final class AppContainer {
                 salonServiceRepository, settingsRepository, clock, idGenerator);
         this.setSalonServiceActiveUseCase = new SetSalonServiceActiveUseCase(
                 salonServiceRepository, clock);
+        this.saveProfessionalUseCase = new SaveProfessionalUseCase(
+                professionalRepository, salonServiceRepository, settingsRepository,
+                clock, idGenerator);
+        this.setProfessionalActiveUseCase = new SetProfessionalActiveUseCase(
+                professionalRepository, clock);
+        this.manageProfessionalDayOffUseCase = new ManageProfessionalDayOffUseCase(
+                professionalRepository, clock);
     }
 
     public AppExecutors executors() {
@@ -86,6 +103,10 @@ public final class AppContainer {
         return salonServiceRepository;
     }
 
+    public ProfessionalRepository professionalRepository() {
+        return professionalRepository;
+    }
+
     public GetSettingsUseCase getSettingsUseCase() {
         return getSettingsUseCase;
     }
@@ -100,5 +121,17 @@ public final class AppContainer {
 
     public SetSalonServiceActiveUseCase setSalonServiceActiveUseCase() {
         return setSalonServiceActiveUseCase;
+    }
+
+    public SaveProfessionalUseCase saveProfessionalUseCase() {
+        return saveProfessionalUseCase;
+    }
+
+    public SetProfessionalActiveUseCase setProfessionalActiveUseCase() {
+        return setProfessionalActiveUseCase;
+    }
+
+    public ManageProfessionalDayOffUseCase manageProfessionalDayOffUseCase() {
+        return manageProfessionalDayOffUseCase;
     }
 }

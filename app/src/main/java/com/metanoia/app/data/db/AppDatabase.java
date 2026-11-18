@@ -9,14 +9,20 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.metanoia.app.data.db.dao.AuditLogDao;
+import com.metanoia.app.data.db.dao.ProfessionalDao;
 import com.metanoia.app.data.db.dao.SalonServiceDao;
 import com.metanoia.app.data.db.dao.SettingsDao;
 import com.metanoia.app.data.db.entity.AuditLogEntity;
+import com.metanoia.app.data.db.entity.ProfessionalDayOffEntity;
+import com.metanoia.app.data.db.entity.ProfessionalEntity;
+import com.metanoia.app.data.db.entity.ProfessionalServiceCrossRef;
 import com.metanoia.app.data.db.entity.SalonHoursEntity;
 import com.metanoia.app.data.db.entity.SalonServiceEntity;
 import com.metanoia.app.data.db.entity.SettingsEntity;
+import com.metanoia.app.data.db.entity.WorkScheduleEntity;
 import com.metanoia.app.data.db.migration.Migration_1_2;
 import com.metanoia.app.data.db.migration.Migration_2_3;
+import com.metanoia.app.data.db.migration.Migration_3_4;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -26,9 +32,13 @@ import com.metanoia.app.data.db.migration.Migration_2_3;
                 AuditLogEntity.class,
                 SettingsEntity.class,
                 SalonHoursEntity.class,
-                SalonServiceEntity.class
+                SalonServiceEntity.class,
+                ProfessionalEntity.class,
+                WorkScheduleEntity.class,
+                ProfessionalDayOffEntity.class,
+                ProfessionalServiceCrossRef.class
         },
-        version = 3,
+        version = 4,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -41,6 +51,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract SalonServiceDao salonServiceDao();
 
+    public abstract ProfessionalDao professionalDao();
+
     public static AppDatabase create(Context context) {
         return Room.databaseBuilder(
                         context.getApplicationContext(),
@@ -49,7 +61,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 )
                 .addMigrations(
                         Migration_1_2.INSTANCE,
-                        Migration_2_3.INSTANCE
+                        Migration_2_3.INSTANCE,
+                        Migration_3_4.INSTANCE
                 )
                 .addCallback(new Callback() {
                     @Override

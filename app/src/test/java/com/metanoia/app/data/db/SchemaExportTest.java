@@ -30,6 +30,15 @@ public class SchemaExportTest {
         assertTrue(content.contains("\"tableName\": \"salon_services\""));
     }
 
+    @Test
+    public void roomSchemaV4_isExportedWithProfessionalTables() throws Exception {
+        String content = readSchema(4);
+        assertTrue(content.contains("\"tableName\": \"professionals\""));
+        assertTrue(content.contains("\"tableName\": \"work_schedules\""));
+        assertTrue(content.contains("\"tableName\": \"professional_days_off\""));
+        assertTrue(content.contains("\"tableName\": \"professional_services\""));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

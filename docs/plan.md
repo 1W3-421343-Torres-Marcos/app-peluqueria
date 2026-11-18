@@ -8,7 +8,7 @@
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
 | F1 | Base, base de datos e identidad visual | [x] | 10/10 | 100 % |
-| F2 | Configuración base, servicios, profesionales y clientes | [~] | 3/8 | 38 % |
+| F2 | Configuración base, servicios, profesionales y clientes | [~] | 4/8 | 50 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
 | F5 | Caja | [ ] | 0/10 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **13/86** | **15 %** |
+| **Total** | | | **14/86** | **16 %** |
 
 ---
 
@@ -68,7 +68,7 @@ Entregable: cargar el catálogo del salón y la base de clientes. Módulos: `con
 3. [x] **F2.3 Servicios: UI**
    - Archivos: `ui/services/`
    - Hecho: lista por categoría, filtro activos/inactivos, formulario; criterios de `servicios/skills.md` OK.
-4. [ ] **F2.4 Profesionales: dominio y datos**
+4. [x] **F2.4 Profesionales: dominio y datos**
    - Archivos: `Professional`, `WorkSchedule`, `ProfessionalServiceCrossRef`, DAOs, migración
    - Hecho: horario semanal, días libres, servicios y % comisión persistidos; validaciones con tests.
 5. [ ] **F2.5 Profesionales: UI**
@@ -336,3 +336,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F2.1 | Rama `fase/F2`, `Settings`/`TimeRange`/`AuditRecord`, `ScheduleValidator`, `GetSettingsUseCase`/`UpdateSettingsUseCase`, Room v2 (`Migration_1_2`, `2.json`), `SettingsFragment`/`AboutFragment` y `WeeklyScheduleEditorView`; 31 tests unitarios OK + `MigrationTest` compilado. | F2.2 |
 | 18/11/2026 | F2.2 | `TextNormalizer`, `SalonService`, `SalonServiceValidator`, `SaveSalonServiceUseCase`/`SetSalonServiceActiveUseCase`, Room v3 (`Migration_2_3`, `3.json`), 39 tests unitarios OK + `MigrationTest` compilado. | F2.3 |
 | 18/11/2026 | F2.3 | UI de Servicios (`ServicesFragment`, `ServicesViewModel`, `ServicesAdapter`, `ServiceFormDialogFragment`), enlace desde Más, criterios marcados en `servicios/skills.md`, build y tests OK. | F2.4 |
+| 18/11/2026 | F2.4 | `Professional`, `ProfessionalValidator`, `SaveProfessionalUseCase`/`SetProfessionalActiveUseCase`/`ManageProfessionalDayOffUseCase`, Room v4 (`Migration_3_4`, `4.json` con FK RESTRICT), 46 tests unitarios OK + `MigrationTest` compilado. | F2.5 |

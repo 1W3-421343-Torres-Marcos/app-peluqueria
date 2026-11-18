@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.metanoia.app.data.db.migration.Migration_1_2;
 import com.metanoia.app.data.db.migration.Migration_2_3;
+import com.metanoia.app.data.db.migration.Migration_3_4;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -94,6 +95,33 @@ public class MigrationTest {
                 cursor.moveToFirst();
                 assertEquals("Corte", cursor.getString(0));
                 assertEquals(1500000L, cursor.getLong(1));
+            }
+        }
+    }
+
+    @Test
+    public void migrate3To4_createsProfessionalTablesWithForeignKeys() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 3)) {
+            db.execSQL("INSERT INTO salon_services VALUES ("
+                    + "'svc-1', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 4, true, Migration_3_4.INSTANCE)) {
+            migrated.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '3515551234', 'gray600', 4000, 1, 1000, 1000)");
+            migrated.execSQL("INSERT INTO work_schedules (`professional_id`, `day_of_week`, `start_min`, `end_min`) "
+                    + "VALUES ('pro-1', 1, 540, 1140)");
+            migrated.execSQL("INSERT INTO professional_services VALUES ('pro-1', 'svc-1')");
+            migrated.execSQL("INSERT INTO professional_days_off (`professional_id`, `day_epoch`) "
+                    + "VALUES ('pro-1', 20010)");
+
+            try (Cursor cursor = migrated.query(
+                    "SELECT name, commission_basis_points FROM professionals WHERE id = 'pro-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("Ana", cursor.getString(0));
+                assertEquals(4000, cursor.getInt(1));
             }
         }
     }
