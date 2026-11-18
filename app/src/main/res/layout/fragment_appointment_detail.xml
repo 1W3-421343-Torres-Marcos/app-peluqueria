@@ -162,6 +162,40 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/detailPaymentsCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="@dimen/radius_m"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="@dimen/stroke_width">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/space_m">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/appointment_detail_payments_section"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <LinearLayout
+                    android:id="@+id/detailPaymentsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_s"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/detailNotesCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -205,10 +239,27 @@
             android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnActionConfirm"
+                android:id="@+id/btnActionCharge"
                 style="@style/Widget.Metanoia.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/appointment_action_charge"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionCompleteAndCharge"
+                style="@style/Widget.Metanoia.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment_action_complete_and_charge"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionConfirm"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
                 android:text="@string/appointment_action_confirm"
                 android:visibility="gone" />
 
@@ -255,6 +306,15 @@
                 android:layout_height="wrap_content"
                 android:text="@string/appointment_action_cancel"
                 android:textColor="@color/accent"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnActionShareReceipt"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:text="@string/appointment_action_share_receipt"
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton

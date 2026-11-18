@@ -76,14 +76,22 @@ public class AppointmentCardView extends MaterialCardView {
     }
 
     public void bind(@NonNull AppointmentCardProjection card) {
-        bindInternal(card, false);
+        bindInternal(card, false, false);
     }
 
     public void bindForClientHistory(@NonNull AppointmentCardProjection card) {
-        bindInternal(card, true);
+        bindInternal(card, true, false);
     }
 
-    private void bindInternal(@NonNull AppointmentCardProjection card, boolean showDateAsTitle) {
+    public void bindForReceivable(@NonNull AppointmentCardProjection card) {
+        bindInternal(card, false, true);
+    }
+
+    private void bindInternal(
+            @NonNull AppointmentCardProjection card,
+            boolean showDateAsTitle,
+            boolean showDateWithProfessional
+    ) {
         Context context = getContext();
         String start = Formats.formatTime(card.startMin);
         String end = Formats.formatTime(card.endMin);
@@ -92,7 +100,12 @@ public class AppointmentCardView extends MaterialCardView {
                 ? Formats.formatDayWithShortWeekday(card.day)
                 : card.clientName);
         servicesView.setText(card.servicesSummary);
-        professionalView.setText(card.professionalName);
+        professionalView.setText(showDateWithProfessional
+                ? context.getString(
+                        R.string.receivables_professional_date_format,
+                        Formats.formatDate(card.day),
+                        card.professionalName)
+                : card.professionalName);
 
         AppointmentStatus status = AppointmentStatus.valueOf(card.status);
         statusChip.setVariant(toChipVariant(status));

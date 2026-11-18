@@ -58,7 +58,7 @@ import java.util.zip.ZipOutputStream;
 public final class BackupManager {
 
     public static final ReentrantLock BACKUP_LOCK = new ReentrantLock();
-    public static final int CURRENT_SCHEMA_VERSION = 6;
+    public static final int CURRENT_SCHEMA_VERSION = 7;
     public static final String FILE_PREFIX = "metanoia-backup-";
     public static final String ENTRY_DATABASE = AppDatabase.DATABASE_NAME;
     public static final String ENTRY_MANIFEST = "manifest.json";
@@ -271,7 +271,7 @@ public final class BackupManager {
         checkpointWal(writableDb);
         int clientsCount = querySingleInt(writableDb, "SELECT COUNT(*) FROM clients");
         int appointmentsCount = querySingleInt(writableDb, "SELECT COUNT(*) FROM appointments");
-        int cashMovementsCount = 0;
+        int cashMovementsCount = querySingleInt(writableDb, "SELECT COUNT(*) FROM cash_movements");
 
         File dbFile = context.getDatabasePath(AppDatabase.DATABASE_NAME);
         if (!dbFile.exists() || !dbFile.isFile()) {

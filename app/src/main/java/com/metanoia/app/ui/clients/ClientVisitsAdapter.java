@@ -78,7 +78,8 @@ public class ClientVisitsAdapter
                             && oldItem.status.equals(newItem.status)
                             && oldItem.professionalName.equals(newItem.professionalName)
                             && oldItem.servicesSummary.equals(newItem.servicesSummary)
-                            && oldItem.totalCents() == newItem.totalCents();
+                            && oldItem.totalCents() == newItem.totalCents()
+                            && oldItem.paidCents == newItem.paidCents;
                 }
             };
 }

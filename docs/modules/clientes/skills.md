@@ -31,6 +31,6 @@ Normalización de texto y teléfono, validaciones, búsqueda (DAO) con acentos y
 - [x] Alta, edición y baja lógica de clientes.
 - [x] Búsqueda por nombre o teléfono responde al tipear con 5.000 clientes.
 - [x] Teléfonos normalizados y advertencia de duplicados.
-- [ ] Detalle muestra historial de visitas (COMPLETED/PAID), gastos y saldo pendiente.
+- [x] Detalle muestra historial de visitas (COMPLETED/PAID), gastos y saldo pendiente.
 - [x] Contador de ausencias visible y correcto.
 - [x] Alta rápida disponible desde crear turno.

@@ -49,6 +49,9 @@ public final class AppointmentCardProjection {
     @ColumnInfo(name = "adjustment_cents")
     public final long adjustmentCents;
 
+    @ColumnInfo(name = "paid_cents")
+    public final long paidCents;
+
     @ColumnInfo(name = "recurrence_rule_id")
     @Nullable
     public final String recurrenceRuleId;
@@ -66,6 +69,7 @@ public final class AppointmentCardProjection {
             @NonNull String servicesSummary,
             long itemsSubtotalCents,
             long adjustmentCents,
+            long paidCents,
             @Nullable String recurrenceRuleId
     ) {
         this.id = id;
@@ -80,6 +84,7 @@ public final class AppointmentCardProjection {
         this.servicesSummary = servicesSummary;
         this.itemsSubtotalCents = itemsSubtotalCents;
         this.adjustmentCents = adjustmentCents;
+        this.paidCents = paidCents;
         this.recurrenceRuleId = recurrenceRuleId;
     }
 
@@ -88,6 +93,6 @@ public final class AppointmentCardProjection {
     }
 
     public long pendingBalanceCents() {
-        return "COMPLETED".equals(status) ? totalCents() : 0L;
+        return "COMPLETED".equals(status) ? Math.max(0L, totalCents() - paidCents) : 0L;
     }
 }

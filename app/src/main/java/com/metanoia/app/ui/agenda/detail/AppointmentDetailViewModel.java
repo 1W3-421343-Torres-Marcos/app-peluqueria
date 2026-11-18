@@ -12,21 +12,28 @@ import androidx.lifecycle.Transformations;
 import com.metanoia.app.AppContainer;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
+import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.data.db.pojo.AppointmentWithItems;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.mapper.AppointmentMapper;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader;
 import com.metanoia.app.ui.agenda.SlotAvailabilityLoader.SlotLoadResult;
 import com.metanoia.app.ui.common.Event;
+import com.metanoia.app.util.ReceiptPdfBuilder;
 import com.metanoia.domain.common.DomainError;
 import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.Appointment;
 import com.metanoia.domain.model.AppointmentStatus;
+import com.metanoia.domain.model.CashMovement;
 import com.metanoia.domain.model.Client;
 import com.metanoia.domain.model.Professional;
+import com.metanoia.domain.model.Settings;
+import com.metanoia.domain.rules.AppointmentPaymentCalculator;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +64,7 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<SlotLoadResult> rescheduleSlots = new MutableLiveData<>();
     private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
     private final MutableLiveData<Event<Boolean>> closeRescheduleEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<File>> shareReceiptEvent = new MutableLiveData<>();
 
     public AppointmentDetailViewModel(@NonNull Application application) {
         super(application);
@@ -66,6 +74,12 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
 
     public LiveData<AppointmentWithItems> observeRawAppointment(@NonNull String appointmentId) {
         return container.database().appointmentDao().observeByIdWithItems(appointmentId);
+    }
+
+    public LiveData<List<CashMovementEntity>> observeAppointmentMovements(
+            @NonNull String appointmentId
+    ) {
+        return container.database().cashDao().observeByAppointmentId(appointmentId);
     }
 
     public LiveData<DetailUiState> observeDetailState() {
@@ -86,6 +100,30 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
 
     public LiveData<Event<Boolean>> observeCloseReschedule() {
         return closeRescheduleEvent;
+    }
+
+    public LiveData<Event<File>> observeShareReceipt() {
+        return shareReceiptEvent;
+    }
+
+    public void generateReceiptPdf(
+            @NonNull DetailUiState state,
+            @NonNull List<CashMovement> movements) {
+        container.executors().io().execute(() -> {
+            try {
+                Settings settings = container.settingsRepository().getSettings();
+                File pdfFile = ReceiptPdfBuilder.buildPdfFile(
+                        getApplication(),
+                        settings,
+                        state.appointment,
+                        state.clientName,
+                        state.professionalName,
+                        movements);
+                shareReceiptEvent.postValue(new Event<>(pdfFile));
+            } catch (IOException ex) {
+                feedbackEvent.postValue(new Event<>(R.string.receipt_share_failed));
+            }
+        });
     }
 
     public void resolveDetail(@Nullable AppointmentWithItems withItems) {
@@ -111,8 +149,11 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
             @Nullable String cancelReason
     ) {
         container.executors().io().execute(() -> {
+            long paidCents = AppointmentPaymentCalculator.netPaid(
+                    container.cashRepository().findMovementsByAppointmentId(appointmentId)
+            ).cents();
             Result<Appointment> result = container.changeAppointmentStatusUseCase()
-                    .execute(appointmentId, targetStatus, cancelReason);
+                    .execute(appointmentId, targetStatus, cancelReason, paidCents);
             if (result.isSuccess()) {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_status_updated));
             } else if (result.getError() == DomainError.VALIDATION_ERROR) {
@@ -139,6 +180,22 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_cancel_reason_required));
             } else if (result.getError() == DomainError.CONFLICT) {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_error_status_conflict));
+            } else {
+                feedbackEvent.postValue(new Event<>(R.string.appointment_error_unexpected));
+            }
+        });
+    }
+
+    public void reverseMovement(@NonNull String movementId, @NonNull String reason) {
+        container.executors().io().execute(() -> {
+            Result<CashMovement> result = container.reverseMovementUseCase()
+                    .execute(movementId, reason);
+            if (result.isSuccess()) {
+                feedbackEvent.postValue(new Event<>(R.string.cash_reverse_success));
+            } else if (result.getError() == DomainError.VALIDATION_ERROR) {
+                feedbackEvent.postValue(new Event<>(R.string.cash_reverse_reason_required));
+            } else if (result.getError() == DomainError.CONFLICT) {
+                feedbackEvent.postValue(new Event<>(R.string.cash_reverse_conflict));
             } else {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_error_unexpected));
             }

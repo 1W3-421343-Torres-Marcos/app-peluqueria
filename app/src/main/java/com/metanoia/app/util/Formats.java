@@ -4,6 +4,7 @@ import com.metanoia.domain.common.Clock;
 import com.metanoia.domain.model.Money;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.Instant;
@@ -133,5 +134,39 @@ public final class Formats {
                 Instant.ofEpochMilli(epochMillis), Clock.ARGENTINA_ZONE);
         return zdt.toLocalDate().format(DATE_FORMATTER) + " "
                 + zdt.toLocalTime().format(TIME_FORMATTER);
+    }
+
+    public static String formatTimeMillis(long epochMillis) {
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(epochMillis), Clock.ARGENTINA_ZONE);
+        return zdt.toLocalTime().format(TIME_FORMATTER);
+    }
+
+    public static Optional<Money> parsePesosInput(String raw) {
+        if (raw == null) {
+            return Optional.empty();
+        }
+        String trimmed = raw.trim();
+        if (trimmed.isEmpty()) {
+            return Optional.empty();
+        }
+        String normalized = trimmed.replace(",", ".");
+        try {
+            BigDecimal amount = new BigDecimal(normalized);
+            long cents = amount.movePointRight(2)
+                    .setScale(0, RoundingMode.HALF_UP)
+                    .longValueExact();
+            return Optional.of(Money.ofCents(cents));
+        } catch (NumberFormatException | ArithmeticException ex) {
+            return Optional.empty();
+        }
+    }
+
+    public static String formatPesosPlain(Money money) {
+        Objects.requireNonNull(money, "money");
+        BigDecimal pesos = BigDecimal.valueOf(money.cents()).movePointLeft(2);
+        return pesos.stripTrailingZeros().scale() <= 0
+                ? String.valueOf(pesos.longValue())
+                : pesos.toPlainString();
     }
 }

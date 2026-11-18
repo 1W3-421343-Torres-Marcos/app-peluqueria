@@ -34,14 +34,14 @@ Registrar todo el dinero que entra y sale del salón de forma inmutable y audita
 Cierre de caja (múltiples métodos, reversos, egresos, diferencia), pagos parciales y divididos, paso automático COMPLETED → PAID al cubrir y PAID → COMPLETED por reverso, "Completar y cobrar" atómico (rollback), rechazo de cobro sobre estados no válidos, rechazo de movimientos en día cerrado, encolado de backup CASH_CLOSE.
 
 ## Criterios de aceptación
-- [ ] Cobro solo sobre turnos COMPLETED con saldo; pagos parciales y divididos.
-- [ ] Turno pasa solo a PAID al cubrir el total y vuelve a COMPLETED si un reverso deja saldo.
-- [ ] "Completar y cobrar" atómico en ≤ 3 toques.
-- [ ] Lista "Por cobrar" con montos adeudados.
-- [ ] Ventas sueltas y gastos registrados.
-- [ ] Movimientos inmutables; correcciones solo por reverso.
-- [ ] Cierre diario con esperado vs contado y diferencia; día cerrado bloqueado.
-- [ ] Cierre de caja dispara backup CASH_CLOSE.
-- [ ] Auditoría completa (fecha, operador, monto, concepto).
-- [ ] Recibo PDF con identidad de marca.
-- [ ] Tests de cierre de caja y cobros verdes.
+- [x] Cobro solo sobre turnos COMPLETED con saldo; pagos parciales y divididos.
+- [x] Turno pasa solo a PAID al cubrir el total y vuelve a COMPLETED si un reverso deja saldo.
+- [x] "Completar y cobrar" atómico en ≤ 3 toques.
+- [x] Lista "Por cobrar" con montos adeudados.
+- [x] Ventas sueltas y gastos registrados.
+- [x] Movimientos inmutables; correcciones solo por reverso.
+- [x] Cierre diario con esperado vs contado y diferencia; día cerrado bloqueado.
+- [x] Cierre de caja dispara backup CASH_CLOSE.
+- [x] Auditoría completa (fecha, operador, monto, concepto).
+- [x] Recibo PDF con identidad de marca.
+- [x] Tests de cierre de caja y cobros verdes.

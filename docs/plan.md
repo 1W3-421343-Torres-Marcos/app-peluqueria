@@ -11,7 +11,7 @@
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
-| F5 | Caja | [ ] | 0/10 | 0 % |
+| F5 | Caja | [x] | 10/10 | 100 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **38/86** | **44 %** |
+| **Total** | | | **48/86** | **56 %** |
 
 ---
 
@@ -149,37 +149,37 @@ Entregable: datos protegidos con backup automático y restauración segura. Mód
 8. [x] **F4.8 Verificación de fase**
    - Hecho: prueba ida y vuelta (backup → borrar app → restaurar) sin pérdida; criterios de `backup/skills.md` OK; `versionName 0.4.0`; merge de `fase/F4` a `main`, tag `fase-F4` y entrada en `docs/changelog.md`.
 
-## F5 — Caja `[ ]`
+## F5 — Caja `[x]`
 Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 
-1. [ ] **F5.1 Modelo de caja**
+1. [x] **F5.1 Modelo de caja**
    - Archivos: `CashMovement`, `PaymentMethod`, `ReverseMovementUseCase`
    - Hecho: movimientos inmutables con reverso; cada uno genera `AuditLog`; `paidCents`/`balanceCents` derivados de movimientos; tests.
-2. [ ] **F5.2 Persistencia de caja**
+2. [x] **F5.2 Persistencia de caja**
    - Archivos: entidades/DAOs, migración
    - Hecho: índices por día, método y `appointmentId`; FK RESTRICT; test de migración.
-3. [ ] **F5.3 Cobro de turno**
+3. [x] **F5.3 Cobro de turno**
    - Archivos: `ChargeAppointmentUseCase`, `ui/cash/charge/`
    - Hecho: solo turnos COMPLETED con saldo; saldo precargado; ajuste con motivo; pagos parciales y divididos por método; pasa solo a PAID al cubrir el total; un reverso que deja saldo lo devuelve a COMPLETED; tests de ambos pasos automáticos y de rechazo en estados no válidos.
-4. [ ] **F5.4 "Completar y cobrar"**
+4. [x] **F5.4 "Completar y cobrar"**
    - Archivos: `CompleteAndChargeUseCase`, detalle de turno
    - Hecho: desde PENDING/CONFIRMED completa + cobra en una única transacción Room; pago simple en ≤ 3 toques; test instrumentado de atomicidad (falla del cobro ⇒ turno sigue sin completar).
-5. [ ] **F5.5 Lista "Por cobrar"**
+5. [x] **F5.5 Lista "Por cobrar"**
    - Archivos: `ui/cash/receivables/`, consulta con proyección liviana
    - Hecho: turnos COMPLETED con saldo > 0 y monto adeudado; toque abre el cobro; contador en la pestaña Caja.
-6. [ ] **F5.6 Ventas sueltas y gastos**
+6. [x] **F5.6 Ventas sueltas y gastos**
    - Archivos: `ui/cash/`
    - Hecho: registro con concepto, monto y método; aparecen en el día.
-7. [ ] **F5.7 Cierre de caja diario**
+7. [x] **F5.7 Cierre de caja diario**
    - Archivos: `CashClosingCalculator`, `ui/cash/closing/`
    - Hecho: esperado vs contado por método, diferencia registrada, día cerrado no admite movimientos; tests.
-8. [ ] **F5.8 Backup al cerrar caja**
+8. [x] **F5.8 Backup al cerrar caja**
    - Archivos: `CloseCashDayUseCase`, `BackupScheduler`
    - Hecho: al completar el cierre se encola backup `CASH_CLOSE` (`OneTimeWorkRequest` único, KEEP) sin bloquear la UI; test de encolado sin duplicados.
-9. [ ] **F5.9 Recibo y gastos del cliente**
+9. [x] **F5.9 Recibo y gastos del cliente**
    - Archivos: `ReceiptPdfBuilder`, ficha de cliente
    - Hecho: recibo PDF con logo y "Metanoia Hair Salon" compartible; historial de gastos y saldo pendiente en ficha.
-10. [ ] **F5.10 Verificación de fase**
+10. [x] **F5.10 Verificación de fase**
     - Hecho: criterios de `caja/skills.md` OK; tests verdes; `versionName 0.5.0`; merge de `fase/F5` a `main`, tag `fase-F5` y entrada en `docs/changelog.md`.
 
 ## F6 — Recordatorios por WhatsApp `[ ]`
@@ -361,3 +361,13 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F4.6 | Flujo completo de restauración en `BackupFragment`/`BackupViewModel` (`OpenDocument`, inspección previa, diálogo de resumen y confirmación, `PRE_RESTORE` automático, reinicio de `AppContainer` y `MainActivity`). | F4.7 |
 | 18/11/2026 | F4.7 | `AlertBanner` en `fragment_agenda.xml` y `AgendaFragment` para alertar carpeta faltante, permiso perdido o último backup superior a N días configurados (default 3) con acceso directo a `BackupFragment`. | F4.8 |
 | 18/11/2026 | F4.8 | Fase F4 cerrada (`versionName 0.4.0`, `versionCode 4`): `BackupPackageRoundTripTest` y `BackupRestoreRoundTripTest` (`androidTest`), `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint y 95 tests unitarios OK), 9 criterios marcados en `backup/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F4` / `v0.4.0`. | F5.1 |
+| 18/11/2026 | F5.1 | Modelos inmutables `PaymentMethod`, `CashMovementType`, `CashMovement`, `CashClosing`, `AppointmentPaymentCalculator`, interfaz `CashRepository` y `ReverseMovementUseCase` (reverso con auditoría, paso automático `PAID -> COMPLETED` y cierre previo respetado) + `AppointmentPaymentCalculatorTest` (1/1 OK) y `ReverseMovementUseCaseTest` (3/3 OK). | F5.2 |
+| 18/11/2026 | F5.2 | Persistencia Room v7 (`CashClosingEntity`, `CashMovementEntity` con FK `RESTRICT`, `CashDao`, `CashMapper`, `CashRepositoryImpl`, `Migration_6_7`, `7.json`), proyección `paid_cents` y consultas "Por cobrar" en `AppointmentDao`/`AppointmentCardProjection`, `BackupManager` v7, `SchemaExportTest` (7/7 OK) y `MigrationTest` v7 compilado. | F5.3 |
+| 18/11/2026 | F5.3 | `CashPaymentSupport`, `ChargeAppointmentUseCase` + `ChargeAppointmentUseCaseTest` (3/3 OK), `ChargeAppointmentDialogFragment` (parcial/dividido/ajuste con motivo), pagos registrados y reverso en `AppointmentDetailFragment`. | F5.4 |
+| 18/11/2026 | F5.4 | `CompleteAndChargeUseCase` atómico en una sola transacción (congela comisiones + registra cobro), acción en <= 3 toques desde `AppointmentDetailFragment` (`PENDING`/`CONFIRMED`), `CompleteAndChargeUseCaseTest` (3/3 OK) y test instrumentado `CompleteAndChargeAtomicityTest` compilado. | F5.5 |
+| 18/11/2026 | F5.5 | `ReceivablesViewModel`, `ReceivablesAdapter` (reutilizando `AppointmentCardView.bindForReceivable`), `ReceivablesFragment` + `fragment_receivables.xml` conectados en `nav_main.xml` (`nav_receivables`), apertura directa del cobro y contador reactivo `Por cobrar (N)` en `CashFragment`. | F5.6 |
+| 18/11/2026 | F5.6 | `RecordCashMovementUseCase` + `RecordCashMovementUseCaseTest` (4/4 OK), pantalla diaria `CashFragment`/`CashViewModel` con navegación de fecha, resumen neto por 4 medios de pago, listado de movimientos con reverso inmutable y diálogo `CashMovementFormDialogFragment` para ventas sueltas, otros ingresos y gastos. | F5.7 |
+| 18/11/2026 | F5.7 | `CashClosingCalculator` + `CashClosingCalculatorTest` (2/2 OK), `CloseCashDayUseCase` + `CloseCashDayUseCaseTest` (3/3 OK), `CashClosingDialogFragment` con arqueo esperado vs contado por medio en vivo, alerta `AlertBanner` de días previos sin cerrar, resumen de cierre y bloqueo de día cerrado en `CashFragment`. | F5.8 |
+| 18/11/2026 | F5.8 | `CashCloseBackupTrigger` inyectado en `CloseCashDayUseCase` y conectado en `AppContainer` a `BackupScheduler.enqueueCashClose` (`UNIQUE_WORK_CASH_CLOSE`, `KEEP`, no bloqueante); tests actualizados en `CloseCashDayUseCaseTest` (3/3 OK). | F5.9 |
+| 18/11/2026 | F5.9 | `ReceiptPdfBuilder` compartible por `FileProvider` desde `AppointmentDetailFragment` (logo reemplazable + "METANOIA Hair Salon", ítems, pagos y saldo), pestaña real de Gastos e historial en `ClientDetailFragment` (`ClientSpendingAdapter`) y criterio 4 marcado en `clientes/skills.md`. | F5.10 |
+| 18/11/2026 | F5.10 | Fase F5 cerrada (`versionName 0.5.0`, `versionCode 5`): `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` verde (Lint, 115 tests unitarios OK y tests instrumentados compilados), 11 criterios marcados en `caja/skills.md`, checklist `agents.md` §12 OK, `changelog.md` actualizado, merge `--no-ff` a `main` y tags `fase-F5` / `v0.5.0`. | F6.1 |

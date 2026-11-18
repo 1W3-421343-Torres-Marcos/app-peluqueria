@@ -3,11 +3,13 @@ package com.metanoia.app;
 import android.content.Context;
 
 import com.metanoia.app.data.backup.BackupManager;
+import com.metanoia.app.data.backup.BackupScheduler;
 import com.metanoia.app.data.backup.RestoreManager;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.data.repository.AppointmentRepositoryImpl;
 import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
+import com.metanoia.app.data.repository.CashRepositoryImpl;
 import com.metanoia.app.data.repository.ClientRepositoryImpl;
 import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
@@ -17,6 +19,7 @@ import com.metanoia.domain.common.Clock;
 import com.metanoia.domain.common.IdGenerator;
 import com.metanoia.domain.repository.AppointmentRepository;
 import com.metanoia.domain.repository.AuditLogRepository;
+import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.ClientRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
@@ -24,6 +27,10 @@ import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
 import com.metanoia.domain.usecase.ChangeAppointmentStatusUseCase;
+import com.metanoia.domain.usecase.ChargeAppointmentUseCase;
+import com.metanoia.domain.usecase.CloseCashDayUseCase;
+import com.metanoia.domain.usecase.CompleteAndChargeUseCase;
+import com.metanoia.domain.usecase.RecordCashMovementUseCase;
 import com.metanoia.domain.usecase.CreateAppointmentUseCase;
 import com.metanoia.domain.usecase.CreateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
@@ -31,6 +38,7 @@ import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
+import com.metanoia.domain.usecase.ReverseMovementUseCase;
 import com.metanoia.domain.usecase.SaveClientUseCase;
 import com.metanoia.domain.usecase.SaveProfessionalUseCase;
 import com.metanoia.domain.usecase.SaveSalonServiceUseCase;
@@ -57,6 +65,7 @@ public final class AppContainer {
     private final ClientRepository clientRepository;
     private final AppointmentRepository appointmentRepository;
     private final ScheduleBlockRepository scheduleBlockRepository;
+    private final CashRepository cashRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -74,6 +83,11 @@ public final class AppContainer {
     private final DeactivateScheduleBlockUseCase deactivateScheduleBlockUseCase;
     private final GenerateRecurringAppointmentsUseCase generateRecurringAppointmentsUseCase;
     private final CancelRecurringSeriesUseCase cancelRecurringSeriesUseCase;
+    private final ReverseMovementUseCase reverseMovementUseCase;
+    private final ChargeAppointmentUseCase chargeAppointmentUseCase;
+    private final CompleteAndChargeUseCase completeAndChargeUseCase;
+    private final RecordCashMovementUseCase recordCashMovementUseCase;
+    private final CloseCashDayUseCase closeCashDayUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -93,6 +107,7 @@ public final class AppContainer {
         this.appointmentRepository = new AppointmentRepositoryImpl(
                 database.appointmentDao(), database.recurrenceRuleDao());
         this.scheduleBlockRepository = new ScheduleBlockRepositoryImpl(database.scheduleBlockDao());
+        this.cashRepository = new CashRepositoryImpl(database);
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -137,6 +152,21 @@ public final class AppContainer {
                 auditLogRepository, clock, idGenerator);
         this.cancelRecurringSeriesUseCase = new CancelRecurringSeriesUseCase(
                 appointmentRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.reverseMovementUseCase = new ReverseMovementUseCase(
+                cashRepository, appointmentRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
+        this.chargeAppointmentUseCase = new ChargeAppointmentUseCase(
+                appointmentRepository, cashRepository, settingsRepository,
+                auditLogRepository, clock, idGenerator);
+        this.completeAndChargeUseCase = new CompleteAndChargeUseCase(
+                appointmentRepository, professionalRepository, cashRepository,
+                settingsRepository, auditLogRepository, clock, idGenerator);
+        this.recordCashMovementUseCase = new RecordCashMovementUseCase(
+                cashRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.closeCashDayUseCase = new CloseCashDayUseCase(
+                cashRepository, settingsRepository, auditLogRepository,
+                clock, idGenerator,
+                closedDayEpoch -> BackupScheduler.enqueueCashClose(appContext));
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
@@ -266,5 +296,29 @@ public final class AppContainer {
 
     public RestoreManager restoreManager() {
         return restoreManager;
+    }
+
+    public CashRepository cashRepository() {
+        return cashRepository;
+    }
+
+    public ReverseMovementUseCase reverseMovementUseCase() {
+        return reverseMovementUseCase;
+    }
+
+    public ChargeAppointmentUseCase chargeAppointmentUseCase() {
+        return chargeAppointmentUseCase;
+    }
+
+    public CompleteAndChargeUseCase completeAndChargeUseCase() {
+        return completeAndChargeUseCase;
+    }
+
+    public RecordCashMovementUseCase recordCashMovementUseCase() {
+        return recordCashMovementUseCase;
+    }
+
+    public CloseCashDayUseCase closeCashDayUseCase() {
+        return closeCashDayUseCase;
     }
 }
