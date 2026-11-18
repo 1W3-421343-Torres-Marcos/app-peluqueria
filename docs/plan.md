@@ -11,7 +11,7 @@
 | F2 | Configuración base, servicios, profesionales y clientes | [x] | 8/8 | 100 % |
 | F3 | Agenda de turnos | [x] | 12/12 | 100 % |
 | F4 | Backup y restauración | [x] | 8/8 | 100 % |
-| F5 | Caja | [~] | 7/10 | 70 % |
+| F5 | Caja | [~] | 8/10 | 80 % |
 | F6 | Recordatorios por WhatsApp | [ ] | 0/7 | 0 % |
 | F7 | Ficha de color | [ ] | 0/4 | 0 % |
 | F8 | Lista de espera | [ ] | 0/4 | 0 % |
@@ -19,7 +19,7 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **45/86** | **52 %** |
+| **Total** | | | **46/86** | **53 %** |
 
 ---
 
@@ -173,7 +173,7 @@ Entregable: cobros, ventas, gastos y cierre diario auditables. Módulo: `caja`.
 7. [x] **F5.7 Cierre de caja diario**
    - Archivos: `CashClosingCalculator`, `ui/cash/closing/`
    - Hecho: esperado vs contado por método, diferencia registrada, día cerrado no admite movimientos; tests.
-8. [ ] **F5.8 Backup al cerrar caja**
+8. [x] **F5.8 Backup al cerrar caja**
    - Archivos: `CloseCashDayUseCase`, `BackupScheduler`
    - Hecho: al completar el cierre se encola backup `CASH_CLOSE` (`OneTimeWorkRequest` único, KEEP) sin bloquear la UI; test de encolado sin duplicados.
 9. [ ] **F5.9 Recibo y gastos del cliente**
@@ -368,3 +368,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F5.5 | `ReceivablesViewModel`, `ReceivablesAdapter` (reutilizando `AppointmentCardView.bindForReceivable`), `ReceivablesFragment` + `fragment_receivables.xml` conectados en `nav_main.xml` (`nav_receivables`), apertura directa del cobro y contador reactivo `Por cobrar (N)` en `CashFragment`. | F5.6 |
 | 18/11/2026 | F5.6 | `RecordCashMovementUseCase` + `RecordCashMovementUseCaseTest` (4/4 OK), pantalla diaria `CashFragment`/`CashViewModel` con navegación de fecha, resumen neto por 4 medios de pago, listado de movimientos con reverso inmutable y diálogo `CashMovementFormDialogFragment` para ventas sueltas, otros ingresos y gastos. | F5.7 |
 | 18/11/2026 | F5.7 | `CashClosingCalculator` + `CashClosingCalculatorTest` (2/2 OK), `CloseCashDayUseCase` + `CloseCashDayUseCaseTest` (3/3 OK), `CashClosingDialogFragment` con arqueo esperado vs contado por medio en vivo, alerta `AlertBanner` de días previos sin cerrar, resumen de cierre y bloqueo de día cerrado en `CashFragment`. | F5.8 |
+| 18/11/2026 | F5.8 | `CashCloseBackupTrigger` inyectado en `CloseCashDayUseCase` y conectado en `AppContainer` a `BackupScheduler.enqueueCashClose` (`UNIQUE_WORK_CASH_CLOSE`, `KEEP`, no bloqueante); tests actualizados en `CloseCashDayUseCaseTest` (3/3 OK). | F5.9 |

@@ -16,6 +16,7 @@ import com.metanoia.domain.model.Money;
 import com.metanoia.domain.model.PaymentMethod;
 import com.metanoia.domain.model.Settings;
 import com.metanoia.domain.repository.AuditLogRepository;
+import com.metanoia.domain.repository.CashCloseBackupTrigger;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.usecase.CloseCashDayUseCase.Request;
@@ -33,14 +34,15 @@ import java.util.Optional;
 public class CloseCashDayUseCaseTest {
 
     @Test
-    public void closeOpenDay_locksMovementsAndRecordsDifferenceAndAudit() {
+    public void closeOpenDay_locksMovementsRecordsAuditAndTriggersBackupOnce() {
         InMemoryCashRepo cashRepo = new InMemoryCashRepo();
         cashRepo.saveMovement(movement("m1", 20_500L, CashMovementType.APPOINTMENT_PAYMENT,
                 PaymentMethod.CASH, 1_000_000L, null));
         cashRepo.saveMovement(movement("m2", 20_500L, CashMovementType.EXPENSE,
                 PaymentMethod.CASH, 250_000L, null));
         List<AuditRecord> audits = new ArrayList<>();
-        CloseCashDayUseCase useCase = buildUseCase(cashRepo, audits);
+        List<Long> triggeredDays = new ArrayList<>();
+        CloseCashDayUseCase useCase = buildUseCase(cashRepo, audits, triggeredDays::add);
 
         Map<PaymentMethod, Money> counted = new EnumMap<>(PaymentMethod.class);
         counted.put(PaymentMethod.CASH, Money.ofCents(740_000L));
@@ -55,13 +57,16 @@ public class CloseCashDayUseCaseTest {
         assertEquals(closing.id(), cashRepo.findMovementById("m1").get().closingId().orElse(""));
         assertEquals(1, audits.size());
         assertEquals("CASH_CLOSE", audits.get(0).action());
+        assertEquals(1, triggeredDays.size());
+        assertEquals(Long.valueOf(20_500L), triggeredDays.get(0));
     }
 
     @Test
-    public void alreadyClosedDay_returnsConflictWithoutSecondAudit() {
+    public void alreadyClosedDay_returnsConflictWithoutSecondAuditOrBackupTrigger() {
         InMemoryCashRepo cashRepo = new InMemoryCashRepo();
         List<AuditRecord> audits = new ArrayList<>();
-        CloseCashDayUseCase useCase = buildUseCase(cashRepo, audits);
+        List<Long> triggeredDays = new ArrayList<>();
+        CloseCashDayUseCase useCase = buildUseCase(cashRepo, audits, triggeredDays::add);
 
         Map<PaymentMethod, Money> counted = new EnumMap<>(PaymentMethod.class);
         assertTrue(useCase.execute(new Request(20_500L, counted, "")).isSuccess());
@@ -70,12 +75,14 @@ public class CloseCashDayUseCaseTest {
         assertFalse(second.isSuccess());
         assertEquals(DomainError.CONFLICT, second.getError());
         assertEquals(1, audits.size());
+        assertEquals(1, triggeredDays.size());
     }
 
     @Test
-    public void negativeCountedAmount_returnsValidationError() {
+    public void negativeCountedAmount_returnsValidationErrorWithoutBackupTrigger() {
         InMemoryCashRepo cashRepo = new InMemoryCashRepo();
-        CloseCashDayUseCase useCase = buildUseCase(cashRepo, new ArrayList<>());
+        List<Long> triggeredDays = new ArrayList<>();
+        CloseCashDayUseCase useCase = buildUseCase(cashRepo, new ArrayList<>(), triggeredDays::add);
 
         Map<PaymentMethod, Money> counted = new EnumMap<>(PaymentMethod.class);
         counted.put(PaymentMethod.CASH, Money.ofCents(-100L));
@@ -84,10 +91,13 @@ public class CloseCashDayUseCaseTest {
         assertFalse(result.isSuccess());
         assertEquals(DomainError.VALIDATION_ERROR, result.getError());
         assertFalse(cashRepo.isDayClosed(20_500L));
+        assertTrue(triggeredDays.isEmpty());
     }
 
     private static CloseCashDayUseCase buildUseCase(
-            CashRepository cashRepo, List<AuditRecord> audits) {
+            CashRepository cashRepo,
+            List<AuditRecord> audits,
+            CashCloseBackupTrigger backupTrigger) {
         Clock clock = new Clock() {
             @Override
             public long nowMillis() {
@@ -122,7 +132,8 @@ public class CloseCashDayUseCaseTest {
         AuditLogRepository auditRepo = audits::add;
         int[] seq = {0};
         IdGenerator idGen = () -> "close-" + (++seq[0]);
-        return new CloseCashDayUseCase(cashRepo, settingsRepo, auditRepo, clock, idGen);
+        return new CloseCashDayUseCase(
+                cashRepo, settingsRepo, auditRepo, clock, idGen, backupTrigger);
     }
 
     private static CashMovement movement(

@@ -11,6 +11,7 @@ import com.metanoia.domain.model.CashMovementType;
 import com.metanoia.domain.model.Money;
 import com.metanoia.domain.model.PaymentMethod;
 import com.metanoia.domain.repository.AuditLogRepository;
+import com.metanoia.domain.repository.CashCloseBackupTrigger;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.rules.CashClosingCalculator;
@@ -50,19 +51,23 @@ public final class CloseCashDayUseCase {
     private final AuditLogRepository auditLogRepository;
     private final Clock clock;
     private final IdGenerator idGenerator;
+    private final CashCloseBackupTrigger cashCloseBackupTrigger;
 
     public CloseCashDayUseCase(
             CashRepository cashRepository,
             SettingsRepository settingsRepository,
             AuditLogRepository auditLogRepository,
             Clock clock,
-            IdGenerator idGenerator
+            IdGenerator idGenerator,
+            CashCloseBackupTrigger cashCloseBackupTrigger
     ) {
         this.cashRepository = Objects.requireNonNull(cashRepository, "cashRepository");
         this.settingsRepository = Objects.requireNonNull(settingsRepository, "settingsRepository");
         this.auditLogRepository = Objects.requireNonNull(auditLogRepository, "auditLogRepository");
         this.clock = Objects.requireNonNull(clock, "clock");
         this.idGenerator = Objects.requireNonNull(idGenerator, "idGenerator");
+        this.cashCloseBackupTrigger = Objects.requireNonNull(
+                cashCloseBackupTrigger, "cashCloseBackupTrigger");
     }
 
     public Result<CashClosing> execute(Request request) {
@@ -125,7 +130,11 @@ public final class CloseCashDayUseCase {
             outcome.set(Result.success(closing));
         });
 
-        return outcome.get();
+        Result<CashClosing> result = outcome.get();
+        if (result.isSuccess()) {
+            cashCloseBackupTrigger.triggerCashCloseBackup(request.dayEpoch);
+        }
+        return result;
     }
 
     private Map<String, CashMovementType> resolveExternalOriginalTypes(

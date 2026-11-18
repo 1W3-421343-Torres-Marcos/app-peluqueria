@@ -3,6 +3,7 @@ package com.metanoia.app;
 import android.content.Context;
 
 import com.metanoia.app.data.backup.BackupManager;
+import com.metanoia.app.data.backup.BackupScheduler;
 import com.metanoia.app.data.backup.RestoreManager;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
@@ -163,7 +164,9 @@ public final class AppContainer {
         this.recordCashMovementUseCase = new RecordCashMovementUseCase(
                 cashRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.closeCashDayUseCase = new CloseCashDayUseCase(
-                cashRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+                cashRepository, settingsRepository, auditLogRepository,
+                clock, idGenerator,
+                closedDayEpoch -> BackupScheduler.enqueueCashClose(appContext));
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
