@@ -32,6 +32,7 @@ import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
 import com.metanoia.domain.repository.WaitlistRepository;
 import com.metanoia.domain.usecase.CancelRecurringSeriesUseCase;
+import com.metanoia.domain.usecase.AssignWaitlistEntryUseCase;
 import com.metanoia.domain.usecase.CancelWaitlistEntryUseCase;
 import com.metanoia.domain.usecase.ChangeAppointmentStatusUseCase;
 import com.metanoia.domain.usecase.ChargeAppointmentUseCase;
@@ -44,9 +45,11 @@ import com.metanoia.domain.usecase.DeactivateScheduleBlockUseCase;
 import com.metanoia.domain.usecase.DeleteColorFormulaUseCase;
 import com.metanoia.domain.usecase.DuplicateColorFormulaUseCase;
 import com.metanoia.domain.usecase.ExpireWaitlistEntriesUseCase;
+import com.metanoia.domain.usecase.FindWaitlistCandidatesUseCase;
 import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
+import com.metanoia.domain.usecase.OfferWaitlistEntryUseCase;
 import com.metanoia.domain.usecase.RecordReminderSentUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
 import com.metanoia.domain.usecase.ReverseMovementUseCase;
@@ -111,6 +114,9 @@ public final class AppContainer {
     private final SaveWaitlistEntryUseCase saveWaitlistEntryUseCase;
     private final CancelWaitlistEntryUseCase cancelWaitlistEntryUseCase;
     private final ExpireWaitlistEntriesUseCase expireWaitlistEntriesUseCase;
+    private final FindWaitlistCandidatesUseCase findWaitlistCandidatesUseCase;
+    private final OfferWaitlistEntryUseCase offerWaitlistEntryUseCase;
+    private final AssignWaitlistEntryUseCase assignWaitlistEntryUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -210,6 +216,15 @@ public final class AppContainer {
                 waitlistRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.expireWaitlistEntriesUseCase = new ExpireWaitlistEntriesUseCase(
                 waitlistRepository, clock);
+        this.findWaitlistCandidatesUseCase = new FindWaitlistCandidatesUseCase(
+                waitlistRepository, professionalRepository, clientRepository,
+                salonServiceRepository, settingsRepository, clock);
+        this.offerWaitlistEntryUseCase = new OfferWaitlistEntryUseCase(
+                waitlistRepository, clientRepository, professionalRepository,
+                salonServiceRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.assignWaitlistEntryUseCase = new AssignWaitlistEntryUseCase(
+                waitlistRepository, createAppointmentUseCase, settingsRepository,
+                auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
@@ -403,5 +418,17 @@ public final class AppContainer {
 
     public ExpireWaitlistEntriesUseCase expireWaitlistEntriesUseCase() {
         return expireWaitlistEntriesUseCase;
+    }
+
+    public FindWaitlistCandidatesUseCase findWaitlistCandidatesUseCase() {
+        return findWaitlistCandidatesUseCase;
+    }
+
+    public OfferWaitlistEntryUseCase offerWaitlistEntryUseCase() {
+        return offerWaitlistEntryUseCase;
+    }
+
+    public AssignWaitlistEntryUseCase assignWaitlistEntryUseCase() {
+        return assignWaitlistEntryUseCase;
     }
 }

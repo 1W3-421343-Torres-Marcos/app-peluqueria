@@ -691,4 +691,16 @@
     <string name="waitlist_error_duplicate">El cliente ya tiene una entrada abierta con las mismas preferencias.</string>
     <string name="waitlist_error_validation">Revisá cliente, servicios, días, franja horaria y vigencia.</string>
     <string name="waitlist_error_unexpected">No se pudo guardar la entrada.</string>
+    <string name="waitlist_suggestions_title">Este horario puede interesarle a…</string>
+    <string name="waitlist_suggestions_slot_format">%1$s · %2$s – %3$s · %4$s</string>
+    <string name="waitlist_suggestion_exact_pro_badge">Profesional preferido</string>
+    <string name="waitlist_suggestion_services_format">%1$s (%2$d min)</string>
+    <string name="waitlist_suggestion_no_phone">Sin teléfono registrado para WhatsApp</string>
+    <string name="waitlist_suggestion_offer_btn">Ofrecer</string>
+    <string name="waitlist_suggestion_offered_btn">Ofrecida</string>
+    <string name="waitlist_suggestion_assign_btn">Asignar</string>
+    <string name="waitlist_suggestion_ignore_btn">Ignorar</string>
+    <string name="waitlist_offer_sent">Oferta enviada y marcada en lista de espera</string>
+    <string name="waitlist_assign_success">Turno asignado desde lista de espera</string>
+    <string name="waitlist_assign_conflict">El horario ya no está libre para asignar.</string>
 </resources>
