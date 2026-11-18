@@ -39,6 +39,7 @@ import com.metanoia.app.data.db.migration.Migration_3_4;
 import com.metanoia.app.data.db.migration.Migration_4_5;
 import com.metanoia.app.data.db.migration.Migration_5_6;
 import com.metanoia.app.data.db.migration.Migration_6_7;
+import com.metanoia.app.data.db.migration.Migration_7_8;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -61,7 +62,7 @@ import com.metanoia.app.data.db.migration.Migration_6_7;
                 CashClosingEntity.class,
                 CashMovementEntity.class
         },
-        version = 7,
+        version = 8,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -93,7 +94,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 Migration_3_4.INSTANCE,
                 Migration_4_5.INSTANCE,
                 Migration_5_6.INSTANCE,
-                Migration_6_7.INSTANCE
+                Migration_6_7.INSTANCE,
+                Migration_7_8.INSTANCE
         };
     }
 

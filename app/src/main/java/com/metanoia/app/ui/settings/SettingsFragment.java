@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.chip.Chip;
 import com.metanoia.app.R;
@@ -60,6 +61,9 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.btnAddOperator.setOnClickListener(v -> addOperatorFromInput());
+        binding.rowSettingsTemplates.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_settings_to_templates));
         binding.btnSaveSettings.setOnClickListener(v -> submitForm());
     }
 

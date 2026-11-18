@@ -69,6 +69,15 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_cash_movements_appointment_id"));
     }
 
+    @Test
+    public void roomSchemaV8_isExportedWithTemplateColumnsOnSettings() throws Exception {
+        String content = readSchema(8);
+        assertTrue(content.contains("\"tableName\": \"settings\""));
+        assertTrue(content.contains("reminder_template"));
+        assertTrue(content.contains("birthday_template"));
+        assertTrue(content.contains("waitlist_offer_template"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

@@ -533,4 +533,18 @@
     <string name="receipt_balance_label">Saldo pendiente</string>
     <string name="receipt_footer">Gracias por elegirnos.</string>
     <string name="client_detail_total_spent_label">Total histórico gastado</string>
+
+    <!-- Recordatorios y plantillas (F6) -->
+    <string name="templates_title">Plantillas de WhatsApp</string>
+    <string name="settings_templates_row_title">Plantillas de mensajes</string>
+    <string name="settings_templates_row_subtitle">Recordatorio de turno, cumpleaños y lista de espera</string>
+    <string name="templates_variables_help">Variables: {nombre}, {fecha}, {dia}, {hora}, {servicios}, {profesional}, {negocio}. Si no incluís {negocio}, se agrega la firma al final.</string>
+    <string name="templates_reminder_label">Recordatorio de turno</string>
+    <string name="templates_birthday_label">Saludo de cumpleaños</string>
+    <string name="templates_waitlist_label">Oferta de lista de espera</string>
+    <string name="templates_preview_label">Vista previa:</string>
+    <string name="templates_unknown_vars_warning">Variables desconocidas (se enviarán literales): %1$s</string>
+    <string name="templates_restore_defaults">Restaurar predeterminadas</string>
+    <string name="templates_save_btn">Guardar plantillas</string>
+    <string name="templates_error_empty">Ninguna plantilla puede quedar vacía.</string>
 </resources>

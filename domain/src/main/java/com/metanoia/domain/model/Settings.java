@@ -15,6 +15,12 @@ public final class Settings {
     public static final int DEFAULT_SLOT_MINUTES = 15;
     public static final String DEFAULT_OPERATOR = "Dueño";
     public static final int DEFAULT_WAITLIST_EXPIRY_DAYS = 30;
+    public static final String DEFAULT_REMINDER_TEMPLATE =
+            "Hola {nombre}, te recuerdo tu turno el {fecha} a las {hora} en {negocio}. ¡Te esperamos!";
+    public static final String DEFAULT_BIRTHDAY_TEMPLATE =
+            "¡Feliz cumpleaños, {nombre}! Te saludamos desde {negocio}.";
+    public static final String DEFAULT_WAITLIST_OFFER_TEMPLATE =
+            "Hola {nombre}, se liberó un turno el {fecha} a las {hora} en {negocio}. ¿Te gustaría reservarlo?";
     private static final int DEFAULT_OPEN_MIN = 9 * 60;
     private static final int DEFAULT_CLOSE_MIN = 20 * 60;
 
@@ -28,6 +34,9 @@ public final class Settings {
     private final List<String> operators;
     private final List<TimeRange> generalSchedule;
     private final int waitlistExpiryDays;
+    private final String reminderTemplate;
+    private final String birthdayTemplate;
+    private final String waitlistOfferTemplate;
 
     private Settings(Builder builder) {
         this.businessName = builder.businessName;
@@ -40,6 +49,9 @@ public final class Settings {
         this.operators = Collections.unmodifiableList(new ArrayList<>(builder.operators));
         this.generalSchedule = Collections.unmodifiableList(new ArrayList<>(builder.generalSchedule));
         this.waitlistExpiryDays = builder.waitlistExpiryDays;
+        this.reminderTemplate = builder.reminderTemplate;
+        this.birthdayTemplate = builder.birthdayTemplate;
+        this.waitlistOfferTemplate = builder.waitlistOfferTemplate;
     }
 
     public static Settings defaultSettings() {
@@ -98,6 +110,30 @@ public final class Settings {
         return waitlistExpiryDays;
     }
 
+    public String reminderTemplate() {
+        return reminderTemplate;
+    }
+
+    public String birthdayTemplate() {
+        return birthdayTemplate;
+    }
+
+    public String waitlistOfferTemplate() {
+        return waitlistOfferTemplate;
+    }
+
+    public String businessDisplayName() {
+        String name = businessName == null ? "" : businessName.trim();
+        String sub = subtitle == null ? "" : subtitle.trim();
+        if (sub.isEmpty()) {
+            return name;
+        }
+        if (name.isEmpty()) {
+            return sub;
+        }
+        return name + " " + sub;
+    }
+
     public Builder toBuilder() {
         return new Builder()
                 .businessName(businessName)
@@ -109,7 +145,10 @@ public final class Settings {
                 .currentOperator(currentOperator)
                 .operators(operators)
                 .generalSchedule(generalSchedule)
-                .waitlistExpiryDays(waitlistExpiryDays);
+                .waitlistExpiryDays(waitlistExpiryDays)
+                .reminderTemplate(reminderTemplate)
+                .birthdayTemplate(birthdayTemplate)
+                .waitlistOfferTemplate(waitlistOfferTemplate);
     }
 
     public static final class Builder {
@@ -123,6 +162,9 @@ public final class Settings {
         private List<String> operators = Collections.singletonList(DEFAULT_OPERATOR);
         private List<TimeRange> generalSchedule = Collections.emptyList();
         private int waitlistExpiryDays = DEFAULT_WAITLIST_EXPIRY_DAYS;
+        private String reminderTemplate = DEFAULT_REMINDER_TEMPLATE;
+        private String birthdayTemplate = DEFAULT_BIRTHDAY_TEMPLATE;
+        private String waitlistOfferTemplate = DEFAULT_WAITLIST_OFFER_TEMPLATE;
 
         public Builder businessName(String businessName) {
             this.businessName = Objects.requireNonNull(businessName, "businessName");
@@ -175,6 +217,28 @@ public final class Settings {
             return this;
         }
 
+        public Builder reminderTemplate(String reminderTemplate) {
+            this.reminderTemplate = reminderTemplate == null || reminderTemplate.trim().isEmpty()
+                    ? DEFAULT_REMINDER_TEMPLATE
+                    : reminderTemplate.trim();
+            return this;
+        }
+
+        public Builder birthdayTemplate(String birthdayTemplate) {
+            this.birthdayTemplate = birthdayTemplate == null || birthdayTemplate.trim().isEmpty()
+                    ? DEFAULT_BIRTHDAY_TEMPLATE
+                    : birthdayTemplate.trim();
+            return this;
+        }
+
+        public Builder waitlistOfferTemplate(String waitlistOfferTemplate) {
+            this.waitlistOfferTemplate = waitlistOfferTemplate == null
+                    || waitlistOfferTemplate.trim().isEmpty()
+                    ? DEFAULT_WAITLIST_OFFER_TEMPLATE
+                    : waitlistOfferTemplate.trim();
+            return this;
+        }
+
         public Settings build() {
             return new Settings(this);
         }
@@ -198,12 +262,16 @@ public final class Settings {
                 && cuit.equals(settings.cuit)
                 && currentOperator.equals(settings.currentOperator)
                 && operators.equals(settings.operators)
-                && generalSchedule.equals(settings.generalSchedule);
+                && generalSchedule.equals(settings.generalSchedule)
+                && reminderTemplate.equals(settings.reminderTemplate)
+                && birthdayTemplate.equals(settings.birthdayTemplate)
+                && waitlistOfferTemplate.equals(settings.waitlistOfferTemplate);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(businessName, subtitle, address, phone, cuit, slotMinutes,
-                currentOperator, operators, generalSchedule, waitlistExpiryDays);
+                currentOperator, operators, generalSchedule, waitlistExpiryDays,
+                reminderTemplate, birthdayTemplate, waitlistOfferTemplate);
     }
 }
