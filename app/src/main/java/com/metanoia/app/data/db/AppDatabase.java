@@ -2,19 +2,29 @@ package com.metanoia.app.data.db;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.metanoia.app.data.db.dao.AuditLogDao;
+import com.metanoia.app.data.db.dao.SettingsDao;
 import com.metanoia.app.data.db.entity.AuditLogEntity;
+import com.metanoia.app.data.db.entity.SalonHoursEntity;
+import com.metanoia.app.data.db.entity.SettingsEntity;
+import com.metanoia.app.data.db.migration.Migration_1_2;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
  */
 @Database(
-        entities = {AuditLogEntity.class},
-        version = 1,
+        entities = {
+                AuditLogEntity.class,
+                SettingsEntity.class,
+                SalonHoursEntity.class
+        },
+        version = 2,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -23,11 +33,22 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AuditLogDao auditLogDao();
 
+    public abstract SettingsDao settingsDao();
+
     public static AppDatabase create(Context context) {
         return Room.databaseBuilder(
-                context.getApplicationContext(),
-                AppDatabase.class,
-                DATABASE_NAME
-        ).build();
+                        context.getApplicationContext(),
+                        AppDatabase.class,
+                        DATABASE_NAME
+                )
+                .addMigrations(Migration_1_2.INSTANCE)
+                .addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        Migration_1_2.seedDefaults(db);
+                    }
+                })
+                .build();
     }
 }

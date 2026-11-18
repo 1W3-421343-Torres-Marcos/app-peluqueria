@@ -25,6 +25,53 @@
     <string name="more_upcoming_modules">Próximamente: Servicios, Profesionales, Stock, Reportes, Backup y Configuración.</string>
     <string name="more_catalog_title">Catálogo de componentes (debug)</string>
     <string name="more_catalog_subtitle">Vista previa de tokens y controles en claro y oscuro</string>
+    <string name="more_settings_title">Configuración</string>
+    <string name="more_settings_subtitle">Negocio, horarios, duración de bloques y operadores</string>
+    <string name="more_about_title">Acerca de Metanoia</string>
+    <string name="more_about_subtitle">Versión de la app e información local</string>
+
+    <!-- Configuración (F2.1) -->
+    <string name="settings_title">Configuración</string>
+    <string name="settings_section_business">Datos del negocio</string>
+    <string name="settings_business_name_label">Nombre del salón</string>
+    <string name="settings_subtitle_label">Subtítulo</string>
+    <string name="settings_address_label">Dirección</string>
+    <string name="settings_phone_label">Teléfono</string>
+    <string name="settings_cuit_label">CUIT</string>
+    <string name="settings_section_agenda">Agenda y bloques</string>
+    <string name="settings_slot_minutes_label">Duración mínima de turno</string>
+    <string name="slot_10_min">10 min</string>
+    <string name="slot_15_min">15 min</string>
+    <string name="slot_20_min">20 min</string>
+    <string name="slot_30_min">30 min</string>
+    <string name="settings_section_operators">Operadores (auditoría)</string>
+    <string name="settings_operator_hint">Operador activo para registrar operaciones</string>
+    <string name="settings_new_operator_label">Nuevo operador</string>
+    <string name="settings_add_operator">Agregar</string>
+    <string name="settings_section_hours">Horario general de atención</string>
+    <string name="settings_save">Guardar configuración</string>
+    <string name="settings_saved">Configuración guardada</string>
+    <string name="settings_error_validation">Revisá los datos: nombre (2–80 caracteres), operador y horarios sin solapamientos.</string>
+    <string name="settings_error_unexpected">No se pudo guardar la configuración.</string>
+
+    <!-- Editor horario semanal -->
+    <string name="day_monday">Lunes</string>
+    <string name="day_tuesday">Martes</string>
+    <string name="day_wednesday">Miércoles</string>
+    <string name="day_thursday">Jueves</string>
+    <string name="day_friday">Viernes</string>
+    <string name="day_saturday">Sábado</string>
+    <string name="day_sunday">Domingo</string>
+    <string name="schedule_closed">Cerrado</string>
+    <string name="schedule_add_shift">+ Tramo</string>
+    <string name="schedule_remove_shift">Quitar tramo</string>
+    <string name="schedule_copy_mon_to_sat">Copiar lunes a lun–sáb</string>
+    <string name="schedule_time_separator">a</string>
+
+    <!-- Acerca de -->
+    <string name="about_title">Acerca de</string>
+    <string name="about_version_format">Versión %1$s (código %2$d)</string>
+    <string name="about_offline_note">Aplicación 100 % offline. Todos los datos se almacenan únicamente en tu dispositivo.</string>
 
     <!-- Chips de estado (design.md §7) -->
     <string name="status_pending">Pendiente</string>

@@ -12,13 +12,23 @@ public class SchemaExportTest {
 
     @Test
     public void roomSchemaV1_isExportedWithAuditLogsTable() throws Exception {
-        File schemaFile = resolveSchemaFile(
-                "schemas/com.metanoia.app.data.db.AppDatabase/1.json");
-        assertTrue("Falta el esquema exportado v1 de Room", schemaFile.exists());
-
-        String content = new String(Files.readAllBytes(schemaFile.toPath()), StandardCharsets.UTF_8);
+        String content = readSchema(1);
         assertTrue(content.contains("\"tableName\": \"audit_logs\""));
         assertTrue(content.contains("\"identityHash\""));
+    }
+
+    @Test
+    public void roomSchemaV2_isExportedWithSettingsAndSalonHours() throws Exception {
+        String content = readSchema(2);
+        assertTrue(content.contains("\"tableName\": \"settings\""));
+        assertTrue(content.contains("\"tableName\": \"salon_hours\""));
+    }
+
+    private static String readSchema(int version) throws Exception {
+        File schemaFile = resolveSchemaFile(
+                "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");
+        assertTrue("Falta el esquema exportado v" + version + " de Room", schemaFile.exists());
+        return new String(Files.readAllBytes(schemaFile.toPath()), StandardCharsets.UTF_8);
     }
 
     private static File resolveSchemaFile(String relativePath) {
