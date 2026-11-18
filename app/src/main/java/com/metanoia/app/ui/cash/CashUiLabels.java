@@ -86,4 +86,32 @@ public final class CashUiLabels {
     public static boolean isPositiveDisplayType(@NonNull CashMovementType type) {
         return type.isStandardIncome();
     }
+
+    @NonNull
+    public static String typeLabel(@NonNull Context context, @NonNull CashMovementType type) {
+        switch (type) {
+            case APPOINTMENT_PAYMENT:
+                return context.getString(R.string.cash_type_appointment_payment);
+            case PRODUCT_SALE:
+                return context.getString(R.string.cash_type_product_sale);
+            case OTHER_INCOME:
+                return context.getString(R.string.cash_type_other_income);
+            case EXPENSE:
+                return context.getString(R.string.cash_type_expense);
+            case COMMISSION_PAYOUT:
+                return context.getString(R.string.cash_type_commission_payout);
+            case REVERSAL:
+            default:
+                return context.getString(R.string.cash_type_reversal);
+        }
+    }
+
+    @NonNull
+    public static String typeLabel(@NonNull Context context, @NonNull String rawType) {
+        try {
+            return typeLabel(context, CashMovementType.valueOf(rawType));
+        } catch (IllegalArgumentException ex) {
+            return rawType;
+        }
+    }
 }

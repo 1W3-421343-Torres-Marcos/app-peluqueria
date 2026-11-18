@@ -136,6 +136,12 @@ public final class Formats {
                 + zdt.toLocalTime().format(TIME_FORMATTER);
     }
 
+    public static String formatTimeMillis(long epochMillis) {
+        ZonedDateTime zdt = ZonedDateTime.ofInstant(
+                Instant.ofEpochMilli(epochMillis), Clock.ARGENTINA_ZONE);
+        return zdt.toLocalTime().format(TIME_FORMATTER);
+    }
+
     public static Optional<Money> parsePesosInput(String raw) {
         if (raw == null) {
             return Optional.empty();

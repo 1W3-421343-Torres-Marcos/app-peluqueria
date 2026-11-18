@@ -1,22 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/screen_margin">
+    android:fillViewport="true">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCashReceivables"
-        style="@style/Widget.Metanoia.Button.Secondary"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/receivables_title" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/space_xxl">
 
-    <com.metanoia.app.ui.common.EmptyStateView
-        android:id="@+id/cashEmptyState"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:emptyMessage="@string/empty_cash_title" />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/space_s"
+            android:paddingTop="@dimen/space_xs">
+
+            <ImageButton
+                android:id="@+id/btnCashPrevDate"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/agenda_prev_day"
+                android:src="@drawable/ic_chevron_left"
+                app:tint="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/cashDateLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:minHeight="@dimen/touch_target_min"
+                android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                android:textColor="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCashToday"
+                style="@style/Widget.Metanoia.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/agenda_today" />
+
+            <ImageButton
+                android:id="@+id/btnCashNextDate"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/agenda_next_day"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="?attr/colorOnSurface" />
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="@dimen/space_xs"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="@dimen/radius_m"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="@dimen/stroke_width">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/space_m">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cash_summary_title"
+                    android:textAppearance="@style/TextAppearance.Metanoia.Label"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cash_method_cash"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/cashSummaryCashAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cash_method_transfer"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/cashSummaryTransferAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cash_method_card"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/cashSummaryCardAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cash_method_mercado_pago"
+                        android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/cashSummaryMercadoPagoAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/stroke_width"
+                    android:layout_marginVertical="@dimen/space_s"
+                    android:background="@color/divider_subtle" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cash_summary_net_label"
+                        android:textAppearance="@style/TextAppearance.Metanoia.Subtitle"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.metanoia.app.ui.common.MoneyTextView
+                        android:id="@+id/cashSummaryNetAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="@dimen/space_s"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCashAddIncome"
+                style="@style/Widget.Metanoia.Button.Primary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/space_xs"
+                android:layout_weight="1"
+                android:text="@string/cash_action_add_income" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCashAddExpense"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_xs"
+                android:layout_weight="1"
+                android:text="@string/cash_action_add_expense" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCashReceivables"
+            style="@style/Widget.Metanoia.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/receivables_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cashMovementsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:nestedScrollingEnabled="false" />
+
+        <com.metanoia.app.ui.common.EmptyStateView
+            android:id="@+id/cashEmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:visibility="gone"
+            app:emptyMessage="@string/cash_day_empty" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
