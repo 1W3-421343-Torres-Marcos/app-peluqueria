@@ -7,7 +7,7 @@
 
 | ID | Fase | Estado | Pasos | Avance |
 |---|---|---|---|---|
-| F1 | Base, base de datos e identidad visual | [ ] | 0/10 | 0 % |
+| F1 | Base, base de datos e identidad visual | [~] | 1/10 | 10 % |
 | F2 | Configuración base, servicios, profesionales y clientes | [ ] | 0/8 | 0 % |
 | F3 | Agenda de turnos | [ ] | 0/12 | 0 % |
 | F4 | Backup y restauración | [ ] | 0/8 | 0 % |
@@ -19,14 +19,14 @@
 | F10 | Comisiones | [ ] | 0/4 | 0 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **0/86** | **0 %** |
+| **Total** | | | **1/86** | **1 %** |
 
 ---
 
-## F1 — Base, base de datos e identidad visual `[ ]`
+## F1 — Base, base de datos e identidad visual `[~]`
 Entregable: app instalable que abre con splash, tema claro/oscuro y navegación vacía. Módulos: `agents.md`, `design.md`.
 
-1. [ ] **F1.1 Crear repositorio y proyecto Gradle**
+1. [x] **F1.1 Crear repositorio y proyecto Gradle**
    - Archivos: `.gitignore`, `settings.gradle`, `build.gradle`, `gradle/libs.versions.toml`, `app/build.gradle`, `domain/build.gradle`
    - Hecho: `git init` si no existe repo; `.gitignore` según `agents.md` §11 (sin keystores ni contraseñas); commit inicial de `docs/` en `main` y rama `fase/F1` creada; módulos `:app` (Android) y `:domain` (java-library), Java 17, minSdk 26, targetSdk 35, ViewBinding activo; `versionCode 1` y `versionName "0.0.0"` solo en `app/build.gradle`; version catalog sin Paging, Guava ni RxJava (incluye `lifecycle-process` y WorkManager); `assembleDebug` OK; cero archivos Kotlin.
 2. [ ] **F1.2 Esqueleto de capas y DI manual**
@@ -323,3 +323,4 @@ Módulos: `configuracion` y todos.
 | 17/11/2026 | — | Documentación inicial creada (agents, readme, plan, design, skills). | F1.1 |
 | 17/11/2026 | — | Correcciones de docs: (1) se quita Paging 3 → proyección liviana + búsqueda SQL + `LiveData<List>`; (2) backup con triggers CASH_CLOSE y ON_BACKGROUND (trabajo único KEEP) y retención por día (N=7) + 3 PRE_RESTORE; F4.4 ampliado y nuevo F5.8; (3) estado PAID separado de COMPLETED, "Completar y cobrar" (F5.4) y "Por cobrar" (F5.5), comisiones sobre PAID. F5 pasa de 7 a 10 pasos (total 86). | F1.1 |
 | 17/11/2026 | — | Docs: nueva sección "Control de versiones y versionado de la app" en `agents.md` §11 (Git, commits por paso, ramas `fase/F<n>`, tags `fase-F<n>`/`v<versionName>`, versión 0.<fase>.0 → 1.0.0, keystore fuera del repo). F1.1 incluye `git init` y `.gitignore`; cada verificación de fase incluye merge, tag y changelog; F12.5 genera v1.0.0 firmada. Creado `docs/changelog.md`. Sin cambios en cantidad de pasos (total 86). | F1.1 |
+| 17/11/2026 | F1.1 | Proyecto Gradle multimódulo (`:domain` y `:app`), wrapper 8.13, `libs.versions.toml`, `.gitignore`, rama `fase/F1`, `assembleDebug` OK. | F1.2 |
