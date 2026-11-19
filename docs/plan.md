@@ -18,8 +18,8 @@
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
-| F12 | Seguridad y pulido final | [~] | 5/7 | 71 % |
-| **Total** | | | **84/86** | **98 %** |
+| F12 | Seguridad y pulido final | [~] | 6/7 | 86 % |
+| **Total** | | | **85/86** | **99 %** |
 
 ---
 
@@ -308,7 +308,7 @@ Módulos: `configuracion` y todos.
 5. [x] **F12.5 APK release firmado (v1.0.0)**
    - Archivos: `app/build.gradle` (`versionName "1.0.0"`, `versionCode` +1, `signingConfig` leyendo `keystore.properties`), `docs/instalacion.md`
    - Hecho: keystore generada y guardada **fuera del repo** con copia en al menos dos lugares; `keystore.properties` ignorado por Git (verificado con `git status`); APK release instalable; `docs/instalacion.md` documenta instalación, ubicación/resguardo de la keystore y cómo firmar futuras versiones.
-6. [ ] **F12.6 Manual de usuario breve**
+6. [x] **F12.6 Manual de usuario breve**
    - Archivos: `docs/manual.md`
    - Hecho: tareas frecuentes y backup/restauración explicadas en ≤ 2 páginas.
 7. [ ] **F12.7 Verificación final**
@@ -407,3 +407,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F12.3 | `MetanoiaApp` mueve la programación de backups, recordatorios y vencimiento de lista de espera a `executors().io()` (`runStartupBackgroundTasks`), `StatusChip` cachea paleta/dimensiones y reutiliza un único `GradientDrawable` con retorno temprano, `AppointmentCardView` cachea los `Drawable` laterales por estado en `EnumMap`, `AgendaFragment` configura `setItemViewCacheSize(12)` y filtra renders de observadores inactivos; `AgendaRenderPerformanceTest` (2/2 OK: 520 filas día en 7 ms y 3.500 turnos semana en 9 ms) + `AgendaStartupPerformanceTest` (50.000 turnos, `< 500 ms` compilado en `androidTest`); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug compileDebugAndroidTestJavaWithJavac` OK. | F12.4 |
 | 19/11/2026 | F12.4 | R8 activo en release (`minifyEnabled true` y `shrinkResources true` en `app/build.gradle`), reglas en `app/proguard-rules.pro` (Room, Fragments/ViewModels, Custom Views, Workers y `-assumenosideeffects` para `android.util.Log`) y `res/raw/keep.xml` para logo reemplazable; `ManifestPrivacyTest` actualizado a `merged_manifests/debug` y `release` (3/3 OK) y `SecurityAuditTest` (2/2 OK: cero logs sensibles o clientes HTTP en fuentes principales, `.gitignore` y manifiesto seguro); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug assembleRelease` OK. | F12.5 |
 | 19/11/2026 | F12.5 | `versionCode 12`, `versionName "1.0.0"` y `signingConfigs.release` leyendo `keystore.properties` ignorado por Git en `app/build.gradle`; keystore PKCS12 generada y respaldada fuera del repo en `MetanoiaReleaseKeys` y `MetanoiaReleaseKeys_Backup`; APK `app/build/outputs/apk/release/app-release.apk` (4.123.389 bytes) compilado con R8 y verificado con `apksigner` v2 (`CN=Metanoia Hair Salon`, RSA 2048, SHA-256 `55ce4dcf...`); `git status` libre de secretos y nueva guía `docs/instalacion.md`. | F12.6 |
+| 19/11/2026 | F12.6 | Creado `docs/manual.md` breve (<= 2 páginas imprimibles) cubriendo puesta en marcha inicial, operativa diaria (agenda, clientes, ficha de color, caja/cierre, WhatsApp, lista de espera, stock, comisiones y reportes CSV/PDF), bloqueo por PIN/biometría con procedimiento ante olvido y flujo de copia de seguridad / restauración JSON. | F12.7 |
