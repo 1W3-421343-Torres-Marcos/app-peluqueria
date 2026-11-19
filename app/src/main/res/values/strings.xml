@@ -917,6 +917,7 @@
     <string name="reports_chart_cd_format">Gráfico de barras con %1$d columnas: %2$s</string>
     <string name="reports_chart_cd_entry_format">%1$s %2$s</string>
     <string name="reports_export_csv_btn">Exportar CSV</string>
+    <string name="reports_export_pdf_btn">Exportar PDF</string>
     <string name="reports_export_dialog_title">Exportar %1$s</string>
     <string name="reports_export_option_save">Guardar en dispositivo</string>
     <string name="reports_export_option_share">Compartir</string>

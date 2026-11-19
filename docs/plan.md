@@ -17,9 +17,9 @@
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
-| F11 | Reportes | [~] | 4/6 | 67 % |
+| F11 | Reportes | [~] | 5/6 | 83 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **77/86** | **90 %** |
+| **Total** | | | **78/86** | **91 %** |
 
 ---
 
@@ -287,7 +287,7 @@ Módulo: `reportes`.
 4. [x] **F11.4 Exportar CSV**
    - Archivos: `CsvExporter`
    - Hecho: formato de `design.md` §9; guardado con SAF o compartir.
-5. [ ] **F11.5 Exportar PDF**
+5. [x] **F11.5 Exportar PDF**
    - Archivos: `ReportPdfBuilder`
    - Hecho: PDF A4 con cabecera de marca y tablas.
 6. [ ] **F11.6 Verificación de fase**
@@ -400,3 +400,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F11.2 | Pantalla `ui/reports/` (`ReportsFragment`, `ReportsViewModel`, `ReportsUiModels`, `ReportPresentationMapper`, `ReportOperationalMapper`, `ReportRowsAdapter`, `fragment_reports.xml`, `item_report_row.xml`) enlazada desde `MoreFragment` (`rowReports`, `nav_reports`) con selector de los 6 reportes, filtros Hoy/Semana/Mes/Rango + profesional, sub-filtros contextuales, tarjetas KPI, desglose por método, menor demanda en Ocupación y saldo histórico en Por cobrar; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.3 |
 | 19/11/2026 | F11.3 | Vista propia monocromática `BarChartView` (tema Claro/Oscuro vía `MaterialColors`, soporte de negativos y tope fijo 100 % en Ocupación con barras atenuadas para menor demanda, salto automático de etiquetas y `contentDescription` accesible) + `ReportChartMapper` integrado en `fragment_reports.xml`/`ReportsFragment`, y `BarChartScaleTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.4 |
 | 19/11/2026 | F11.4 | Exportador `CsvExporter` (`design.md` §9: UTF-8 con BOM, `;`, decimales con coma, fechas `dd/MM/yyyy`, escape RFC 4180, protección contra inyección de fórmulas y opt-in de teléfono en Clientes frecuentes sin notas) + `shared_reports` en `file_paths.xml`, guardado SAF / compartir `FileProvider` vía `ReportExportUiHelper` y `ReportFilterUiHelper` (`ReportsFragment` < 400 líneas), y `CsvExporterTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.5 |
+| 19/11/2026 | F11.5 | Exportador PDF A4 blanco y negro `ReportPdfBuilder` + `ReportPdfSpec` + `ReportPdfSpecFactory` + `ReportExportPayloadHelper` (cabecera con logo reemplazable y marca Metanoia Hair Salon, KPIs, tablas con bordes `gray200`, alineación numérica y truncamiento, paginación multipágina y pie `"Página X de Y"`), botón `Exportar PDF` (SAF `CreateDocument("application/pdf")` / compartir `FileProvider`) y `ReportPdfSpecTest` (2/2 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.6 |

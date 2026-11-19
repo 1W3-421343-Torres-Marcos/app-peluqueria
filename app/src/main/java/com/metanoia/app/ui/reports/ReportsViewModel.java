@@ -35,7 +35,6 @@ import com.metanoia.domain.repository.ReportsRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -125,11 +124,21 @@ public class ReportsViewModel extends AndroidViewModel {
 
     @NonNull
     public String suggestCsvFileName() {
+        return suggestFileName("csv");
+    }
+
+    @NonNull
+    public String suggestPdfFileName() {
+        return suggestFileName("pdf");
+    }
+
+    @NonNull
+    private String suggestFileName(@NonNull String ext) {
         ReportsFilterState current = currentFilter();
         long today = container.clock().todayEpochDay();
         return current == null
-                ? CsvExporter.suggestFileName(ReportType.INCOME, today, today, "csv")
-                : CsvExporter.suggestFileName(current.reportType, current.fromDay, current.toDay, "csv");
+                ? CsvExporter.suggestFileName(ReportType.INCOME, today, today, ext)
+                : CsvExporter.suggestFileName(current.reportType, current.fromDay, current.toDay, ext);
     }
 
     public boolean hasLoadedReport() {
@@ -138,20 +147,40 @@ public class ReportsViewModel extends AndroidViewModel {
     }
 
     public void exportCsvToUri(@NonNull Uri destinationUri) {
-        ReportsFilterState snapshotFilter = currentFilter();
-        LoadedPayload snapshotPayload = loadedPayload;
-        if (snapshotFilter == null || snapshotPayload == null) {
+        exportToUri(destinationUri, false);
+    }
+
+    public void exportPdfToUri(@NonNull Uri destinationUri) {
+        exportToUri(destinationUri, true);
+    }
+
+    public void prepareShareCsv() {
+        prepareShare(false);
+    }
+
+    public void prepareSharePdf() {
+        prepareShare(true);
+    }
+
+    private void exportToUri(@NonNull Uri destinationUri, boolean isPdf) {
+        ReportsFilterState filter = currentFilter();
+        LoadedPayload payload = loadedPayload;
+        List<ProfessionalWithDetails> professionals = activeProfessionals.getValue();
+        if (filter == null || payload == null) {
             messageEvent.setValue(new Event<>(R.string.reports_export_not_ready));
             return;
         }
         container.executors().io().execute(() -> {
-            byte[] bytes = buildCsvBytes(snapshotFilter, snapshotPayload);
-            try (OutputStream out = getApplication().getContentResolver()
-                    .openOutputStream(destinationUri)) {
-                if (out == null) {
-                    throw new IOException("OutputStream nulo");
-                }
-                CsvExporter.writeBytes(bytes, out);
+            try {
+                ReportExportPayloadHelper.writeExportToUri(
+                        getApplication(),
+                        container.settingsRepository(),
+                        container.clock(),
+                        filter,
+                        payload,
+                        professionals,
+                        destinationUri,
+                        isPdf);
                 messageEvent.postValue(new Event<>(R.string.reports_export_save_success));
             } catch (IOException ex) {
                 messageEvent.postValue(new Event<>(R.string.reports_export_error));
@@ -159,50 +188,30 @@ public class ReportsViewModel extends AndroidViewModel {
         });
     }
 
-    public void prepareShareCsv() {
-        ReportsFilterState snapshotFilter = currentFilter();
-        LoadedPayload snapshotPayload = loadedPayload;
-        if (snapshotFilter == null || snapshotPayload == null) {
+    private void prepareShare(boolean isPdf) {
+        ReportsFilterState filter = currentFilter();
+        LoadedPayload payload = loadedPayload;
+        List<ProfessionalWithDetails> professionals = activeProfessionals.getValue();
+        if (filter == null || payload == null) {
             messageEvent.setValue(new Event<>(R.string.reports_export_not_ready));
             return;
         }
         container.executors().io().execute(() -> {
-            byte[] bytes = buildCsvBytes(snapshotFilter, snapshotPayload);
-            String fileName = CsvExporter.suggestFileName(
-                    snapshotFilter.reportType, snapshotFilter.fromDay, snapshotFilter.toDay, "csv");
             try {
-                File file = CsvExporter.writeTempShareFile(getApplication(), fileName, bytes);
-                shareFileEvent.postValue(new Event<>(
-                        new ShareReportFile(file, "text/csv", "CSV")));
+                File file = ReportExportPayloadHelper.buildTempShareFile(
+                        getApplication(),
+                        container.settingsRepository(),
+                        container.clock(),
+                        filter,
+                        payload,
+                        professionals,
+                        isPdf);
+                shareFileEvent.postValue(new Event<>(new ShareReportFile(
+                        file, isPdf ? "application/pdf" : "text/csv", isPdf ? "PDF" : "CSV")));
             } catch (IOException ex) {
                 messageEvent.postValue(new Event<>(R.string.reports_export_error));
             }
         });
-    }
-
-    @NonNull
-    private static byte[] buildCsvBytes(
-            @NonNull ReportsFilterState filter,
-            @NonNull LoadedPayload payload
-    ) {
-        switch (filter.reportType) {
-            case TOP_SERVICES:
-                return CsvExporter.exportTopServices(payload.topServices, filter.serviceGrouping);
-            case FREQUENT_CLIENTS:
-                return CsvExporter.exportFrequentClients(
-                        payload.frequentClients,
-                        filter.clientRankingMode,
-                        filter.includeClientPhone);
-            case OCCUPANCY:
-                return CsvExporter.exportOccupancy(payload.occupancy, filter.occupancyGrouping);
-            case PROFESSIONAL_PERFORMANCE:
-                return CsvExporter.exportProfessionalPerformance(payload.performance);
-            case RECEIVABLES:
-                return CsvExporter.exportReceivables(payload.receivables);
-            case INCOME:
-            default:
-                return CsvExporter.exportIncome(payload.income, filter.incomeGranularity);
-        }
     }
 
     @Nullable

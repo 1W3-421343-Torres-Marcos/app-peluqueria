@@ -48,6 +48,15 @@ public class ReportsFragment extends Fragment {
                         }
                     });
 
+    private final ActivityResultLauncher<String> exportPdfLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.CreateDocument("application/pdf"),
+                    uri -> {
+                        if (uri != null) {
+                            viewModel.exportPdfToUri(uri);
+                        }
+                    });
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -96,6 +105,7 @@ public class ReportsFragment extends Fragment {
         binding.switchIncludeClientPhone.setOnCheckedChangeListener(
                 (btn, checked) -> viewModel.setIncludeClientPhone(checked));
         binding.btnExportCsv.setOnClickListener(v -> onExportCsvClicked());
+        binding.btnExportPdf.setOnClickListener(v -> onExportPdfClicked());
     }
 
     private void observeData() {
@@ -141,6 +151,20 @@ public class ReportsFragment extends Fragment {
                 "CSV",
                 () -> exportCsvLauncher.launch(viewModel.suggestCsvFileName()),
                 () -> viewModel.prepareShareCsv()
+        );
+    }
+
+    private void onExportPdfClicked() {
+        if (!viewModel.hasLoadedReport()) {
+            Toast.makeText(requireContext(), R.string.reports_export_not_ready, Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+        ReportExportUiHelper.showSaveOrShareDialog(
+                requireContext(),
+                "PDF",
+                () -> exportPdfLauncher.launch(viewModel.suggestPdfFileName()),
+                () -> viewModel.prepareSharePdf()
         );
     }
 

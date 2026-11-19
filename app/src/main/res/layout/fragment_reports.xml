@@ -414,6 +414,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/reports_export_csv_btn" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportPdf"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:text="@string/reports_export_pdf_btn" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
