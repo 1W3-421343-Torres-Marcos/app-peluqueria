@@ -327,6 +327,14 @@ public class ReportsFragment extends Fragment {
             binding.reportsSecondaryCard.setVisibility(View.GONE);
         }
 
+        if (!state.chartEntries.isEmpty()) {
+            binding.reportsChartCard.setVisibility(View.VISIBLE);
+            binding.reportsChartTitle.setText(state.chartTitle);
+            binding.reportsBarChart.setData(state.chartEntries, state.chartMaxValueOverride);
+        } else {
+            binding.reportsChartCard.setVisibility(View.GONE);
+        }
+
         boolean empty = state.rows.isEmpty();
         binding.reportsEmptyState.setMessage(state.emptyMessageRes);
         binding.reportsEmptyState.setVisibility(empty ? View.VISIBLE : View.GONE);

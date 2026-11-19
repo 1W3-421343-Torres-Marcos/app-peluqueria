@@ -906,4 +906,14 @@
     <string name="reports_receivable_historical_format">Histórico acumulado: %1$s en %2$d turnos</string>
     <string name="reports_value_pair_format">%1$s / %2$s</string>
     <string name="reports_error_load">No se pudo cargar el reporte seleccionado.</string>
+    <string name="reports_chart_title_income">Resultado neto por período</string>
+    <string name="reports_chart_title_services">Facturación por servicio / categoría</string>
+    <string name="reports_chart_title_clients_visits">Visitas por cliente</string>
+    <string name="reports_chart_title_clients_spend">Gasto por cliente</string>
+    <string name="reports_chart_title_occupancy">Ocupación (%)</string>
+    <string name="reports_chart_title_performance">Facturación por profesional</string>
+    <string name="reports_chart_title_receivables">Saldo pendiente por cliente</string>
+    <string name="reports_chart_cd_empty">Gráfico de barras sin datos</string>
+    <string name="reports_chart_cd_format">Gráfico de barras con %1$d columnas: %2$s</string>
+    <string name="reports_chart_cd_entry_format">%1$s %2$s</string>
 </resources>

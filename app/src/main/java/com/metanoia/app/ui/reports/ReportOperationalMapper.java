@@ -41,6 +41,7 @@ final class ReportOperationalMapper {
 
         List<String> lowestLines = buildLowestDemandLines(context, report);
         List<ReportRowItem> rows = buildOccupancyRows(context, filter, report);
+        ReportChartMapper.ChartData chart = ReportChartMapper.buildChart(context, filter, payload);
 
         return new ReportsUiState(
                 filter,
@@ -55,6 +56,9 @@ final class ReportOperationalMapper {
                         : context.getString(R.string.reports_section_lowest_demand),
                 lowestLines,
                 rows,
+                chart.title,
+                chart.entries,
+                chart.maxValueOverride,
                 R.string.reports_empty_occupancy,
                 payload
         );
@@ -154,6 +158,8 @@ final class ReportOperationalMapper {
             }
         }
 
+        ReportChartMapper.ChartData chart = ReportChartMapper.buildChart(context, filter, payload);
+
         return new ReportsUiState(
                 filter,
                 false,
@@ -164,6 +170,9 @@ final class ReportOperationalMapper {
                 null,
                 Collections.emptyList(),
                 rows,
+                chart.title,
+                chart.entries,
+                chart.maxValueOverride,
                 R.string.reports_empty_performance,
                 payload
         );
@@ -206,6 +215,8 @@ final class ReportOperationalMapper {
             }
         }
 
+        ReportChartMapper.ChartData chart = ReportChartMapper.buildChart(context, filter, payload);
+
         return new ReportsUiState(
                 filter,
                 false,
@@ -217,6 +228,9 @@ final class ReportOperationalMapper {
                 secondaryTitle,
                 secondaryLines,
                 rows,
+                chart.title,
+                chart.entries,
+                chart.maxValueOverride,
                 R.string.reports_empty_receivables,
                 payload
         );

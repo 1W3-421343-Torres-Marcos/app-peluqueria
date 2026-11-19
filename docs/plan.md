@@ -17,9 +17,9 @@
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
-| F11 | Reportes | [~] | 2/6 | 33 % |
+| F11 | Reportes | [~] | 3/6 | 50 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **75/86** | **87 %** |
+| **Total** | | | **76/86** | **88 %** |
 
 ---
 
@@ -281,7 +281,7 @@ Módulo: `reportes`.
 2. [x] **F11.2 Pantalla de reportes**
    - Archivos: `ui/reports/`
    - Hecho: filtros de período/profesional; resultados en < 1 s con 50.000 turnos.
-3. [ ] **F11.3 Gráficos simples**
+3. [x] **F11.3 Gráficos simples**
    - Archivos: `ui/common/BarChartView`
    - Hecho: barras monocromáticas propias (sin librerías).
 4. [ ] **F11.4 Exportar CSV**
@@ -398,3 +398,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F10.4 | Cierre F10 Comisiones (`versionCode 10`, `versionName 0.10.0`, `docs/changelog.md`, 6/6 criterios de `comisiones/skills.md` verificados); fix Lint `DiffUtilEquals` en `CommissionDetailsAdapter`; `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 147/147, `:app:testDebugUnitTest` 24/24, total 171 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, esquema `13.json`), `androidTest` compilados (sin ejecución en dispositivo/emulador); merge `--no-ff fase/F10` en `main` y tags `fase-F10` / `v0.10.0`. | F11.1 |
 | 19/11/2026 | F11.1 | Rama `fase/F11`; modelos de dominio para los 6 reportes (`ReportType`, `ReportFilter`, `IncomeReport`, `TopServicesReport`, `FrequentClientsReport`, `OccupancyReport`, `ProfessionalPerformanceReport`, `ReceivablesReport`), regla `OccupancyCalculator` + `ScheduleValidator.mergeAdjacentByDay`, `ReportsRepository`, proyecciones + `ReportsDao` (`GROUP BY`/CTEs SQL), `ReportsRepositoryImpl` y wiring en `AppDatabase`/`AppContainer`; `OccupancyCalculatorTest` (3/3 OK), `IncomeReportTest` (1/1 OK), `ReportsDaoTest` compilado (incluye benchmark 50.000 turnos); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug compileDebugAndroidTestJavaWithJavac` OK. | F11.2 |
 | 19/11/2026 | F11.2 | Pantalla `ui/reports/` (`ReportsFragment`, `ReportsViewModel`, `ReportsUiModels`, `ReportPresentationMapper`, `ReportOperationalMapper`, `ReportRowsAdapter`, `fragment_reports.xml`, `item_report_row.xml`) enlazada desde `MoreFragment` (`rowReports`, `nav_reports`) con selector de los 6 reportes, filtros Hoy/Semana/Mes/Rango + profesional, sub-filtros contextuales, tarjetas KPI, desglose por método, menor demanda en Ocupación y saldo histórico en Por cobrar; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.3 |
+| 19/11/2026 | F11.3 | Vista propia monocromática `BarChartView` (tema Claro/Oscuro vía `MaterialColors`, soporte de negativos y tope fijo 100 % en Ocupación con barras atenuadas para menor demanda, salto automático de etiquetas y `contentDescription` accesible) + `ReportChartMapper` integrado en `fragment_reports.xml`/`ReportsFragment`, y `BarChartScaleTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.4 |

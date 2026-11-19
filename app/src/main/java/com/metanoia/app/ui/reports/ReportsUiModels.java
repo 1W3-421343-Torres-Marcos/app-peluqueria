@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
+import com.metanoia.app.ui.common.BarChartView;
 import com.metanoia.app.ui.reports.ReportRowsAdapter.ReportRowItem;
 import com.metanoia.domain.model.FrequentClientsReport;
 import com.metanoia.domain.model.IncomeReport;
@@ -184,6 +185,12 @@ public final class ReportsUiModels {
         public final List<String> secondaryLines;
         @NonNull
         public final List<ReportRowItem> rows;
+        @NonNull
+        public final String chartTitle;
+        @NonNull
+        public final List<BarChartView.Entry> chartEntries;
+        @Nullable
+        public final Long chartMaxValueOverride;
         @StringRes
         public final int emptyMessageRes;
         @NonNull
@@ -199,6 +206,9 @@ public final class ReportsUiModels {
                 @Nullable String secondarySectionTitle,
                 @NonNull List<String> secondaryLines,
                 @NonNull List<ReportRowItem> rows,
+                @NonNull String chartTitle,
+                @NonNull List<BarChartView.Entry> chartEntries,
+                @Nullable Long chartMaxValueOverride,
                 @StringRes int emptyMessageRes,
                 @NonNull LoadedPayload payload
         ) {
@@ -211,6 +221,9 @@ public final class ReportsUiModels {
             this.secondarySectionTitle = secondarySectionTitle;
             this.secondaryLines = secondaryLines;
             this.rows = rows;
+            this.chartTitle = chartTitle;
+            this.chartEntries = chartEntries;
+            this.chartMaxValueOverride = chartMaxValueOverride;
             this.emptyMessageRes = emptyMessageRes;
             this.payload = payload;
         }

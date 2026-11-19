@@ -74,6 +74,7 @@ final class ReportPresentationMapper {
 
         List<String> methodLines = buildIncomeMethodLines(context, report);
         List<ReportRowItem> rows = buildIncomeRows(context, filter, report);
+        ReportChartMapper.ChartData chart = ReportChartMapper.buildChart(context, filter, payload);
 
         return new ReportsUiState(
                 filter,
@@ -86,6 +87,9 @@ final class ReportPresentationMapper {
                 methodLines.isEmpty() ? null : context.getString(R.string.reports_section_methods),
                 methodLines,
                 rows,
+                chart.title,
+                chart.entries,
+                chart.maxValueOverride,
                 R.string.reports_empty_income,
                 payload
         );
@@ -196,6 +200,8 @@ final class ReportPresentationMapper {
             }
         }
 
+        ReportChartMapper.ChartData chart = ReportChartMapper.buildChart(context, filter, payload);
+
         return new ReportsUiState(
                 filter,
                 false,
@@ -206,6 +212,9 @@ final class ReportPresentationMapper {
                 null,
                 Collections.emptyList(),
                 rows,
+                chart.title,
+                chart.entries,
+                chart.maxValueOverride,
                 R.string.reports_empty_top_services,
                 payload
         );
@@ -245,6 +254,8 @@ final class ReportPresentationMapper {
                     false));
         }
 
+        ReportChartMapper.ChartData chart = ReportChartMapper.buildChart(context, filter, payload);
+
         return new ReportsUiState(
                 filter,
                 false,
@@ -255,6 +266,9 @@ final class ReportPresentationMapper {
                 null,
                 Collections.emptyList(),
                 rows,
+                chart.title,
+                chart.entries,
+                chart.maxValueOverride,
                 R.string.reports_empty_frequent_clients,
                 payload
         );
