@@ -67,6 +67,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/screen_margin"
         android:backgroundTint="?attr/colorPrimary"
+        android:contentDescription="@string/waitlist_new_fab"
         android:text="@string/waitlist_new_fab"
         android:textColor="?attr/colorOnPrimary"
         app:icon="@drawable/ic_add"

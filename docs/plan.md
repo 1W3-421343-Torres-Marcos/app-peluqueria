@@ -18,8 +18,8 @@
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
-| F12 | Seguridad y pulido final | [~] | 1/7 | 14 % |
-| **Total** | | | **80/86** | **93 %** |
+| F12 | Seguridad y pulido final | [~] | 2/7 | 29 % |
+| **Total** | | | **81/86** | **94 %** |
 
 ---
 
@@ -299,7 +299,7 @@ Módulos: `configuracion` y todos.
 1. [x] **F12.1 PIN y huella**
    - Archivos: `ui/lock/`, `BiometricPrompt`
    - Hecho: bloqueo opcional al abrir y al volver de segundo plano (tiempo configurable); PIN con hash + sal.
-2. [ ] **F12.2 Accesibilidad**
+2. [x] **F12.2 Accesibilidad**
    - Hecho: TalkBack con `contentDescription`; texto escalable al 130 % sin cortes; contraste verificado.
 3. [ ] **F12.3 Rendimiento**
    - Hecho: arranque en frío < 2 s; sin jank en agenda con datos de prueba (perfilado).
@@ -403,3 +403,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F11.5 | Exportador PDF A4 blanco y negro `ReportPdfBuilder` + `ReportPdfSpec` + `ReportPdfSpecFactory` + `ReportExportPayloadHelper` (cabecera con logo reemplazable y marca Metanoia Hair Salon, KPIs, tablas con bordes `gray200`, alineación numérica y truncamiento, paginación multipágina y pie `"Página X de Y"`), botón `Exportar PDF` (SAF `CreateDocument("application/pdf")` / compartir `FileProvider`) y `ReportPdfSpecTest` (2/2 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.6 |
 | 19/11/2026 | F11.6 | Cierre F11 Reportes (`versionCode 11`, `versionName 0.11.0`, `docs/changelog.md`, 5/5 criterios de `reportes/skills.md` verificados); `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 151/151, `:app:testDebugUnitTest` 32/32, total 183 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, 0 `.kt`/`.kts`, `:domain` puro, sin valores sueltos en layouts F11), `ReportsDaoTest` (benchmark 50.000 turnos) compilado en `androidTest` sin ejecución en dispositivo/emulador; merge `--no-ff fase/F11` en `main` y tags `fase-F11` / `v0.11.0`. | F12.1 |
 | 19/11/2026 | F12.1 | Rama `fase/F12`; reglas `PinHasher` (PBKDF2-HMAC-SHA256 con sal 16 bytes e `isEqual` constante) y `PinLockPolicy` (timeouts 0/1/5/15 min y cooldown progresivo 30 s tras 5 fallos) + `PinHasherTest` (2/2 OK) y `PinLockPolicyTest` (2/2 OK), almacenamiento local en `DevicePrefs`, `AppLockController` enlazado a `MetanoiaApp`/`MainActivity`, `LockScreenDialogFragment` (`FLAG_SECURE` + `BiometricPrompt`), `PinSetupDialogFragment` y `SecuritySettingsFragment` en `SettingsFragment`/`nav_main.xml`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.2 |
+| 19/11/2026 | F12.2 | Descriptores TalkBack completos en los 7 `ExtendedFloatingActionButton`, `AppointmentCardView` (`cd_appointment_card_format` / `pending_format`), marcado `importantForAccessibility="no"` en íconos y divisores decorativos (`view_appointment_card`, `view_list_row`, `view_alert_banner`, `view_status_chip`), `maxLines="2"` en cliente de tarjeta de turno para escala 130 %, y `AccessibilityAuditTest` (2/2 OK: contraste WCAG AA >= 4.5:1 en Claro/Oscuro, cobertura TalkBack y cero alturas fijas en textos/botones de todos los layouts); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.3 |

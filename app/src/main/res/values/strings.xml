@@ -980,4 +980,8 @@
     <string name="security_digit_7">7</string>
     <string name="security_digit_8">8</string>
     <string name="security_digit_9">9</string>
+
+    <!-- Accesibilidad TalkBack (F12.2) -->
+    <string name="cd_appointment_card_format">%1$s a %2$s, %3$s, %4$s, %5$s, %6$s</string>
+    <string name="cd_appointment_card_pending_format">%1$s a %2$s, %3$s, %4$s, %5$s, %6$s, saldo %7$s</string>
 </resources>

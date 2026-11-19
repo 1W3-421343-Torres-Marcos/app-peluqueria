@@ -115,8 +115,25 @@ public class AppointmentCardView extends MaterialCardView {
         if (status == AppointmentStatus.COMPLETED && pending > 0L) {
             pendingBalanceView.setMoneyCents(pending);
             pendingBalanceView.setVisibility(View.VISIBLE);
+            setContentDescription(context.getString(
+                    R.string.cd_appointment_card_pending_format,
+                    start,
+                    end,
+                    clientView.getText(),
+                    card.servicesSummary,
+                    professionalView.getText(),
+                    statusChip.getContentDescription(),
+                    Formats.formatMoney(pending)));
         } else {
             pendingBalanceView.setVisibility(View.GONE);
+            setContentDescription(context.getString(
+                    R.string.cd_appointment_card_format,
+                    start,
+                    end,
+                    clientView.getText(),
+                    card.servicesSummary,
+                    professionalView.getText(),
+                    statusChip.getContentDescription()));
         }
     }
 

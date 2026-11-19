@@ -101,6 +101,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/screen_margin"
         android:backgroundTint="?attr/colorPrimary"
+        android:contentDescription="@string/stock_new_fab"
         android:text="@string/stock_new_fab"
         android:textColor="?attr/colorOnPrimary"
         app:icon="@drawable/ic_add"

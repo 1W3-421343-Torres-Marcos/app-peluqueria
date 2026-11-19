@@ -65,6 +65,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/screen_margin"
         android:backgroundTint="?attr/colorPrimary"
+        android:contentDescription="@string/services_new_fab"
         android:text="@string/services_new_fab"
         android:textColor="?attr/colorOnPrimary"
         app:icon="@drawable/ic_add"

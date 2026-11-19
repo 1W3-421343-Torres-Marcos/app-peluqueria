@@ -7,6 +7,7 @@
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
         android:contentDescription="@null"
+        android:importantForAccessibility="no"
         android:src="@drawable/ic_warning"
         app:tint="@color/accent" />
 
