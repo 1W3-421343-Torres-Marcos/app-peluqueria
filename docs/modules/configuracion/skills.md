@@ -37,4 +37,4 @@ Validación de horario general, render de plantillas por defecto, hash/verificac
 - [x] Operador actual registrado en auditoría.
 - [x] Tema Sistema/Claro/Oscuro.
 - [x] Acerca de muestra `versionName` y `versionCode` actuales.
-- [ ] PIN/huella opcional funcionando y PIN almacenado como hash.
+- [x] PIN/huella opcional funcionando y PIN almacenado como hash.

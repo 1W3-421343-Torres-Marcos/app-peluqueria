@@ -18,8 +18,8 @@
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
-| F12 | Seguridad y pulido final | [~] | 6/7 | 86 % |
-| **Total** | | | **85/86** | **99 %** |
+| F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
+| **Total** | | | **86/86** | **100 %** |
 
 ---
 
@@ -311,7 +311,7 @@ Módulos: `configuracion` y todos.
 6. [x] **F12.6 Manual de usuario breve**
    - Archivos: `docs/manual.md`
    - Hecho: tareas frecuentes y backup/restauración explicadas en ≤ 2 páginas.
-7. [ ] **F12.7 Verificación final**
+7. [x] **F12.7 Verificación final**
    - Hecho: todos los `skills.md` con criterios marcados; `./gradlew check` verde; merge de `fase/F12` a `main`, tags `fase-F12` y `v1.0.0`, entrada `1.0.0` en `docs/changelog.md`.
 
 ---
@@ -408,3 +408,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F12.4 | R8 activo en release (`minifyEnabled true` y `shrinkResources true` en `app/build.gradle`), reglas en `app/proguard-rules.pro` (Room, Fragments/ViewModels, Custom Views, Workers y `-assumenosideeffects` para `android.util.Log`) y `res/raw/keep.xml` para logo reemplazable; `ManifestPrivacyTest` actualizado a `merged_manifests/debug` y `release` (3/3 OK) y `SecurityAuditTest` (2/2 OK: cero logs sensibles o clientes HTTP en fuentes principales, `.gitignore` y manifiesto seguro); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug assembleRelease` OK. | F12.5 |
 | 19/11/2026 | F12.5 | `versionCode 12`, `versionName "1.0.0"` y `signingConfigs.release` leyendo `keystore.properties` ignorado por Git en `app/build.gradle`; keystore PKCS12 generada y respaldada fuera del repo en `MetanoiaReleaseKeys` y `MetanoiaReleaseKeys_Backup`; APK `app/build/outputs/apk/release/app-release.apk` (4.123.389 bytes) compilado con R8 y verificado con `apksigner` v2 (`CN=Metanoia Hair Salon`, RSA 2048, SHA-256 `55ce4dcf...`); `git status` libre de secretos y nueva guía `docs/instalacion.md`. | F12.6 |
 | 19/11/2026 | F12.6 | Creado `docs/manual.md` breve (<= 2 páginas imprimibles) cubriendo puesta en marcha inicial, operativa diaria (agenda, clientes, ficha de color, caja/cierre, WhatsApp, lista de espera, stock, comisiones y reportes CSV/PDF), bloqueo por PIN/biometría con procedimiento ante olvido y flujo de copia de seguridad / restauración JSON. | F12.7 |
+| 19/11/2026 | F12.7 | Cierre F12 y lanzamiento `v1.0.0`: todos los `skills.md` al 100 % (0 ítems pendientes tras marcar `configuracion/skills.md`), entrada `1.0.0` en `docs/changelog.md`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 155/155, `:app:testDebugUnitTest` 38/38, `:app:testReleaseUnitTest` 38/38, total 193 tests JVM únicos con 0 fallos, `:app:lintDebug` y `:app:lint` OK); checks §12 OK (`0` `.kt`/`.kts`, `0` `TODO`/`FIXME`, `0` `Log.*`, `allowBackup="false"` y `internetCount=0` en manifiestos `debug` y `release`), `androidTest` compilados (sin ejecución en dispositivo/emulador); `git status` sin secretos; merge `--no-ff fase/F12` en `main` con tags `fase-F12` y `v1.0.0`. | Proyecto v1.0.0 completado |
