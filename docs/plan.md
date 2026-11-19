@@ -18,8 +18,8 @@
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
-| F12 | Seguridad y pulido final | [~] | 3/7 | 43 % |
-| **Total** | | | **82/86** | **95 %** |
+| F12 | Seguridad y pulido final | [~] | 4/7 | 57 % |
+| **Total** | | | **83/86** | **97 %** |
 
 ---
 
@@ -303,7 +303,7 @@ Módulos: `configuracion` y todos.
    - Hecho: TalkBack con `contentDescription`; texto escalable al 130 % sin cortes; contraste verificado.
 3. [x] **F12.3 Rendimiento**
    - Hecho: arranque en frío < 2 s; sin jank en agenda con datos de prueba (perfilado).
-4. [ ] **F12.4 Revisión de seguridad**
+4. [x] **F12.4 Revisión de seguridad**
    - Hecho: manifiesto sin INTERNET; R8 activo; sin logs sensibles; exportaciones solo por acción explícita.
 5. [ ] **F12.5 APK release firmado (v1.0.0)**
    - Archivos: `app/build.gradle` (`versionName "1.0.0"`, `versionCode` +1, `signingConfig` leyendo `keystore.properties`), `docs/instalacion.md`
@@ -405,3 +405,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F12.1 | Rama `fase/F12`; reglas `PinHasher` (PBKDF2-HMAC-SHA256 con sal 16 bytes e `isEqual` constante) y `PinLockPolicy` (timeouts 0/1/5/15 min y cooldown progresivo 30 s tras 5 fallos) + `PinHasherTest` (2/2 OK) y `PinLockPolicyTest` (2/2 OK), almacenamiento local en `DevicePrefs`, `AppLockController` enlazado a `MetanoiaApp`/`MainActivity`, `LockScreenDialogFragment` (`FLAG_SECURE` + `BiometricPrompt`), `PinSetupDialogFragment` y `SecuritySettingsFragment` en `SettingsFragment`/`nav_main.xml`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.2 |
 | 19/11/2026 | F12.2 | Descriptores TalkBack completos en los 7 `ExtendedFloatingActionButton`, `AppointmentCardView` (`cd_appointment_card_format` / `pending_format`), marcado `importantForAccessibility="no"` en íconos y divisores decorativos (`view_appointment_card`, `view_list_row`, `view_alert_banner`, `view_status_chip`), `maxLines="2"` en cliente de tarjeta de turno para escala 130 %, y `AccessibilityAuditTest` (2/2 OK: contraste WCAG AA >= 4.5:1 en Claro/Oscuro, cobertura TalkBack y cero alturas fijas en textos/botones de todos los layouts); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.3 |
 | 19/11/2026 | F12.3 | `MetanoiaApp` mueve la programación de backups, recordatorios y vencimiento de lista de espera a `executors().io()` (`runStartupBackgroundTasks`), `StatusChip` cachea paleta/dimensiones y reutiliza un único `GradientDrawable` con retorno temprano, `AppointmentCardView` cachea los `Drawable` laterales por estado en `EnumMap`, `AgendaFragment` configura `setItemViewCacheSize(12)` y filtra renders de observadores inactivos; `AgendaRenderPerformanceTest` (2/2 OK: 520 filas día en 7 ms y 3.500 turnos semana en 9 ms) + `AgendaStartupPerformanceTest` (50.000 turnos, `< 500 ms` compilado en `androidTest`); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug compileDebugAndroidTestJavaWithJavac` OK. | F12.4 |
+| 19/11/2026 | F12.4 | R8 activo en release (`minifyEnabled true` y `shrinkResources true` en `app/build.gradle`), reglas en `app/proguard-rules.pro` (Room, Fragments/ViewModels, Custom Views, Workers y `-assumenosideeffects` para `android.util.Log`) y `res/raw/keep.xml` para logo reemplazable; `ManifestPrivacyTest` actualizado a `merged_manifests/debug` y `release` (3/3 OK) y `SecurityAuditTest` (2/2 OK: cero logs sensibles o clientes HTTP en fuentes principales, `.gitignore` y manifiesto seguro); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug assembleRelease` OK. | F12.5 |
