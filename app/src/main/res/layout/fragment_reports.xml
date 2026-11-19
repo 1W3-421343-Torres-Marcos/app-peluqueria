@@ -399,5 +399,21 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_m"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/reportsExportBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportCsv"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/reports_export_csv_btn" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
