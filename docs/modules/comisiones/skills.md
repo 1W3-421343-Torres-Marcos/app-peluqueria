@@ -25,9 +25,9 @@ Calcular automáticamente lo que corresponde a cada profesional por período y r
 Cálculo con varios %, descuentos prorrateados, redondeo, solo PAID (excluye COMPLETED con saldo, cancelados y ausentes), no doble liquidación, ajuste por reverso.
 
 ## Criterios de aceptación
-- [ ] Cálculo automático por profesional y período sobre turnos PAID.
-- [ ] Usa el % congelado en cada ítem (cambios de % no alteran el pasado).
-- [ ] Detalle por turno coherente con el total.
-- [ ] Liquidación registrada como egreso de caja auditado.
-- [ ] Sin doble liquidación.
-- [ ] Tests de comisiones verdes.
+- [x] Cálculo automático por profesional y período sobre turnos PAID.
+- [x] Usa el % congelado en cada ítem (cambios de % no alteran el pasado).
+- [x] Detalle por turno coherente con el total.
+- [x] Liquidación registrada como egreso de caja auditado.
+- [x] Sin doble liquidación.
+- [x] Tests de comisiones verdes.

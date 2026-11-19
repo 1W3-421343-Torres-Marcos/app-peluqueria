@@ -106,7 +106,7 @@ public class CommissionDetailsAdapter
                 ) {
                     return oldItem.day == newItem.day
                             && oldItem.startMin == newItem.startMin
-                            && oldItem.kind == newItem.kind
+                            && oldItem.kind.equals(newItem.kind)
                             && oldItem.baseCents == newItem.baseCents
                             && oldItem.commissionCents == newItem.commissionCents
                             && oldItem.clientName.equals(newItem.clientName)
