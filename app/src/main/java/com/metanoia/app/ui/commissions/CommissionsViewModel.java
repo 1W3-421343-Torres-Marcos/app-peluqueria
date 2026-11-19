@@ -8,20 +8,27 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.metanoia.app.AppContainer;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
+import com.metanoia.app.data.db.entity.CommissionSettlementEntity;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.data.db.projection.ClientRowProjection;
+import com.metanoia.app.ui.common.Event;
 import com.metanoia.app.util.Formats;
+import com.metanoia.domain.common.DomainError;
+import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.Appointment;
-import com.metanoia.domain.model.Money;
+import com.metanoia.domain.model.CommissionSettlement;
+import com.metanoia.domain.model.PaymentMethod;
 import com.metanoia.domain.rules.CommissionCalculator;
 import com.metanoia.domain.rules.CommissionCalculator.AppointmentCalculation;
 import com.metanoia.domain.rules.CommissionCalculator.ItemCalculation;
 import com.metanoia.domain.rules.CommissionCalculator.PeriodCalculation;
 import com.metanoia.domain.rules.CommissionCalculator.ReversalAdjustmentLine;
+import com.metanoia.domain.usecase.SettleCommissionUseCase;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -36,6 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * ViewModel para consulta de comisiones por profesional, período (semana, mes o rango) y detalle.
@@ -136,7 +144,10 @@ public class CommissionsViewModel extends AndroidViewModel {
     private final AppContainer container;
     private final LiveData<List<ProfessionalWithDetails>> allProfessionals;
     private final MutableLiveData<CommissionsFilter> filterState;
+    private final MutableLiveData<String> selectedProId = new MutableLiveData<>();
+    private final LiveData<List<CommissionSettlementEntity>> settlementHistory;
     private final MutableLiveData<CommissionsUiState> uiState = new MutableLiveData<>();
+    private final MutableLiveData<Event<Integer>> messageEvent = new MutableLiveData<>();
     private final AtomicInteger computationSeq = new AtomicInteger();
 
     public CommissionsViewModel(@NonNull Application application) {
@@ -147,6 +158,12 @@ public class CommissionsViewModel extends AndroidViewModel {
         long monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toEpochDay();
         this.filterState = new MutableLiveData<>(
                 new CommissionsFilter(null, PeriodMode.WEEK, monday, monday + 6L));
+        this.settlementHistory = Transformations.switchMap(selectedProId, proId -> {
+            if (proId == null || proId.trim().isEmpty()) {
+                return new MutableLiveData<>(Collections.emptyList());
+            }
+            return container.database().commissionDao().observeSettlementsByProfessional(proId);
+        });
     }
 
     public LiveData<List<ProfessionalWithDetails>> observeProfessionals() {
@@ -161,9 +178,53 @@ public class CommissionsViewModel extends AndroidViewModel {
         return uiState;
     }
 
+    public LiveData<List<CommissionSettlementEntity>> observeSettlementHistory() {
+        return settlementHistory;
+    }
+
+    public LiveData<Event<Integer>> observeMessage() {
+        return messageEvent;
+    }
+
     @Nullable
     public CommissionsFilter currentFilter() {
         return filterState.getValue();
+    }
+
+    public void settleCurrentPeriod(
+            @NonNull PaymentMethod method,
+            @NonNull Consumer<Boolean> callback
+    ) {
+        CommissionsFilter filter = filterState.getValue();
+        if (filter == null || filter.professionalId == null) {
+            callback.accept(false);
+            return;
+        }
+        container.executors().io().execute(() -> {
+            Result<SettleCommissionUseCase.Outcome> result = container.settleCommissionUseCase()
+                    .execute(new SettleCommissionUseCase.Request(
+                            filter.professionalId, filter.fromDay, filter.toDay, method));
+            if (result.isSuccess()) {
+                messageEvent.postValue(new Event<>(R.string.commissions_settle_success));
+                computeAsync(filter);
+                container.executors().mainThread().execute(() -> callback.accept(true));
+                return;
+            }
+            int msgRes;
+            if (result.getError() == DomainError.CONFLICT) {
+                boolean cashClosed = container.database().cashDao()
+                        .isDayClosedSync(container.clock().todayEpochDay());
+                msgRes = cashClosed
+                        ? R.string.commissions_settle_conflict_cash_closed
+                        : R.string.commissions_settle_conflict_overlap;
+            } else if (result.getError() == DomainError.VALIDATION_ERROR) {
+                msgRes = R.string.commissions_settle_error_empty;
+            } else {
+                msgRes = R.string.commissions_settle_error_unexpected;
+            }
+            messageEvent.postValue(new Event<>(msgRes));
+            container.executors().mainThread().execute(() -> callback.accept(false));
+        });
     }
 
     public void selectProfessional(@NonNull String professionalId) {
@@ -259,6 +320,9 @@ public class CommissionsViewModel extends AndroidViewModel {
     }
 
     private void updateFilter(@NonNull CommissionsFilter next) {
+        if (!Objects.equals(selectedProId.getValue(), next.professionalId)) {
+            selectedProId.setValue(next.professionalId);
+        }
         filterState.setValue(next);
         computeAsync(next);
     }
@@ -270,16 +334,23 @@ public class CommissionsViewModel extends AndroidViewModel {
         }
         int seq = computationSeq.incrementAndGet();
         container.executors().io().execute(() -> {
-            List<Appointment> candidates = container.appointmentRepository()
-                    .findByProfessionalAndDayRange(
-                            filter.professionalId, filter.fromDay, filter.toDay);
+            List<CommissionSettlement> existingSettlements = container.commissionRepository()
+                    .findSettlementsByProfessional(filter.professionalId);
+            List<Appointment> candidates = SettleCommissionUseCase.loadCandidateAppointments(
+                    filter.professionalId,
+                    filter.fromDay,
+                    filter.toDay,
+                    existingSettlements,
+                    container.appointmentRepository(),
+                    container.commissionRepository()
+            );
 
             PeriodCalculation calc = CommissionCalculator.calculatePeriod(
                     filter.professionalId,
                     filter.fromDay,
                     filter.toDay,
                     candidates,
-                    Collections.emptyList()
+                    existingSettlements
             );
 
             Set<String> clientIds = new LinkedHashSet<>();

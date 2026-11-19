@@ -828,4 +828,20 @@
     <string name="commissions_reversal_badge">Ajuste por reverso</string>
     <string name="commissions_pending_badge">Pendiente de cobro</string>
     <string name="commissions_row_base_format">Base: %1$s</string>
+
+    <!-- Liquidación e historial de comisiones (F10.3) -->
+    <string name="commissions_overlap_banner">Este período ya fue liquidado o se solapa con una liquidación previa.</string>
+    <string name="commissions_settle_btn">Liquidar</string>
+    <string name="commissions_section_history">Historial de liquidaciones</string>
+    <string name="commissions_history_empty">Todavía no hay liquidaciones registradas para este profesional.</string>
+    <string name="commissions_settlement_period_format">%1$s – %2$s</string>
+    <string name="commissions_settlement_meta_format">%1$s · %2$s</string>
+    <string name="commissions_settle_dialog_title">Confirmar liquidación</string>
+    <string name="commissions_settle_dialog_summary_format">%1$s · %2$s</string>
+    <string name="commissions_settle_confirm_btn">Confirmar pago</string>
+    <string name="commissions_settle_success">Comisión liquidada y registrada en caja</string>
+    <string name="commissions_settle_conflict_overlap">El período se solapa con una liquidación existente.</string>
+    <string name="commissions_settle_conflict_cash_closed">La caja de hoy ya está cerrada; abrí un nuevo día antes de liquidar.</string>
+    <string name="commissions_settle_error_empty">No hay comisiones positivas disponibles para liquidar en este período.</string>
+    <string name="commissions_settle_error_unexpected">No se pudo registrar la liquidación.</string>
 </resources>

@@ -16,10 +16,10 @@
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
-| F10 | Comisiones | [~] | 2/4 | 50 % |
+| F10 | Comisiones | [~] | 3/4 | 75 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **71/86** | **83 %** |
+| **Total** | | | **72/86** | **84 %** |
 
 ---
 
@@ -266,7 +266,7 @@ Módulo: `comisiones`.
 2. [x] **F10.2 UI por profesional y período**
    - Archivos: `ui/commissions/`
    - Hecho: detalle por turno y total; filtros semana/mes/rango.
-3. [ ] **F10.3 Liquidación**
+3. [x] **F10.3 Liquidación**
    - Archivos: `SettleCommissionUseCase`
    - Hecho: registrar pago de comisión como egreso de caja auditado; período liquidado no se recalcula.
 4. [ ] **F10.4 Verificación de fase**
@@ -394,3 +394,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F9.6 | Verificación de fase F9: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 162 tests unitarios: 139 en `:domain` + 23 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `stock/skills.md` (5/5) marcados `[x]`, `versionCode 9` / `versionName "0.9.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F9` y `v0.9.0`. | F10.1 |
 | 19/11/2026 | F10.1 | Rama `fase/F10`; modelos `CommissionSettlementEntryType`, `CommissionSettlementEntry`, `CommissionSettlement`, `CommissionRepository`, métodos default por rango/IDs en `AppointmentRepository`, y calculadora pura `CommissionCalculator` (prorrateo de descuentos/recargos, redondeo `HALF_UP` por ítem, % congelado, exclusión de no-`PAID`, prevención de doble liquidación y ajustes negativos por reverso) + `CommissionCalculatorTest` (4/4 OK); `./gradlew.bat :domain:test` OK. | F10.2 |
 | 19/11/2026 | F10.2 | Consultas por profesional/rango e IDs en `AppointmentDao`/`AppointmentRepositoryImpl`/`ClientDao`, y UI `ui/commissions/` (`CommissionsFragment`, `CommissionsViewModel`, `CommissionDetailsAdapter`) enlazada desde `MoreFragment` (`rowCommissions`, `nav_commissions`) con filtros Semana/Mes/Rango, total base/comisión/pendiente de cobro y detalle por turno e ítems; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F10.3 |
+| 19/11/2026 | F10.3 | Persistencia Room v13 (`CommissionSettlementEntity`, `CommissionSettlementEntryEntity` FK RESTRICT, `CommissionDao`, `CommissionMapper`, `CommissionRepositoryImpl`, `Migration_12_13`, `13.json`, `BackupManager` v13), `SettleCommissionUseCase` (egreso `COMMISSION_PAYOUT` + liquidación inmutable + auditoría en una única transacción), diálogo `SettleCommissionDialogFragment`, `CommissionSettlementsAdapter` + alerta de solapamiento en `CommissionsFragment`; `SettleCommissionUseCaseTest` (4/4 OK), `SchemaExportTest` (13/13 OK), `MigrationTest` v13 y `CommissionSettlementAtomicityTest` compilados OK. | F10.4 |

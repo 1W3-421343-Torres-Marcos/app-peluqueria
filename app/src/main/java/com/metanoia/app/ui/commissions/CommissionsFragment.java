@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +42,10 @@ public class CommissionsFragment extends Fragment {
     private FragmentCommissionsBinding binding;
     private CommissionsViewModel viewModel;
     private CommissionDetailsAdapter detailsAdapter;
+    private CommissionSettlementsAdapter historyAdapter;
+    private List<ProfessionalWithDetails> latestProfessionals = Collections.emptyList();
+    @Nullable
+    private CommissionsUiState latestUiState;
 
     @Nullable
     @Override
@@ -59,6 +64,11 @@ public class CommissionsFragment extends Fragment {
         binding.commissionsDetailRecycler.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
         binding.commissionsDetailRecycler.setAdapter(detailsAdapter);
+
+        historyAdapter = new CommissionSettlementsAdapter();
+        binding.commissionsHistoryRecycler.setLayoutManager(
+                new LinearLayoutManager(requireContext()));
+        binding.commissionsHistoryRecycler.setAdapter(historyAdapter);
 
         setupControls();
         observeData();
@@ -82,6 +92,7 @@ public class CommissionsFragment extends Fragment {
         binding.btnCommissionsNextPeriod.setOnClickListener(v -> viewModel.shiftPeriod(1));
         binding.btnCommissionsFromDate.setOnClickListener(v -> pickRangeDate(true));
         binding.btnCommissionsToDate.setOnClickListener(v -> pickRangeDate(false));
+        binding.btnSettleCommission.setOnClickListener(v -> openSettleDialog());
     }
 
     private void observeData() {
@@ -89,6 +100,7 @@ public class CommissionsFragment extends Fragment {
             List<ProfessionalWithDetails> safeList = professionals == null
                     ? Collections.emptyList()
                     : professionals;
+            latestProfessionals = safeList;
             renderProfessionalChips(safeList);
             if (safeList.isEmpty()) {
                 binding.commissionsEmptyState.setMessage(R.string.commissions_no_professionals);
@@ -109,7 +121,22 @@ public class CommissionsFragment extends Fragment {
 
         viewModel.observeUiState().observe(getViewLifecycleOwner(), state -> {
             if (state != null) {
+                latestUiState = state;
                 renderUiState(state);
+            }
+        });
+
+        viewModel.observeSettlementHistory().observe(getViewLifecycleOwner(), history -> {
+            boolean empty = history == null || history.isEmpty();
+            binding.commissionsHistoryEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+            binding.commissionsHistoryRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
+            historyAdapter.submitList(empty ? null : history);
+        });
+
+        viewModel.observeMessage().observe(getViewLifecycleOwner(), event -> {
+            Integer msgRes = event == null ? null : event.getContentIfNotHandled();
+            if (msgRes != null) {
+                Toast.makeText(requireContext(), msgRes, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -206,6 +233,38 @@ public class CommissionsFragment extends Fragment {
         binding.commissionsEmptyState.setVisibility(empty ? View.VISIBLE : View.GONE);
         binding.commissionsDetailRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
         detailsAdapter.submitList(empty ? null : state.rows);
+
+        boolean overlaps = calc != null && calc.overlapsExistingSettlement();
+        binding.commissionsOverlapBanner.setVisibility(overlaps ? View.VISIBLE : View.GONE);
+        binding.btnSettleCommission.setEnabled(calc != null && calc.canSettle());
+    }
+
+    private void openSettleDialog() {
+        if (latestUiState == null || latestUiState.calculation == null
+                || !latestUiState.calculation.canSettle()) {
+            return;
+        }
+        String proName = resolveProfessionalName(latestUiState.filter.professionalId);
+        PeriodCalculation calc = latestUiState.calculation;
+        SettleCommissionDialogFragment.newInstance(
+                proName,
+                calc.fromDay(),
+                calc.toDay(),
+                calc.totalBaseCents(),
+                calc.totalCommissionCents()
+        ).show(getChildFragmentManager(), "settle_commission_dialog");
+    }
+
+    @NonNull
+    private String resolveProfessionalName(@Nullable String proId) {
+        if (proId != null) {
+            for (ProfessionalWithDetails item : latestProfessionals) {
+                if (item.professional.id.equals(proId)) {
+                    return item.professional.name;
+                }
+            }
+        }
+        return "";
     }
 
     private void pickRangeDate(boolean pickingFrom) {
