@@ -135,6 +135,7 @@ app/src/main/java/com/metanoia/app/
 ## 6. Privacidad y seguridad
 
 - El manifiesto **NO** declara `android.permission.INTERNET`. Verificar el manifiesto fusionado en cada fase.
+- **Contactos (`android.permission.READ_CONTACTS`):** permitido desde F13 **únicamente en modo solo lectura** para importar y sincronizar clientes desde la agenda local. Se leen exclusivamente nombre para mostrar, teléfonos y evento de cumpleaños (`BIRTHDAY`) si existe; **nunca** se modifican ni eliminan contactos, los datos nunca salen del teléfono, se muestra una pantalla explicativa antes de solicitar el permiso y, si el permiso se revoca, la sincronización se pausa mostrando un aviso en Configuración sin provocar fallos.
 - `android:allowBackup="false"` y `dataExtractionRules` que excluyan todo: los datos no salen por el backup automático de Google.
 - Los datos solo salen del dispositivo por acción explícita del dueño: backup en carpeta elegida, exportación, compartir, WhatsApp.
 - Prohibido loguear datos personales (nombres, teléfonos, notas, montos) en `Log`. Release con R8/minify activado.

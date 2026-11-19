@@ -19,7 +19,8 @@
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
-| **Total** | | | **86/86** | **100 %** |
+| F13 | Clientes desde contactos | [ ] | 0/7 | 0 % |
+| **Total** | | | **86/93** | **92 %** |
 
 ---
 
@@ -293,7 +294,7 @@ Módulo: `reportes`.
 6. [x] **F11.6 Verificación de fase**
    - Hecho: criterios de `reportes/skills.md` OK; `versionName 0.11.0`; merge de `fase/F11` a `main`, tag `fase-F11` y entrada en `docs/changelog.md`.
 
-## F12 — Seguridad y pulido final `[~]`
+## F12 — Seguridad y pulido final `[x]`
 Módulos: `configuracion` y todos.
 
 1. [x] **F12.1 PIN y huella**
@@ -313,6 +314,33 @@ Módulos: `configuracion` y todos.
    - Hecho: tareas frecuentes y backup/restauración explicadas en ≤ 2 páginas.
 7. [x] **F12.7 Verificación final**
    - Hecho: todos los `skills.md` con criterios marcados; `./gradlew check` verde; merge de `fase/F12` a `main`, tags `fase-F12` y `v1.0.0`, entrada `1.0.0` en `docs/changelog.md`.
+
+---
+
+## F13 — Clientes desde contactos `[ ]`
+Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" e "Importados recientemente", sincronización automática en segundo plano y al volver a la app (Room v14), APK release firmado `v1.1.0`. Módulos: `clientes`, `configuracion`.
+
+1. [ ] **F13.1 Dominio de importación, cumpleaños y sincronización de contactos**
+   - Archivos: `domain/.../model/{Client,ClientOrigin,DeviceContactCandidate,ContactImportPreview,ContactSyncOutcome}`, `domain/.../rules/{ContactPhoneSelector,ContactBirthdayParser,ClientContactSyncPlanner}`, `domain/.../usecase/{PreviewContactImportUseCase,ImportAllContactsUseCase,SyncNewContactsUseCase}`, tests en `domain/src/test/...`
+   - Hecho: selección de teléfono principal (primer móvil válido o primero disponible), normalización `+54`/espacios/guiones/`0`/`15`, parseo de cumpleaños con y sin año (`--MM-DD`), nombre recortado 2–80 caracteres o teléfono si falta, deduplicación por `contactLookupKey` y teléfono normalizado, protección contra sobrescritura y reactivación de inactivos, idempotencia y `AuditLog` sin PII; 100 % de los tests unitarios obligatorios en verde (`./gradlew.bat :domain:test`).
+2. [ ] **F13.2 Migración Room v14, DAOs y backup/restauración v14**
+   - Archivos: `ClientEntity`, `ClientMapper`, `ClientDao`, `ClientRepositoryImpl`, `AppDatabase` (`version = 14`), `Migration_13_14`, `app/schemas/.../14.json`, `BackupManager`, `RestoreManager`, `MigrationTest`, `SchemaExportTest`, test de backup round-trip
+   - Hecho: columnas `contact_lookup_key` (indexada), `origin` (default `MANUAL`) y `created_from_contact_at` en `clients` con migración sin pérdida de datos; consultas SQL para clientes sin cumpleaños, contador de pendientes e importados en los últimos 7 días; `SchemaExportTest` (v14) y test de ida y vuelta del backup verde; `MigrationTest` compilado en `androidTest`.
+3. [ ] **F13.3 Permiso `READ_CONTACTS` y lector de solo lectura del dispositivo**
+   - Archivos: `AndroidManifest.xml`, `data/contacts/DeviceContactsReader.java`, actualización de `ManifestPrivacyTest` y `SecurityAuditTest`
+   - Hecho: permiso `READ_CONTACTS` declarado (mientras `INTERNET` sigue bloqueado con `tools:node="remove"` y `allowBackup="false"`); lectura en solo lectura de todas las cuentas (`ContactsContract`: nombre, teléfonos con tipo y evento `BIRTHDAY`) sin logs de nombres o teléfonos; auditorías de manifiesto y seguridad en verde.
+4. [ ] **F13.4 Flujo de importación masiva inicial (Clientes y asistente inicial)**
+   - Archivos: `ClientsFragment`, `SettingsFragment` / asistente inicial (`SetupWizard` o diálogo inicial en primer uso), `ContactImportDialogFragment`, `ContactImportViewModel`, layouts y `strings.xml`
+   - Hecho: botón "Importar desde contactos" visible en Clientes y en el asistente inicial; pantalla explicativa antes de solicitar `READ_CONTACTS`; vista previa con 3 contadores (a importar, ya cargados, omitidos) y botón "Importar todos"; ejecución en una sola transacción dentro de `AppExecutors.io()` con indicador de progreso y activación automática por defecto al finalizar.
+5. [ ] **F13.5 Filtros de cumpleaños pendientes e importados recientemente**
+   - Archivos: `ClientsFragment`, `ClientsViewModel`, `ClientsAdapter`, `ClientFormDialogFragment`, layouts y `strings.xml`
+   - Hecho: filtro **"Sin cumpleaños"** con contador visible y edición directa del campo cumpleaños con un toque; filtro **"Importados recientemente"** (últimos 7 días, `origin = CONTACT_SYNC`) para revisar altas automáticas y permitir baja lógica manual.
+6. [ ] **F13.6 Sincronización automática (WorkManager URI trigger, respaldo 15 min y Configuración)**
+   - Archivos: `data/contacts/ContactSyncWorker.java`, `ContactSyncScheduler.java`, `DevicePrefs`, `MetanoiaApp`, `MainActivity`, `SecuritySettingsFragment` / `SettingsFragment`, layouts y `strings.xml`
+   - Hecho: `ContactSyncWorker` con `Constraints.Builder.addContentUriTrigger(ContactsContract.Contacts.CONTENT_URI, true)` auto-reprogramable; respaldo al abrir y volver a primer plano con límite mínimo de 15 min; pausa sin fallos con aviso visible en Configuración cuando se revoca `READ_CONTACTS`; interruptor "Sincronizar contactos automáticamente" con fecha y resultado de la última sincronización.
+7. [ ] **F13.7 Verificación final F13, firma v1.1.0 y entrega**
+   - Archivos: `app/build.gradle` (`versionCode 13`, `versionName "1.1.0"`), `docs/modules/clientes/skills.md`, `docs/changelog.md`, `docs/plan.md`
+   - Hecho: todos los criterios de `clientes/skills.md` marcados `[x]`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` verde sin errores de Lint; APK release firmado con la keystore existente de F12.5 (`keystore.properties`) verificado con `apksigner`; entrada `1.1.0` en `docs/changelog.md`; merge `--no-ff` de `fase/F13` a `main`, tags `fase-F13` y `v1.1.0`, entrega de ruta exacta del APK y guía breve de prueba manual.
 
 ---
 
@@ -409,3 +437,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F12.5 | `versionCode 12`, `versionName "1.0.0"` y `signingConfigs.release` leyendo `keystore.properties` ignorado por Git en `app/build.gradle`; keystore PKCS12 generada y respaldada fuera del repo en `MetanoiaReleaseKeys` y `MetanoiaReleaseKeys_Backup`; APK `app/build/outputs/apk/release/app-release.apk` (4.123.389 bytes) compilado con R8 y verificado con `apksigner` v2 (`CN=Metanoia Hair Salon`, RSA 2048, SHA-256 `55ce4dcf...`); `git status` libre de secretos y nueva guía `docs/instalacion.md`. | F12.6 |
 | 19/11/2026 | F12.6 | Creado `docs/manual.md` breve (<= 2 páginas imprimibles) cubriendo puesta en marcha inicial, operativa diaria (agenda, clientes, ficha de color, caja/cierre, WhatsApp, lista de espera, stock, comisiones y reportes CSV/PDF), bloqueo por PIN/biometría con procedimiento ante olvido y flujo de copia de seguridad / restauración JSON. | F12.7 |
 | 19/11/2026 | F12.7 | Cierre F12 y lanzamiento `v1.0.0`: todos los `skills.md` al 100 % (0 ítems pendientes tras marcar `configuracion/skills.md`), entrada `1.0.0` en `docs/changelog.md`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 155/155, `:app:testDebugUnitTest` 38/38, `:app:testReleaseUnitTest` 38/38, total 193 tests JVM únicos con 0 fallos, `:app:lintDebug` y `:app:lint` OK); checks §12 OK (`0` `.kt`/`.kts`, `0` `TODO`/`FIXME`, `0` `Log.*`, `allowBackup="false"` y `internetCount=0` en manifiestos `debug` y `release`), `androidTest` compilados (sin ejecución en dispositivo/emulador); `git status` sin secretos; merge `--no-ff fase/F12` en `main` con tags `fase-F12` y `v1.0.0`. | Proyecto v1.0.0 completado |
+| 19/11/2026 | — | Documentación Paso 0 para F13 "Clientes desde contactos": habilitado `READ_CONTACTS` en solo lectura en `docs/agents.md` §6 (manteniendo prohibido `INTERNET`), agregada especificación y criterios de importación/sincronización en `docs/modules/clientes/skills.md` y planificados 7 pasos (`F13.1`–`F13.7`) en `docs/plan.md` (total `86/93`, 92 %). | F13.1 |
