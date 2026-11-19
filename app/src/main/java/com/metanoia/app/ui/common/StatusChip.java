@@ -49,7 +49,19 @@ public class StatusChip extends LinearLayout {
 
     private final ImageView iconView;
     private final TextView labelView;
+    private final GradientDrawable backgroundDrawable;
+    private final int strokeWidth;
+    private final int colorPrimary;
+    private final int colorOnPrimary;
+    private final int colorOnSurface;
+    private final int colorOnSurfaceVariant;
+    private final int gray400;
+    private final int accent;
+    private final int onAccent;
+    private final int accentContainer;
+    private final int absentBg;
     private Variant currentVariant = Variant.PENDING;
+    private boolean styleInitialized;
 
     public StatusChip(@NonNull Context context) {
         this(context, null);
@@ -71,6 +83,26 @@ public class StatusChip extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_status_chip, this, true);
         iconView = findViewById(R.id.statusChipIcon);
         labelView = findViewById(R.id.statusChipLabel);
+
+        strokeWidth = getResources().getDimensionPixelSize(R.dimen.stroke_width);
+        colorPrimary = MaterialColors.getColor(
+                this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK);
+        colorOnPrimary = MaterialColors.getColor(
+                this, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE);
+        colorOnSurface = MaterialColors.getColor(
+                this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK);
+        colorOnSurfaceVariant = MaterialColors.getColor(
+                this, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.DKGRAY);
+        gray400 = ContextCompat.getColor(context, R.color.gray400);
+        accent = ContextCompat.getColor(context, R.color.accent);
+        onAccent = ContextCompat.getColor(context, R.color.on_accent);
+        accentContainer = ContextCompat.getColor(context, R.color.accent_container);
+        absentBg = ContextCompat.getColor(context, R.color.absent_chip_bg);
+
+        backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.setShape(GradientDrawable.RECTANGLE);
+        backgroundDrawable.setCornerRadius(getResources().getDimension(R.dimen.radius_pill));
+        setBackground(backgroundDrawable);
 
         Variant initial = readVariant(context, attrs);
         setVariant(initial);
@@ -98,6 +130,10 @@ public class StatusChip extends LinearLayout {
     }
 
     public void setVariant(@NonNull Variant variant) {
+        if (styleInitialized && this.currentVariant == variant) {
+            return;
+        }
+        this.styleInitialized = true;
         this.currentVariant = variant;
         labelView.setText(variant.labelRes);
         iconView.setImageResource(variant.iconRes);
@@ -114,22 +150,6 @@ public class StatusChip extends LinearLayout {
     }
 
     private void applyStyle(Variant variant) {
-        Context context = getContext();
-        int strokeWidth = getResources().getDimensionPixelSize(R.dimen.stroke_width);
-        int colorPrimary = MaterialColors.getColor(
-                this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK);
-        int colorOnPrimary = MaterialColors.getColor(
-                this, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE);
-        int colorOnSurface = MaterialColors.getColor(
-                this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK);
-        int colorOnSurfaceVariant = MaterialColors.getColor(
-                this, com.google.android.material.R.attr.colorOnSurfaceVariant, Color.DKGRAY);
-        int gray400 = ContextCompat.getColor(context, R.color.gray400);
-        int accent = ContextCompat.getColor(context, R.color.accent);
-        int onAccent = ContextCompat.getColor(context, R.color.on_accent);
-        int accentContainer = ContextCompat.getColor(context, R.color.accent_container);
-        int absentBg = ContextCompat.getColor(context, R.color.absent_chip_bg);
-
         switch (variant) {
             case PENDING:
                 applyColors(Color.TRANSPARENT, strokeWidth, gray400, colorOnSurfaceVariant);
@@ -157,19 +177,12 @@ public class StatusChip extends LinearLayout {
 
     private void applyColors(
             @ColorInt int fillColor,
-            int strokeWidth,
+            int strokePx,
             @ColorInt int strokeColor,
             @ColorInt int contentColor
     ) {
-        GradientDrawable background = new GradientDrawable();
-        background.setShape(GradientDrawable.RECTANGLE);
-        background.setCornerRadius(getResources().getDimension(R.dimen.radius_pill));
-        background.setColor(fillColor);
-        if (strokeWidth > 0) {
-            background.setStroke(strokeWidth, strokeColor);
-        }
-        setBackground(background);
-
+        backgroundDrawable.setColor(fillColor);
+        backgroundDrawable.setStroke(strokePx, strokeColor);
         labelView.setTextColor(contentColor);
         ImageViewCompat.setImageTintList(iconView, ColorStateList.valueOf(contentColor));
     }

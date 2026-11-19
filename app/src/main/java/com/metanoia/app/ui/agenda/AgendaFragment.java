@@ -68,6 +68,7 @@ public class AgendaFragment extends Fragment {
         weekAdapter = new WeekDaysAdapter(dayEpoch -> viewModel.selectDayAndOpenDayMode(dayEpoch));
 
         binding.agendaRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.agendaRecycler.setItemViewCacheSize(12);
         binding.agendaRecycler.setAdapter(dayAdapter);
 
         setupControls();
@@ -138,22 +139,30 @@ public class AgendaFragment extends Fragment {
 
         viewModel.observeDayBlocks().observe(getViewLifecycleOwner(), blocks -> {
             latestDayBlocks = blocks == null ? Collections.emptyList() : blocks;
-            renderCurrentMode();
+            if (isCurrentMode(ViewMode.DAY)) {
+                renderCurrentMode();
+            }
         });
 
         viewModel.observeDayAppointments().observe(getViewLifecycleOwner(), cards -> {
             latestDayAppointments = cards == null ? Collections.emptyList() : cards;
-            renderCurrentMode();
+            if (isCurrentMode(ViewMode.DAY)) {
+                renderCurrentMode();
+            }
         });
 
         viewModel.observeWeekBlocks().observe(getViewLifecycleOwner(), blocks -> {
             latestWeekBlocks = blocks == null ? Collections.emptyList() : blocks;
-            renderCurrentMode();
+            if (isCurrentMode(ViewMode.WEEK)) {
+                renderCurrentMode();
+            }
         });
 
         viewModel.observeWeekAppointments().observe(getViewLifecycleOwner(), cards -> {
             latestWeekAppointments = cards == null ? Collections.emptyList() : cards;
-            renderCurrentMode();
+            if (isCurrentMode(ViewMode.WEEK)) {
+                renderCurrentMode();
+            }
         });
 
         viewModel.observeLowStockCount().observe(getViewLifecycleOwner(), count -> {
@@ -243,6 +252,11 @@ public class AgendaFragment extends Fragment {
                 ((Chip) child).setChecked(match);
             }
         }
+    }
+
+    private boolean isCurrentMode(ViewMode mode) {
+        AgendaFilter filter = viewModel.observeFilter().getValue();
+        return filter != null && filter.viewMode == mode;
     }
 
     private void renderCurrentMode() {
