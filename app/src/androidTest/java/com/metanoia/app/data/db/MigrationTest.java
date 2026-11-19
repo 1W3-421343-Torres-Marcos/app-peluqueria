@@ -22,6 +22,7 @@ import com.metanoia.app.data.db.migration.Migration_8_9;
 import com.metanoia.app.data.db.migration.Migration_9_10;
 import com.metanoia.app.data.db.migration.Migration_10_11;
 import com.metanoia.app.data.db.migration.Migration_11_12;
+import com.metanoia.app.data.db.migration.Migration_12_13;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -359,30 +360,66 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To12_allMigrations_passValidation() throws IOException {
+    public void migrate12To13_createsCommissionTablesWithIndices() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 12)) {
+            db.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-1', 'Ana', '', '', 4000, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-1', 'Sofía', 'sofia', '5491122334455', NULL, NULL, NULL, "
+                    + "'', 0, 1, 1000, 1000)");
+            db.execSQL("INSERT INTO appointments VALUES ("
+                    + "'apt-1', 'cli-1', 'pro-1', 20500, 540, 570, 'PAID', 0, '', "
+                    + "NULL, NULL, 1000, 1000, 'Dueño')");
+            db.execSQL("INSERT INTO cash_movements VALUES ("
+                    + "'cm-1', 20510, 2000, 'COMMISSION_PAYOUT', 'CASH', 400000, "
+                    + "'Comisión Ana', NULL, NULL, NULL, NULL, NULL, 'Dueño', NULL)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 13, true, Migration_12_13.INSTANCE)) {
+            migrated.execSQL("INSERT INTO commission_settlements VALUES ("
+                    + "'set-1', 'pro-1', 20500, 20506, 1000000, 400000, 'cm-1', 3000, 'Dueño')");
+            migrated.execSQL("INSERT INTO commission_settlement_entries VALUES ("
+                    + "'ent-1', 'set-1', 'apt-1', 'SETTLED', 1000000, 400000)");
+            try (Cursor cursor = migrated.query(
+                    "SELECT commission_cents FROM commission_settlements WHERE professional_id = 'pro-1'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals(400_000L, cursor.getLong(0));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To13_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                12,
+                13,
                 true,
                 AppDatabase.allMigrations()
         )) {
             migrated.execSQL("INSERT INTO salon_services VALUES ("
                     + "'svc-all', 'Corte', 'corte', 'Corte', 'corte', 1500000, 30, 0, 1, 0, 1000, 1000)");
+            migrated.execSQL("INSERT INTO professionals VALUES ("
+                    + "'pro-all', 'Ana', '', '', 4000, 1, 1000, 1000)");
             migrated.execSQL("INSERT INTO clients VALUES ("
                     + "'cli-all', 'Sofía Gómez', 'sofia gomez', '5491144556677', NULL, NULL, NULL, "
                     + "'Notas', 1, 1, 1000, 1000)");
-            migrated.execSQL("INSERT INTO waitlist_entries VALUES ("
-                    + "'wl-all', 'cli-all', NULL, 20520, '', 600, 900, 20530, 'ACTIVE', '', 1000, NULL)");
-            migrated.execSQL("INSERT INTO waitlist_entry_services VALUES ('wl-all', 'svc-all')");
-            migrated.execSQL("INSERT INTO products VALUES ("
-                    + "'prod-all', 'Tintura 7.1', 'tintura 7.1', NULL, 'USE', 'GRAM', NULL, 3, 5, 1, 1000, 1000)");
-            migrated.execSQL("INSERT INTO stock_movements VALUES ("
-                    + "'sm-all', 'prod-all', 1000, 'IN', 5, 'Stock inicial', NULL, 'Dueño')");
-            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM products")) {
+            migrated.execSQL("INSERT INTO appointments VALUES ("
+                    + "'apt-all', 'cli-all', 'pro-all', 20500, 540, 570, 'PAID', 0, '', "
+                    + "NULL, NULL, 1000, 1000, 'Dueño')");
+            migrated.execSQL("INSERT INTO cash_movements VALUES ("
+                    + "'cm-all', 20510, 2000, 'COMMISSION_PAYOUT', 'CASH', 400000, "
+                    + "'Comisión Ana', NULL, NULL, NULL, NULL, NULL, 'Dueño', NULL)");
+            migrated.execSQL("INSERT INTO commission_settlements VALUES ("
+                    + "'set-all', 'pro-all', 20500, 20506, 1000000, 400000, 'cm-all', 3000, 'Dueño')");
+            migrated.execSQL("INSERT INTO commission_settlement_entries VALUES ("
+                    + "'ent-all', 'set-all', 'apt-all', 'SETTLED', 1000000, 400000)");
+            try (Cursor cursor = migrated.query("SELECT COUNT(*) FROM commission_settlements")) {
                 cursor.moveToFirst();
                 assertEquals(1, cursor.getInt(0));
             }

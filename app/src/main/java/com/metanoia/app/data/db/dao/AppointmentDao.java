@@ -120,6 +120,21 @@ public interface AppointmentDao {
     List<AppointmentWithItems> findByDayRangeSync(long startDayEpoch, long endDayEpoch);
 
     @Transaction
+    @Query("SELECT * FROM appointments WHERE professional_id = :professionalId "
+            + "AND day BETWEEN :startDayEpoch AND :endDayEpoch "
+            + "ORDER BY day ASC, start_min ASC")
+    List<AppointmentWithItems> findByProfessionalAndDayRangeSync(
+            String professionalId,
+            long startDayEpoch,
+            long endDayEpoch
+    );
+
+    @Transaction
+    @Query("SELECT * FROM appointments WHERE id IN (:ids) "
+            + "ORDER BY day ASC, start_min ASC")
+    List<AppointmentWithItems> findByIdsWithItemsSync(List<String> ids);
+
+    @Transaction
     @Query("SELECT * FROM appointments "
             + "WHERE recurrence_rule_id = :recurrenceRuleId "
             + "AND status IN ('PENDING', 'CONFIRMED') "

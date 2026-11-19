@@ -16,10 +16,10 @@
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
-| F10 | Comisiones | [ ] | 0/4 | 0 % |
+| F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **69/86** | **80 %** |
+| **Total** | | | **73/86** | **85 %** |
 
 ---
 
@@ -257,19 +257,19 @@ Módulo: `stock`.
 6. [x] **F9.6 Verificación de fase**
    - Hecho: criterios de `stock/skills.md` OK; `versionName 0.9.0`; merge de `fase/F9` a `main`, tag `fase-F9` y entrada en `docs/changelog.md`.
 
-## F10 — Comisiones `[ ]`
+## F10 — Comisiones `[x]`
 Módulo: `comisiones`.
 
-1. [ ] **F10.1 Calculadora de comisiones**
+1. [x] **F10.1 Calculadora de comisiones**
    - Archivos: `CommissionCalculator`, tests
    - Hecho: solo turnos PAID del período; usa % congelado al completar; COMPLETED con saldo no liquida; redondeo a centavo definido; tests de casos borde.
-2. [ ] **F10.2 UI por profesional y período**
+2. [x] **F10.2 UI por profesional y período**
    - Archivos: `ui/commissions/`
    - Hecho: detalle por turno y total; filtros semana/mes/rango.
-3. [ ] **F10.3 Liquidación**
+3. [x] **F10.3 Liquidación**
    - Archivos: `SettleCommissionUseCase`
    - Hecho: registrar pago de comisión como egreso de caja auditado; período liquidado no se recalcula.
-4. [ ] **F10.4 Verificación de fase**
+4. [x] **F10.4 Verificación de fase**
    - Hecho: criterios de `comisiones/skills.md` OK; `versionName 0.10.0`; merge de `fase/F10` a `main`, tag `fase-F10` y entrada en `docs/changelog.md`.
 
 ## F11 — Reportes `[ ]`
@@ -392,3 +392,7 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F9.4 | `LowStockRuleTest` (3/3 OK: límite `<= minStock`, negativos, suma firmada, exclusión de inactivos en conteo y orden con bajos primero) y `AlertBanner` reactivo de stock bajo en `AgendaFragment` / `AgendaViewModel` con acceso directo a `nav_stock`, sumado a `StatusChip` y banner en `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.5 |
 | 18/11/2026 | F9.5 | `SellProductUseCase` (venta + descuento `OUT_SALE` atómicos en una única transacción, rechazo de productos `USE` y días cerrados), reposición automática de stock en `ReverseMovementUseCase` al revertir `PRODUCT_SALE`, `SellProductUseCaseTest` (4/4 OK con rollback transaccional), `ReverseMovementUseCaseTest` (4/4 OK), `ProductSaleAtomicityTest` (`androidTest`) y selector de productos `SALE`/`BOTH` con cantidad y alerta negativa en `CashMovementFormDialogFragment`/`CashViewModel`; build y tests OK. | F9.6 |
 | 18/11/2026 | F9.6 | Verificación de fase F9: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 162 tests unitarios: 139 en `:domain` + 23 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `stock/skills.md` (5/5) marcados `[x]`, `versionCode 9` / `versionName "0.9.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F9` y `v0.9.0`. | F10.1 |
+| 19/11/2026 | F10.1 | Rama `fase/F10`; modelos `CommissionSettlementEntryType`, `CommissionSettlementEntry`, `CommissionSettlement`, `CommissionRepository`, métodos default por rango/IDs en `AppointmentRepository`, y calculadora pura `CommissionCalculator` (prorrateo de descuentos/recargos, redondeo `HALF_UP` por ítem, % congelado, exclusión de no-`PAID`, prevención de doble liquidación y ajustes negativos por reverso) + `CommissionCalculatorTest` (4/4 OK); `./gradlew.bat :domain:test` OK. | F10.2 |
+| 19/11/2026 | F10.2 | Consultas por profesional/rango e IDs en `AppointmentDao`/`AppointmentRepositoryImpl`/`ClientDao`, y UI `ui/commissions/` (`CommissionsFragment`, `CommissionsViewModel`, `CommissionDetailsAdapter`) enlazada desde `MoreFragment` (`rowCommissions`, `nav_commissions`) con filtros Semana/Mes/Rango, total base/comisión/pendiente de cobro y detalle por turno e ítems; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F10.3 |
+| 19/11/2026 | F10.3 | Persistencia Room v13 (`CommissionSettlementEntity`, `CommissionSettlementEntryEntity` FK RESTRICT, `CommissionDao`, `CommissionMapper`, `CommissionRepositoryImpl`, `Migration_12_13`, `13.json`, `BackupManager` v13), `SettleCommissionUseCase` (egreso `COMMISSION_PAYOUT` + liquidación inmutable + auditoría en una única transacción), diálogo `SettleCommissionDialogFragment`, `CommissionSettlementsAdapter` + alerta de solapamiento en `CommissionsFragment`; `SettleCommissionUseCaseTest` (4/4 OK), `SchemaExportTest` (13/13 OK), `MigrationTest` v13 y `CommissionSettlementAtomicityTest` compilados OK. | F10.4 |
+| 19/11/2026 | F10.4 | Cierre F10 Comisiones (`versionCode 10`, `versionName 0.10.0`, `docs/changelog.md`, 6/6 criterios de `comisiones/skills.md` verificados); fix Lint `DiffUtilEquals` en `CommissionDetailsAdapter`; `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 147/147, `:app:testDebugUnitTest` 24/24, total 171 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, esquema `13.json`), `androidTest` compilados (sin ejecución en dispositivo/emulador); merge `--no-ff fase/F10` en `main` y tags `fase-F10` / `v0.10.0`. | F11.1 |

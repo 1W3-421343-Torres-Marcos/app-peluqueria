@@ -14,6 +14,7 @@ import com.metanoia.app.data.db.dao.AuditLogDao;
 import com.metanoia.app.data.db.dao.CashDao;
 import com.metanoia.app.data.db.dao.ClientDao;
 import com.metanoia.app.data.db.dao.ColorFormulaDao;
+import com.metanoia.app.data.db.dao.CommissionDao;
 import com.metanoia.app.data.db.dao.ProfessionalDao;
 import com.metanoia.app.data.db.dao.RecurrenceRuleDao;
 import com.metanoia.app.data.db.dao.ReminderDao;
@@ -30,6 +31,8 @@ import com.metanoia.app.data.db.entity.CashMovementEntity;
 import com.metanoia.app.data.db.entity.ClientEntity;
 import com.metanoia.app.data.db.entity.ColorFormulaComponentEntity;
 import com.metanoia.app.data.db.entity.ColorFormulaEntity;
+import com.metanoia.app.data.db.entity.CommissionSettlementEntity;
+import com.metanoia.app.data.db.entity.CommissionSettlementEntryEntity;
 import com.metanoia.app.data.db.entity.ProductEntity;
 import com.metanoia.app.data.db.entity.ProfessionalDayOffEntity;
 import com.metanoia.app.data.db.entity.ProfessionalEntity;
@@ -55,6 +58,7 @@ import com.metanoia.app.data.db.migration.Migration_8_9;
 import com.metanoia.app.data.db.migration.Migration_9_10;
 import com.metanoia.app.data.db.migration.Migration_10_11;
 import com.metanoia.app.data.db.migration.Migration_11_12;
+import com.metanoia.app.data.db.migration.Migration_12_13;
 
 /**
  * Base de datos local Room de Metanoia con migraciones versionadas (sin borrado destructivo).
@@ -82,9 +86,11 @@ import com.metanoia.app.data.db.migration.Migration_11_12;
                 WaitlistEntryEntity.class,
                 WaitlistEntryServiceCrossRef.class,
                 ProductEntity.class,
-                StockMovementEntity.class
+                StockMovementEntity.class,
+                CommissionSettlementEntity.class,
+                CommissionSettlementEntryEntity.class
         },
-        version = 12,
+        version = 13,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -117,6 +123,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract StockDao stockDao();
 
+    public abstract CommissionDao commissionDao();
+
     public static Migration[] allMigrations() {
         return new Migration[]{
                 Migration_1_2.INSTANCE,
@@ -129,7 +137,8 @@ public abstract class AppDatabase extends RoomDatabase {
                 Migration_8_9.INSTANCE,
                 Migration_9_10.INSTANCE,
                 Migration_10_11.INSTANCE,
-                Migration_11_12.INSTANCE
+                Migration_11_12.INSTANCE,
+                Migration_12_13.INSTANCE
         };
     }
 

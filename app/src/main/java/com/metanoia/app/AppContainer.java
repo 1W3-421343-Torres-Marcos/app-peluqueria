@@ -12,6 +12,7 @@ import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
 import com.metanoia.app.data.repository.CashRepositoryImpl;
 import com.metanoia.app.data.repository.ClientRepositoryImpl;
 import com.metanoia.app.data.repository.ColorFormulaRepositoryImpl;
+import com.metanoia.app.data.repository.CommissionRepositoryImpl;
 import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
 import com.metanoia.app.data.repository.ReminderRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
@@ -26,6 +27,7 @@ import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.CashRepository;
 import com.metanoia.domain.repository.ClientRepository;
 import com.metanoia.domain.repository.ColorFormulaRepository;
+import com.metanoia.domain.repository.CommissionRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.ReminderRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
@@ -67,6 +69,7 @@ import com.metanoia.domain.usecase.SetClientActiveUseCase;
 import com.metanoia.domain.usecase.SetProductActiveUseCase;
 import com.metanoia.domain.usecase.SetProfessionalActiveUseCase;
 import com.metanoia.domain.usecase.SetSalonServiceActiveUseCase;
+import com.metanoia.domain.usecase.SettleCommissionUseCase;
 import com.metanoia.domain.usecase.UpdateAppointmentUseCase;
 import com.metanoia.domain.usecase.UpdateSettingsUseCase;
 
@@ -92,6 +95,7 @@ public final class AppContainer {
     private final ColorFormulaRepository colorFormulaRepository;
     private final WaitlistRepository waitlistRepository;
     private final StockRepository stockRepository;
+    private final CommissionRepository commissionRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -128,6 +132,7 @@ public final class AppContainer {
     private final SetProductActiveUseCase setProductActiveUseCase;
     private final RecordStockMovementUseCase recordStockMovementUseCase;
     private final SellProductUseCase sellProductUseCase;
+    private final SettleCommissionUseCase settleCommissionUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
 
@@ -152,6 +157,7 @@ public final class AppContainer {
         this.colorFormulaRepository = new ColorFormulaRepositoryImpl(database.colorFormulaDao());
         this.waitlistRepository = new WaitlistRepositoryImpl(database.waitlistDao());
         this.stockRepository = new StockRepositoryImpl(database);
+        this.commissionRepository = new CommissionRepositoryImpl(database);
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -246,6 +252,9 @@ public final class AppContainer {
         this.sellProductUseCase = new SellProductUseCase(
                 stockRepository, cashRepository, settingsRepository,
                 auditLogRepository, clock, idGenerator);
+        this.settleCommissionUseCase = new SettleCommissionUseCase(
+                commissionRepository, appointmentRepository, professionalRepository,
+                cashRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.backupManager = new BackupManager(
                 appContext, database, devicePrefs, auditLogRepository,
                 settingsRepository, clock, idGenerator);
@@ -471,5 +480,13 @@ public final class AppContainer {
 
     public SellProductUseCase sellProductUseCase() {
         return sellProductUseCase;
+    }
+
+    public CommissionRepository commissionRepository() {
+        return commissionRepository;
+    }
+
+    public SettleCommissionUseCase settleCommissionUseCase() {
+        return settleCommissionUseCase;
     }
 }

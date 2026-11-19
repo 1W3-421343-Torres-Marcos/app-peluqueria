@@ -802,4 +802,46 @@
     <string name="cash_product_sale_saved">Venta registrada y stock actualizado</string>
     <string name="cash_product_sale_saved_negative_stock">Venta registrada. El stock quedó en negativo para revisar.</string>
     <string name="cash_product_sale_error_inactive">El producto fue dado de baja; reactivalo desde Stock.</string>
+
+    <!-- Comisiones (F10.2) -->
+    <string name="commissions_title">Comisiones</string>
+    <string name="more_commissions_title">Comisiones</string>
+    <string name="more_commissions_subtitle">Cálculo por profesional, detalle y liquidación</string>
+    <string name="commissions_professional_label">Profesional</string>
+    <string name="commissions_period_week">Semana</string>
+    <string name="commissions_period_month">Mes</string>
+    <string name="commissions_period_range">Rango</string>
+    <string name="commissions_range_from_format">Desde: %1$s</string>
+    <string name="commissions_range_to_format">Hasta: %1$s</string>
+    <string name="commissions_period_inline_format">%1$s – %2$s</string>
+    <string name="commissions_prev_period">Período anterior</string>
+    <string name="commissions_next_period">Período siguiente</string>
+    <string name="commissions_summary_base_label">Total base</string>
+    <string name="commissions_summary_commission_label">Comisión a liquidar</string>
+    <string name="commissions_summary_pending_label">Pendiente de cobro (completados con saldo)</string>
+    <string name="commissions_summary_pending_value_format">Base %1$s · Com. estimada %2$s</string>
+    <string name="commissions_section_detail">Detalle por turno</string>
+    <string name="commissions_empty">No hay turnos cobrados ni ajustes pendientes para este período.</string>
+    <string name="commissions_no_professionals">Cargá profesionales en Más &gt; Profesionales para calcular comisiones.</string>
+    <string name="commissions_row_header_format">%1$s · %2$s · %3$s</string>
+    <string name="commissions_item_detail_format">%1$s · Base %2$s × %3$s = %4$s</string>
+    <string name="commissions_reversal_badge">Ajuste por reverso</string>
+    <string name="commissions_pending_badge">Pendiente de cobro</string>
+    <string name="commissions_row_base_format">Base: %1$s</string>
+
+    <!-- Liquidación e historial de comisiones (F10.3) -->
+    <string name="commissions_overlap_banner">Este período ya fue liquidado o se solapa con una liquidación previa.</string>
+    <string name="commissions_settle_btn">Liquidar</string>
+    <string name="commissions_section_history">Historial de liquidaciones</string>
+    <string name="commissions_history_empty">Todavía no hay liquidaciones registradas para este profesional.</string>
+    <string name="commissions_settlement_period_format">%1$s – %2$s</string>
+    <string name="commissions_settlement_meta_format">%1$s · %2$s</string>
+    <string name="commissions_settle_dialog_title">Confirmar liquidación</string>
+    <string name="commissions_settle_dialog_summary_format">%1$s · %2$s</string>
+    <string name="commissions_settle_confirm_btn">Confirmar pago</string>
+    <string name="commissions_settle_success">Comisión liquidada y registrada en caja</string>
+    <string name="commissions_settle_conflict_overlap">El período se solapa con una liquidación existente.</string>
+    <string name="commissions_settle_conflict_cash_closed">La caja de hoy ya está cerrada; abrí un nuevo día antes de liquidar.</string>
+    <string name="commissions_settle_error_empty">No hay comisiones positivas disponibles para liquidar en este período.</string>
+    <string name="commissions_settle_error_unexpected">No se pudo registrar la liquidación.</string>
 </resources>

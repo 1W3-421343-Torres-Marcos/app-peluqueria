@@ -100,6 +100,9 @@
             android:id="@+id/action_more_to_stock"
             app:destination="@id/nav_stock" />
         <action
+            android:id="@+id/action_more_to_commissions"
+            app:destination="@id/nav_commissions" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -168,6 +171,11 @@
         android:id="@+id/nav_product_detail"
         android:name="com.metanoia.app.ui.stock.movements.ProductDetailFragment"
         android:label="@string/product_detail_title" />
+
+    <fragment
+        android:id="@+id/nav_commissions"
+        android:name="com.metanoia.app.ui.commissions.CommissionsFragment"
+        android:label="@string/commissions_title" />
 
     <fragment
         android:id="@+id/nav_about"

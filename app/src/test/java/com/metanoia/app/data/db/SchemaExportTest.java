@@ -121,6 +121,18 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_stock_movements_cash_movement_id"));
     }
 
+    @Test
+    public void roomSchemaV13_isExportedWithCommissionTablesAndIndices() throws Exception {
+        String content = readSchema(13);
+        assertTrue(content.contains("\"tableName\": \"commission_settlements\""));
+        assertTrue(content.contains("\"tableName\": \"commission_settlement_entries\""));
+        assertTrue(content.contains("index_commission_settlements_professional_id_from_day_to_day"));
+        assertTrue(content.contains("index_commission_settlements_cash_movement_id"));
+        assertTrue(content.contains("index_commission_settlements_settled_at"));
+        assertTrue(content.contains("index_commission_settlement_entries_settlement_id"));
+        assertTrue(content.contains("index_commission_settlement_entries_appointment_id"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");
