@@ -103,6 +103,9 @@
             android:id="@+id/action_more_to_commissions"
             app:destination="@id/nav_commissions" />
         <action
+            android:id="@+id/action_more_to_reports"
+            app:destination="@id/nav_reports" />
+        <action
             android:id="@+id/action_more_to_about"
             app:destination="@id/nav_about" />
         <action
@@ -176,6 +179,11 @@
         android:id="@+id/nav_commissions"
         android:name="com.metanoia.app.ui.commissions.CommissionsFragment"
         android:label="@string/commissions_title" />
+
+    <fragment
+        android:id="@+id/nav_reports"
+        android:name="com.metanoia.app.ui.reports.ReportsFragment"
+        android:label="@string/reports_title" />
 
     <fragment
         android:id="@+id/nav_about"
