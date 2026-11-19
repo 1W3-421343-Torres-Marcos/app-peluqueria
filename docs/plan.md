@@ -18,8 +18,8 @@
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
-| F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **79/86** | **92 %** |
+| F12 | Seguridad y pulido final | [~] | 1/7 | 14 % |
+| **Total** | | | **80/86** | **93 %** |
 
 ---
 
@@ -293,10 +293,10 @@ Módulo: `reportes`.
 6. [x] **F11.6 Verificación de fase**
    - Hecho: criterios de `reportes/skills.md` OK; `versionName 0.11.0`; merge de `fase/F11` a `main`, tag `fase-F11` y entrada en `docs/changelog.md`.
 
-## F12 — Seguridad y pulido final `[ ]`
+## F12 — Seguridad y pulido final `[~]`
 Módulos: `configuracion` y todos.
 
-1. [ ] **F12.1 PIN y huella**
+1. [x] **F12.1 PIN y huella**
    - Archivos: `ui/lock/`, `BiometricPrompt`
    - Hecho: bloqueo opcional al abrir y al volver de segundo plano (tiempo configurable); PIN con hash + sal.
 2. [ ] **F12.2 Accesibilidad**
@@ -402,3 +402,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F11.4 | Exportador `CsvExporter` (`design.md` §9: UTF-8 con BOM, `;`, decimales con coma, fechas `dd/MM/yyyy`, escape RFC 4180, protección contra inyección de fórmulas y opt-in de teléfono en Clientes frecuentes sin notas) + `shared_reports` en `file_paths.xml`, guardado SAF / compartir `FileProvider` vía `ReportExportUiHelper` y `ReportFilterUiHelper` (`ReportsFragment` < 400 líneas), y `CsvExporterTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.5 |
 | 19/11/2026 | F11.5 | Exportador PDF A4 blanco y negro `ReportPdfBuilder` + `ReportPdfSpec` + `ReportPdfSpecFactory` + `ReportExportPayloadHelper` (cabecera con logo reemplazable y marca Metanoia Hair Salon, KPIs, tablas con bordes `gray200`, alineación numérica y truncamiento, paginación multipágina y pie `"Página X de Y"`), botón `Exportar PDF` (SAF `CreateDocument("application/pdf")` / compartir `FileProvider`) y `ReportPdfSpecTest` (2/2 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.6 |
 | 19/11/2026 | F11.6 | Cierre F11 Reportes (`versionCode 11`, `versionName 0.11.0`, `docs/changelog.md`, 5/5 criterios de `reportes/skills.md` verificados); `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 151/151, `:app:testDebugUnitTest` 32/32, total 183 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, 0 `.kt`/`.kts`, `:domain` puro, sin valores sueltos en layouts F11), `ReportsDaoTest` (benchmark 50.000 turnos) compilado en `androidTest` sin ejecución en dispositivo/emulador; merge `--no-ff fase/F11` en `main` y tags `fase-F11` / `v0.11.0`. | F12.1 |
+| 19/11/2026 | F12.1 | Rama `fase/F12`; reglas `PinHasher` (PBKDF2-HMAC-SHA256 con sal 16 bytes e `isEqual` constante) y `PinLockPolicy` (timeouts 0/1/5/15 min y cooldown progresivo 30 s tras 5 fallos) + `PinHasherTest` (2/2 OK) y `PinLockPolicyTest` (2/2 OK), almacenamiento local en `DevicePrefs`, `AppLockController` enlazado a `MetanoiaApp`/`MainActivity`, `LockScreenDialogFragment` (`FLAG_SECURE` + `BiometricPrompt`), `PinSetupDialogFragment` y `SecuritySettingsFragment` en `SettingsFragment`/`nav_main.xml`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.2 |

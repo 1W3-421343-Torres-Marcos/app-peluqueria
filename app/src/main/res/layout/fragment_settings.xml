@@ -231,6 +231,15 @@
                 app:rowShowDivider="true"
                 app:rowSubtitle="@string/settings_templates_row_subtitle"
                 app:rowTitle="@string/settings_templates_row_title" />
+
+            <com.metanoia.app.ui.common.ListRowView
+                android:id="@+id/rowSettingsSecurity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowShowChevron="true"
+                app:rowShowDivider="true"
+                app:rowSubtitle="@string/settings_security_row_subtitle"
+                app:rowTitle="@string/settings_security_row_title" />
         </LinearLayout>
     </ScrollView>
 

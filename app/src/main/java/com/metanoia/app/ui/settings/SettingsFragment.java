@@ -64,6 +64,9 @@ public class SettingsFragment extends Fragment {
         binding.rowSettingsTemplates.setOnClickListener(v -> NavHostFragment
                 .findNavController(this)
                 .navigate(R.id.action_settings_to_templates));
+        binding.rowSettingsSecurity.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_settings_to_security));
         binding.btnSaveSettings.setOnClickListener(v -> submitForm());
     }
 

@@ -39,4 +39,9 @@
     <dimen name="bar_chart_label_text_size">11sp</dimen>
     <dimen name="bar_chart_value_text_size">10sp</dimen>
     <dimen name="bar_chart_min_slot_width">40dp</dimen>
+
+    <!-- Bloqueo de seguridad (F12.1) -->
+    <dimen name="pin_dot_size">16dp</dimen>
+    <dimen name="pin_dot_spacing">6dp</dimen>
+    <dimen name="pin_keypad_button_height">56dp</dimen>
 </resources>

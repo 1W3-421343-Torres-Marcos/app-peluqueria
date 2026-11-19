@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_margin">
+
+        <com.metanoia.app.ui.common.LogoView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            app:logoSize="header" />
+
+        <ImageView
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginTop="@dimen/space_l"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_lock"
+            app:tint="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="@string/security_lock_title"
+            android:textAppearance="@style/TextAppearance.Metanoia.Headline"
+            android:textColor="?attr/colorOnSurface" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/security_lock_subtitle"
+            android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <LinearLayout
+            android:id="@+id/lockDotsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_l"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/lockDot1"
+                android:layout_width="@dimen/pin_dot_size"
+                android:layout_height="@dimen/pin_dot_size"
+                android:layout_marginHorizontal="@dimen/pin_dot_spacing"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_empty"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageView
+                android:id="@+id/lockDot2"
+                android:layout_width="@dimen/pin_dot_size"
+                android:layout_height="@dimen/pin_dot_size"
+                android:layout_marginHorizontal="@dimen/pin_dot_spacing"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_empty"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageView
+                android:id="@+id/lockDot3"
+                android:layout_width="@dimen/pin_dot_size"
+                android:layout_height="@dimen/pin_dot_size"
+                android:layout_marginHorizontal="@dimen/pin_dot_spacing"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_empty"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageView
+                android:id="@+id/lockDot4"
+                android:layout_width="@dimen/pin_dot_size"
+                android:layout_height="@dimen/pin_dot_size"
+                android:layout_marginHorizontal="@dimen/pin_dot_spacing"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_empty"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageView
+                android:id="@+id/lockDot5"
+                android:layout_width="@dimen/pin_dot_size"
+                android:layout_height="@dimen/pin_dot_size"
+                android:layout_marginHorizontal="@dimen/pin_dot_spacing"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_empty"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageView
+                android:id="@+id/lockDot6"
+                android:layout_width="@dimen/pin_dot_size"
+                android:layout_height="@dimen/pin_dot_size"
+                android:layout_marginHorizontal="@dimen/pin_dot_spacing"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_dot_empty"
+                app:tint="?attr/colorOnSurface" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lockErrorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:accessibilityLiveRegion="polite"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+            android:textColor="@color/accent"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit1"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit2"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_2" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit3"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit4"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_4" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit5"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_5" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit6"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit7"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_7" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit8"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_8" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit9"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_9" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnLockBiometric"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/security_lock_biometric_cd"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:src="@drawable/ic_fingerprint"
+                android:visibility="invisible"
+                app:tint="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDigit0"
+                style="@style/Widget.Metanoia.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:text="@string/security_digit_0" />
+
+            <ImageButton
+                android:id="@+id/btnLockBackspace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_s"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/security_lock_backspace_cd"
+                android:minHeight="@dimen/pin_keypad_button_height"
+                android:src="@drawable/ic_backspace"
+                app:tint="?attr/colorOnSurface" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLockSubmit"
+            style="@style/Widget.Metanoia.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_m"
+            android:enabled="false"
+            android:text="@string/security_lock_enter_btn" />
+    </LinearLayout>
+</ScrollView>

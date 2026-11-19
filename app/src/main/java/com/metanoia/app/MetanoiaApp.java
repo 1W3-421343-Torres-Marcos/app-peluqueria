@@ -43,6 +43,7 @@ public class MetanoiaApp extends Application {
                 (LifecycleEventObserver) (source, event) -> {
                     if (event == Lifecycle.Event.ON_STOP && container != null) {
                         AppContainer active = container;
+                        active.lockController().onAppBackgrounded(active.clock().nowMillis());
                         active.executors().io().execute(() ->
                                 BackupScheduler.enqueueOnBackgroundIfNeeded(
                                         MetanoiaApp.this,

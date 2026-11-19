@@ -139,12 +139,20 @@
         <action
             android:id="@+id/action_settings_to_templates"
             app:destination="@id/nav_templates" />
+        <action
+            android:id="@+id/action_settings_to_security"
+            app:destination="@id/nav_security" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_templates"
         android:name="com.metanoia.app.ui.settings.TemplatesFragment"
         android:label="@string/templates_title" />
+
+    <fragment
+        android:id="@+id/nav_security"
+        android:name="com.metanoia.app.ui.lock.SecuritySettingsFragment"
+        android:label="@string/security_title" />
 
     <fragment
         android:id="@+id/nav_backup"
