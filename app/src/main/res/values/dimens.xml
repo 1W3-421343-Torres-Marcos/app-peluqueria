@@ -31,4 +31,12 @@
     <dimen name="logo_splash_width">160dp</dimen>
     <dimen name="logo_header_height">32dp</dimen>
     <dimen name="logo_min_height">24dp</dimen>
+
+    <!-- Gráficos simples (F11.3) -->
+    <dimen name="bar_chart_height">200dp</dimen>
+    <dimen name="bar_chart_bar_radius">4dp</dimen>
+    <dimen name="bar_chart_padding">12dp</dimen>
+    <dimen name="bar_chart_label_text_size">11sp</dimen>
+    <dimen name="bar_chart_value_text_size">10sp</dimen>
+    <dimen name="bar_chart_min_slot_width">40dp</dimen>
 </resources>

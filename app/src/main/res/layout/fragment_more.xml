@@ -128,6 +128,15 @@
             app:rowTitle="@string/more_commissions_title" />
 
         <com.metanoia.app.ui.common.ListRowView
+            android:id="@+id/rowReports"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:rowShowChevron="true"
+            app:rowShowDivider="true"
+            app:rowSubtitle="@string/more_reports_subtitle"
+            app:rowTitle="@string/more_reports_title" />
+
+        <com.metanoia.app.ui.common.ListRowView
             android:id="@+id/rowAbout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -145,13 +154,5 @@
             app:rowShowDivider="true"
             app:rowSubtitle="@string/more_catalog_subtitle"
             app:rowTitle="@string/more_catalog_title" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_l"
-            android:text="@string/more_upcoming_modules"
-            android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
-            android:textColor="?attr/colorOnSurfaceVariant" />
     </LinearLayout>
 </ScrollView>

@@ -73,6 +73,9 @@ public class MoreFragment extends Fragment {
         binding.rowCommissions.setOnClickListener(v -> NavHostFragment
                 .findNavController(this)
                 .navigate(R.id.action_more_to_commissions));
+        binding.rowReports.setOnClickListener(v -> NavHostFragment
+                .findNavController(this)
+                .navigate(R.id.action_more_to_reports));
         binding.rowAbout.setOnClickListener(v -> NavHostFragment
                 .findNavController(this)
                 .navigate(R.id.action_more_to_about));

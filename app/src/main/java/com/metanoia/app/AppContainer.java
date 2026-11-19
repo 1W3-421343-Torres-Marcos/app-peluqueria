@@ -15,6 +15,7 @@ import com.metanoia.app.data.repository.ColorFormulaRepositoryImpl;
 import com.metanoia.app.data.repository.CommissionRepositoryImpl;
 import com.metanoia.app.data.repository.ProfessionalRepositoryImpl;
 import com.metanoia.app.data.repository.ReminderRepositoryImpl;
+import com.metanoia.app.data.repository.ReportsRepositoryImpl;
 import com.metanoia.app.data.repository.SalonServiceRepositoryImpl;
 import com.metanoia.app.data.repository.ScheduleBlockRepositoryImpl;
 import com.metanoia.app.data.repository.SettingsRepositoryImpl;
@@ -30,6 +31,7 @@ import com.metanoia.domain.repository.ColorFormulaRepository;
 import com.metanoia.domain.repository.CommissionRepository;
 import com.metanoia.domain.repository.ProfessionalRepository;
 import com.metanoia.domain.repository.ReminderRepository;
+import com.metanoia.domain.repository.ReportsRepository;
 import com.metanoia.domain.repository.SalonServiceRepository;
 import com.metanoia.domain.repository.ScheduleBlockRepository;
 import com.metanoia.domain.repository.SettingsRepository;
@@ -96,6 +98,7 @@ public final class AppContainer {
     private final WaitlistRepository waitlistRepository;
     private final StockRepository stockRepository;
     private final CommissionRepository commissionRepository;
+    private final ReportsRepository reportsRepository;
     private final GetSettingsUseCase getSettingsUseCase;
     private final UpdateSettingsUseCase updateSettingsUseCase;
     private final SaveSalonServiceUseCase saveSalonServiceUseCase;
@@ -158,6 +161,11 @@ public final class AppContainer {
         this.waitlistRepository = new WaitlistRepositoryImpl(database.waitlistDao());
         this.stockRepository = new StockRepositoryImpl(database);
         this.commissionRepository = new CommissionRepositoryImpl(database);
+        this.reportsRepository = new ReportsRepositoryImpl(
+                database.reportsDao(),
+                professionalRepository,
+                settingsRepository,
+                scheduleBlockRepository);
         this.getSettingsUseCase = new GetSettingsUseCase(settingsRepository);
         this.updateSettingsUseCase = new UpdateSettingsUseCase(
                 settingsRepository, auditLogRepository, clock, idGenerator);
@@ -488,5 +496,9 @@ public final class AppContainer {
 
     public SettleCommissionUseCase settleCommissionUseCase() {
         return settleCommissionUseCase;
+    }
+
+    public ReportsRepository reportsRepository() {
+        return reportsRepository;
     }
 }

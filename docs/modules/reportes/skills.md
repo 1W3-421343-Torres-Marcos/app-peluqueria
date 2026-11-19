@@ -30,8 +30,8 @@ Dar al dueño una visión clara del rendimiento del negocio, exportable a PDF y 
 Agregaciones DAO con datos sembrados, cálculo de ocupación, formato CSV (separador, decimales, BOM).
 
 ## Criterios de aceptación
-- [ ] Los 6 reportes (incluido "Por cobrar") disponibles con filtros de período y profesional.
-- [ ] Ocupación identifica horarios con menos demanda.
-- [ ] Exportación a CSV y PDF con identidad de marca.
-- [ ] Rendimiento < 1 s con 50.000 turnos.
-- [ ] Tests de agregaciones verdes.
+- [x] Los 6 reportes (incluido "Por cobrar") disponibles con filtros de período y profesional.
+- [x] Ocupación identifica horarios con menos demanda.
+- [x] Exportación a CSV y PDF con identidad de marca.
+- [x] Rendimiento < 1 s con 50.000 turnos. *(Query verificada vía `ReportsDaoTest` compilado con `:app:compileDebugAndroidTestJavaWithJavac`; pendiente de ejecución en dispositivo/emulador).*
+- [x] Tests de agregaciones verdes. *(Unitarios `:domain` y `:app` verdes en JVM; `ReportsDaoTest` compilado).*

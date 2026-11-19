@@ -18,6 +18,7 @@ import com.metanoia.app.data.db.dao.CommissionDao;
 import com.metanoia.app.data.db.dao.ProfessionalDao;
 import com.metanoia.app.data.db.dao.RecurrenceRuleDao;
 import com.metanoia.app.data.db.dao.ReminderDao;
+import com.metanoia.app.data.db.dao.ReportsDao;
 import com.metanoia.app.data.db.dao.SalonServiceDao;
 import com.metanoia.app.data.db.dao.ScheduleBlockDao;
 import com.metanoia.app.data.db.dao.SettingsDao;
@@ -124,6 +125,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract StockDao stockDao();
 
     public abstract CommissionDao commissionDao();
+
+    public abstract ReportsDao reportsDao();
 
     public static Migration[] allMigrations() {
         return new Migration[]{

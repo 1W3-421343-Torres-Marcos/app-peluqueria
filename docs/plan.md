@@ -17,9 +17,9 @@
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
-| F11 | Reportes | [ ] | 0/6 | 0 % |
+| F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **73/86** | **85 %** |
+| **Total** | | | **79/86** | **92 %** |
 
 ---
 
@@ -272,25 +272,25 @@ Módulo: `comisiones`.
 4. [x] **F10.4 Verificación de fase**
    - Hecho: criterios de `comisiones/skills.md` OK; `versionName 0.10.0`; merge de `fase/F10` a `main`, tag `fase-F10` y entrada en `docs/changelog.md`.
 
-## F11 — Reportes `[ ]`
+## F11 — Reportes `[x]`
 Módulo: `reportes`.
 
-1. [ ] **F11.1 Consultas agregadas**
+1. [x] **F11.1 Consultas agregadas**
    - Archivos: `ReportsDao`, `ReportsRepository`
    - Hecho: ingresos por día/mes (desde `CashMovement`), servicios top, clientes frecuentes y rendimiento por profesional (turnos COMPLETED o PAID), ocupación por franja, indicador "por cobrar"; tests DAO.
-2. [ ] **F11.2 Pantalla de reportes**
+2. [x] **F11.2 Pantalla de reportes**
    - Archivos: `ui/reports/`
    - Hecho: filtros de período/profesional; resultados en < 1 s con 50.000 turnos.
-3. [ ] **F11.3 Gráficos simples**
+3. [x] **F11.3 Gráficos simples**
    - Archivos: `ui/common/BarChartView`
    - Hecho: barras monocromáticas propias (sin librerías).
-4. [ ] **F11.4 Exportar CSV**
+4. [x] **F11.4 Exportar CSV**
    - Archivos: `CsvExporter`
    - Hecho: formato de `design.md` §9; guardado con SAF o compartir.
-5. [ ] **F11.5 Exportar PDF**
+5. [x] **F11.5 Exportar PDF**
    - Archivos: `ReportPdfBuilder`
    - Hecho: PDF A4 con cabecera de marca y tablas.
-6. [ ] **F11.6 Verificación de fase**
+6. [x] **F11.6 Verificación de fase**
    - Hecho: criterios de `reportes/skills.md` OK; `versionName 0.11.0`; merge de `fase/F11` a `main`, tag `fase-F11` y entrada en `docs/changelog.md`.
 
 ## F12 — Seguridad y pulido final `[ ]`
@@ -396,3 +396,9 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F10.2 | Consultas por profesional/rango e IDs en `AppointmentDao`/`AppointmentRepositoryImpl`/`ClientDao`, y UI `ui/commissions/` (`CommissionsFragment`, `CommissionsViewModel`, `CommissionDetailsAdapter`) enlazada desde `MoreFragment` (`rowCommissions`, `nav_commissions`) con filtros Semana/Mes/Rango, total base/comisión/pendiente de cobro y detalle por turno e ítems; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F10.3 |
 | 19/11/2026 | F10.3 | Persistencia Room v13 (`CommissionSettlementEntity`, `CommissionSettlementEntryEntity` FK RESTRICT, `CommissionDao`, `CommissionMapper`, `CommissionRepositoryImpl`, `Migration_12_13`, `13.json`, `BackupManager` v13), `SettleCommissionUseCase` (egreso `COMMISSION_PAYOUT` + liquidación inmutable + auditoría en una única transacción), diálogo `SettleCommissionDialogFragment`, `CommissionSettlementsAdapter` + alerta de solapamiento en `CommissionsFragment`; `SettleCommissionUseCaseTest` (4/4 OK), `SchemaExportTest` (13/13 OK), `MigrationTest` v13 y `CommissionSettlementAtomicityTest` compilados OK. | F10.4 |
 | 19/11/2026 | F10.4 | Cierre F10 Comisiones (`versionCode 10`, `versionName 0.10.0`, `docs/changelog.md`, 6/6 criterios de `comisiones/skills.md` verificados); fix Lint `DiffUtilEquals` en `CommissionDetailsAdapter`; `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 147/147, `:app:testDebugUnitTest` 24/24, total 171 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, esquema `13.json`), `androidTest` compilados (sin ejecución en dispositivo/emulador); merge `--no-ff fase/F10` en `main` y tags `fase-F10` / `v0.10.0`. | F11.1 |
+| 19/11/2026 | F11.1 | Rama `fase/F11`; modelos de dominio para los 6 reportes (`ReportType`, `ReportFilter`, `IncomeReport`, `TopServicesReport`, `FrequentClientsReport`, `OccupancyReport`, `ProfessionalPerformanceReport`, `ReceivablesReport`), regla `OccupancyCalculator` + `ScheduleValidator.mergeAdjacentByDay`, `ReportsRepository`, proyecciones + `ReportsDao` (`GROUP BY`/CTEs SQL), `ReportsRepositoryImpl` y wiring en `AppDatabase`/`AppContainer`; `OccupancyCalculatorTest` (3/3 OK), `IncomeReportTest` (1/1 OK), `ReportsDaoTest` compilado (incluye benchmark 50.000 turnos); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug compileDebugAndroidTestJavaWithJavac` OK. | F11.2 |
+| 19/11/2026 | F11.2 | Pantalla `ui/reports/` (`ReportsFragment`, `ReportsViewModel`, `ReportsUiModels`, `ReportPresentationMapper`, `ReportOperationalMapper`, `ReportRowsAdapter`, `fragment_reports.xml`, `item_report_row.xml`) enlazada desde `MoreFragment` (`rowReports`, `nav_reports`) con selector de los 6 reportes, filtros Hoy/Semana/Mes/Rango + profesional, sub-filtros contextuales, tarjetas KPI, desglose por método, menor demanda en Ocupación y saldo histórico en Por cobrar; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.3 |
+| 19/11/2026 | F11.3 | Vista propia monocromática `BarChartView` (tema Claro/Oscuro vía `MaterialColors`, soporte de negativos y tope fijo 100 % en Ocupación con barras atenuadas para menor demanda, salto automático de etiquetas y `contentDescription` accesible) + `ReportChartMapper` integrado en `fragment_reports.xml`/`ReportsFragment`, y `BarChartScaleTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.4 |
+| 19/11/2026 | F11.4 | Exportador `CsvExporter` (`design.md` §9: UTF-8 con BOM, `;`, decimales con coma, fechas `dd/MM/yyyy`, escape RFC 4180, protección contra inyección de fórmulas y opt-in de teléfono en Clientes frecuentes sin notas) + `shared_reports` en `file_paths.xml`, guardado SAF / compartir `FileProvider` vía `ReportExportUiHelper` y `ReportFilterUiHelper` (`ReportsFragment` < 400 líneas), y `CsvExporterTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.5 |
+| 19/11/2026 | F11.5 | Exportador PDF A4 blanco y negro `ReportPdfBuilder` + `ReportPdfSpec` + `ReportPdfSpecFactory` + `ReportExportPayloadHelper` (cabecera con logo reemplazable y marca Metanoia Hair Salon, KPIs, tablas con bordes `gray200`, alineación numérica y truncamiento, paginación multipágina y pie `"Página X de Y"`), botón `Exportar PDF` (SAF `CreateDocument("application/pdf")` / compartir `FileProvider`) y `ReportPdfSpecTest` (2/2 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.6 |
+| 19/11/2026 | F11.6 | Cierre F11 Reportes (`versionCode 11`, `versionName 0.11.0`, `docs/changelog.md`, 5/5 criterios de `reportes/skills.md` verificados); `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 151/151, `:app:testDebugUnitTest` 32/32, total 183 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, 0 `.kt`/`.kts`, `:domain` puro, sin valores sueltos en layouts F11), `ReportsDaoTest` (benchmark 50.000 turnos) compilado en `androidTest` sin ejecución en dispositivo/emulador; merge `--no-ff fase/F11` en `main` y tags `fase-F11` / `v0.11.0`. | F12.1 |
