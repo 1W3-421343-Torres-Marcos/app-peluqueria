@@ -16,10 +16,10 @@
 | F7 | Ficha de color | [x] | 4/4 | 100 % |
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
-| F10 | Comisiones | [ ] | 0/4 | 0 % |
+| F10 | Comisiones | [~] | 1/4 | 25 % |
 | F11 | Reportes | [ ] | 0/6 | 0 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **69/86** | **80 %** |
+| **Total** | | | **70/86** | **81 %** |
 
 ---
 
@@ -257,10 +257,10 @@ Módulo: `stock`.
 6. [x] **F9.6 Verificación de fase**
    - Hecho: criterios de `stock/skills.md` OK; `versionName 0.9.0`; merge de `fase/F9` a `main`, tag `fase-F9` y entrada en `docs/changelog.md`.
 
-## F10 — Comisiones `[ ]`
+## F10 — Comisiones `[~]`
 Módulo: `comisiones`.
 
-1. [ ] **F10.1 Calculadora de comisiones**
+1. [x] **F10.1 Calculadora de comisiones**
    - Archivos: `CommissionCalculator`, tests
    - Hecho: solo turnos PAID del período; usa % congelado al completar; COMPLETED con saldo no liquida; redondeo a centavo definido; tests de casos borde.
 2. [ ] **F10.2 UI por profesional y período**
@@ -392,3 +392,4 @@ Módulos: `configuracion` y todos.
 | 18/11/2026 | F9.4 | `LowStockRuleTest` (3/3 OK: límite `<= minStock`, negativos, suma firmada, exclusión de inactivos en conteo y orden con bajos primero) y `AlertBanner` reactivo de stock bajo en `AgendaFragment` / `AgendaViewModel` con acceso directo a `nav_stock`, sumado a `StatusChip` y banner en `StockFragment`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F9.5 |
 | 18/11/2026 | F9.5 | `SellProductUseCase` (venta + descuento `OUT_SALE` atómicos en una única transacción, rechazo de productos `USE` y días cerrados), reposición automática de stock en `ReverseMovementUseCase` al revertir `PRODUCT_SALE`, `SellProductUseCaseTest` (4/4 OK con rollback transaccional), `ReverseMovementUseCaseTest` (4/4 OK), `ProductSaleAtomicityTest` (`androidTest`) y selector de productos `SALE`/`BOTH` con cantidad y alerta negativa en `CashMovementFormDialogFragment`/`CashViewModel`; build y tests OK. | F9.6 |
 | 18/11/2026 | F9.6 | Verificación de fase F9: `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`lintDebug`, `lint`, `check`, 162 tests unitarios: 139 en `:domain` + 23 en `:app:testDebugUnitTest`, 0 fallos), reglas estáticas §12 OK, criterios `stock/skills.md` (5/5) marcados `[x]`, `versionCode 9` / `versionName "0.9.0"` y `changelog.md` actualizados; merge `--no-ff` en `main` con tags `fase-F9` y `v0.9.0`. | F10.1 |
+| 19/11/2026 | F10.1 | Rama `fase/F10`; modelos `CommissionSettlementEntryType`, `CommissionSettlementEntry`, `CommissionSettlement`, `CommissionRepository`, métodos default por rango/IDs en `AppointmentRepository`, y calculadora pura `CommissionCalculator` (prorrateo de descuentos/recargos, redondeo `HALF_UP` por ítem, % congelado, exclusión de no-`PAID`, prevención de doble liquidación y ajustes negativos por reverso) + `CommissionCalculatorTest` (4/4 OK); `./gradlew.bat :domain:test` OK. | F10.2 |
