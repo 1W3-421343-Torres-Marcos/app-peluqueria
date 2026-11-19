@@ -37,20 +37,25 @@ public class ManifestPrivacyTest {
 
     @Test
     public void mergedManifest_whenBuilt_hasNoInternetAndAllowBackupFalse() throws Exception {
-        File merged = resolveAppFile(
-                "build/intermediates/merged_manifest/debug/processDebugMainManifest/AndroidManifest.xml");
-        if (!merged.exists()) {
-            return;
-        }
-        Document doc = parseXml(merged);
-        Element app = (Element) doc.getElementsByTagName("application").item(0);
-        assertEquals("false", app.getAttribute("android:allowBackup"));
+        String[] candidates = {
+                "build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml",
+                "build/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml"
+        };
+        for (String candidate : candidates) {
+            File merged = resolveAppFile(candidate);
+            if (!merged.exists()) {
+                continue;
+            }
+            Document doc = parseXml(merged);
+            Element app = (Element) doc.getElementsByTagName("application").item(0);
+            assertEquals("false", app.getAttribute("android:allowBackup"));
 
-        NodeList permissions = doc.getElementsByTagName("uses-permission");
-        for (int i = 0; i < permissions.getLength(); i++) {
-            Element perm = (Element) permissions.item(i);
-            assertFalse("El manifiesto fusionado no debe declarar INTERNET",
-                    "android.permission.INTERNET".equals(perm.getAttribute("android:name")));
+            NodeList permissions = doc.getElementsByTagName("uses-permission");
+            for (int i = 0; i < permissions.getLength(); i++) {
+                Element perm = (Element) permissions.item(i);
+                assertFalse("El manifiesto fusionado no debe declarar INTERNET: " + candidate,
+                        "android.permission.INTERNET".equals(perm.getAttribute("android:name")));
+            }
         }
     }
 

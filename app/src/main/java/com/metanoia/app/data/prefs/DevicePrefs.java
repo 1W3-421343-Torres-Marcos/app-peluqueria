@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.metanoia.domain.rules.PinHasher;
+import com.metanoia.domain.rules.PinLockPolicy;
+
 /**
  * Preferencias locales del dispositivo (nunca viajan en el backup de datos de negocio).
  */
@@ -42,6 +45,15 @@ public final class DevicePrefs {
     private static final String KEY_REMINDER_DIGEST_ENABLED = "reminder_digest_enabled";
     private static final String KEY_REMINDER_DIGEST_HOUR = "reminder_digest_hour";
     private static final String KEY_REMINDER_DIGEST_MINUTE = "reminder_digest_minute";
+    private static final String KEY_PIN_ENABLED = "pin_enabled";
+    private static final String KEY_PIN_SALT = "pin_salt";
+    private static final String KEY_PIN_HASH = "pin_hash";
+    private static final String KEY_PIN_ITERATIONS = "pin_iterations";
+    private static final String KEY_BIOMETRIC_ENABLED = "biometric_enabled";
+    private static final String KEY_LOCK_TIMEOUT_MINUTES = "lock_timeout_minutes";
+    private static final String KEY_PIN_FAILED_ATTEMPTS = "pin_failed_attempts";
+    private static final String KEY_PIN_LOCKED_UNTIL_MILLIS = "pin_locked_until_millis";
+    private static final String KEY_LAST_BACKGROUND_MILLIS = "last_background_millis";
 
     private final SharedPreferences prefs;
 
@@ -177,6 +189,104 @@ public final class DevicePrefs {
                 .putInt(KEY_REMINDER_DIGEST_HOUR, clampInt(hour, 0, 23))
                 .putInt(KEY_REMINDER_DIGEST_MINUTE, clampInt(minute, 0, 59))
                 .apply();
+    }
+
+    public boolean isPinEnabled() {
+        return prefs.getBoolean(KEY_PIN_ENABLED, false)
+                && !getPinSalt().isEmpty()
+                && !getPinHash().isEmpty();
+    }
+
+    @NonNull
+    public String getPinSalt() {
+        return prefs.getString(KEY_PIN_SALT, "");
+    }
+
+    @NonNull
+    public String getPinHash() {
+        return prefs.getString(KEY_PIN_HASH, "");
+    }
+
+    public int getPinIterations() {
+        int raw = prefs.getInt(KEY_PIN_ITERATIONS, PinHasher.DEFAULT_ITERATIONS);
+        return raw > 0 ? raw : PinHasher.DEFAULT_ITERATIONS;
+    }
+
+    public void savePinHash(@NonNull String saltBase64, @NonNull String hashBase64, int iterations) {
+        prefs.edit()
+                .putBoolean(KEY_PIN_ENABLED, true)
+                .putString(KEY_PIN_SALT, saltBase64)
+                .putString(KEY_PIN_HASH, hashBase64)
+                .putInt(KEY_PIN_ITERATIONS, iterations)
+                .putInt(KEY_PIN_FAILED_ATTEMPTS, 0)
+                .putLong(KEY_PIN_LOCKED_UNTIL_MILLIS, 0L)
+                .commit();
+    }
+
+    public void clearPin() {
+        prefs.edit()
+                .putBoolean(KEY_PIN_ENABLED, false)
+                .remove(KEY_PIN_SALT)
+                .remove(KEY_PIN_HASH)
+                .remove(KEY_PIN_ITERATIONS)
+                .putBoolean(KEY_BIOMETRIC_ENABLED, false)
+                .putInt(KEY_PIN_FAILED_ATTEMPTS, 0)
+                .putLong(KEY_PIN_LOCKED_UNTIL_MILLIS, 0L)
+                .putLong(KEY_LAST_BACKGROUND_MILLIS, 0L)
+                .commit();
+    }
+
+    public boolean isBiometricEnabled() {
+        return prefs.getBoolean(KEY_BIOMETRIC_ENABLED, false) && isPinEnabled();
+    }
+
+    public void setBiometricEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_BIOMETRIC_ENABLED, enabled && isPinEnabled()).commit();
+    }
+
+    public int getLockTimeoutMinutes() {
+        return PinLockPolicy.normalizeTimeoutMinutes(
+                prefs.getInt(KEY_LOCK_TIMEOUT_MINUTES, PinLockPolicy.DEFAULT_TIMEOUT_MINUTES));
+    }
+
+    public void setLockTimeoutMinutes(int minutes) {
+        prefs.edit().putInt(
+                KEY_LOCK_TIMEOUT_MINUTES,
+                PinLockPolicy.normalizeTimeoutMinutes(minutes)).apply();
+    }
+
+    public int getFailedPinAttempts() {
+        return Math.max(0, prefs.getInt(KEY_PIN_FAILED_ATTEMPTS, 0));
+    }
+
+    public long getPinLockedUntilMillis() {
+        return Math.max(0L, prefs.getLong(KEY_PIN_LOCKED_UNTIL_MILLIS, 0L));
+    }
+
+    public long recordFailedPinAttempt(long nowMillis) {
+        int nextAttempts = getFailedPinAttempts() + 1;
+        long cooldownMs = PinLockPolicy.cooldownDurationMs(nextAttempts);
+        long lockedUntil = cooldownMs > 0L ? nowMillis + cooldownMs : 0L;
+        prefs.edit()
+                .putInt(KEY_PIN_FAILED_ATTEMPTS, nextAttempts)
+                .putLong(KEY_PIN_LOCKED_UNTIL_MILLIS, lockedUntil)
+                .commit();
+        return lockedUntil;
+    }
+
+    public void resetPinAttempts() {
+        prefs.edit()
+                .putInt(KEY_PIN_FAILED_ATTEMPTS, 0)
+                .putLong(KEY_PIN_LOCKED_UNTIL_MILLIS, 0L)
+                .commit();
+    }
+
+    public long getLastBackgroundMillis() {
+        return Math.max(0L, prefs.getLong(KEY_LAST_BACKGROUND_MILLIS, 0L));
+    }
+
+    public void setLastBackgroundMillis(long millis) {
+        prefs.edit().putLong(KEY_LAST_BACKGROUND_MILLIS, Math.max(0L, millis)).apply();
     }
 
     private static int normalizeFrequencyHours(int hours) {

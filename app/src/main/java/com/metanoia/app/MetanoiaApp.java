@@ -23,15 +23,19 @@ public class MetanoiaApp extends Application {
         super.onCreate();
         container = new AppContainer(this);
         container.devicePrefs().applySavedTheme();
-        BackupScheduler.schedulePeriodicAuto(this, container.devicePrefs().getAutoFrequencyHours());
-        ReminderDigestScheduler.syncSchedule(
-                this, container.devicePrefs(), container.clock());
-        expireWaitlistInBackground(container);
+        runStartupBackgroundTasks(this, container);
         registerBackgroundBackupObserver();
     }
 
-    private static void expireWaitlistInBackground(AppContainer active) {
-        active.executors().io().execute(() -> active.expireWaitlistEntriesUseCase().execute());
+    private static void runStartupBackgroundTasks(Context context, AppContainer active) {
+        Context appContext = context.getApplicationContext();
+        active.executors().io().execute(() -> {
+            BackupScheduler.schedulePeriodicAuto(
+                    appContext, active.devicePrefs().getAutoFrequencyHours());
+            ReminderDigestScheduler.syncSchedule(
+                    appContext, active.devicePrefs(), active.clock());
+            active.expireWaitlistEntriesUseCase().execute();
+        });
     }
 
     private void registerBackgroundBackupObserver() {
@@ -43,6 +47,7 @@ public class MetanoiaApp extends Application {
                 (LifecycleEventObserver) (source, event) -> {
                     if (event == Lifecycle.Event.ON_STOP && container != null) {
                         AppContainer active = container;
+                        active.lockController().onAppBackgrounded(active.clock().nowMillis());
                         active.executors().io().execute(() ->
                                 BackupScheduler.enqueueOnBackgroundIfNeeded(
                                         MetanoiaApp.this,
@@ -68,9 +73,6 @@ public class MetanoiaApp extends Application {
         }
         app.container = new AppContainer(app);
         app.container.devicePrefs().applySavedTheme();
-        BackupScheduler.schedulePeriodicAuto(app, app.container.devicePrefs().getAutoFrequencyHours());
-        ReminderDigestScheduler.syncSchedule(
-                app, app.container.devicePrefs(), app.container.clock());
-        expireWaitlistInBackground(app.container);
+        runStartupBackgroundTasks(app, app.container);
     }
 }

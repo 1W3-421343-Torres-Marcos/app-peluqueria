@@ -49,6 +49,7 @@
             android:layout_height="@dimen/icon_size"
             android:layout_marginStart="@dimen/space_xs"
             android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_chevron_right"
             android:visibility="gone"
             app:tint="?attr/colorOnSurfaceVariant" />
@@ -58,5 +59,6 @@
         android:id="@+id/listRowDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/stroke_width"
-        android:background="@color/divider_subtle" />
+        android:background="@color/divider_subtle"
+        android:importantForAccessibility="no" />
 </merge>

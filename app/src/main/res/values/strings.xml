@@ -926,4 +926,62 @@
     <string name="reports_export_no_app">No hay aplicaciones disponibles para compartir archivos.</string>
     <string name="reports_export_share_subject">%1$s · Metanoia</string>
     <string name="reports_export_not_ready">Esperá a que termine de cargar el reporte.</string>
+
+    <!-- Seguridad, PIN y biometría (F12.1) -->
+    <string name="security_title">Seguridad</string>
+    <string name="settings_security_row_title">Seguridad (PIN y huella)</string>
+    <string name="settings_security_row_subtitle">Bloqueo opcional al abrir y al volver de segundo plano</string>
+    <string name="security_pin_section_title">Bloqueo con PIN</string>
+    <string name="security_pin_status_enabled">PIN activado (almacenado con hash PBKDF2 + sal)</string>
+    <string name="security_pin_status_disabled">PIN desactivado: la app abre sin pedir código.</string>
+    <string name="security_pin_enable_btn">Activar PIN</string>
+    <string name="security_pin_change_btn">Cambiar PIN</string>
+    <string name="security_pin_disable_btn">Desactivar PIN</string>
+    <string name="security_biometric_switch">Desbloquear también con huella</string>
+    <string name="security_biometric_unavailable">Biometría no configurada o no disponible en este dispositivo.</string>
+    <string name="security_biometric_need_pin">Activá primero un PIN de 4 a 6 dígitos para habilitar huella.</string>
+    <string name="security_timeout_title">Bloquear al volver de segundo plano</string>
+    <string name="security_timeout_immediate">Inmediato</string>
+    <string name="security_timeout_1m">1 min</string>
+    <string name="security_timeout_5m">5 min</string>
+    <string name="security_timeout_15m">15 min</string>
+    <string name="security_recovery_notice_title">Importante sobre olvido de PIN</string>
+    <string name="security_recovery_notice_body">Metanoia funciona 100 % offline y no tiene recuperación remota de PIN. Si olvidás tu PIN, la única vía es desinstalar la aplicación, reinstalarla y restaurar tu último backup.</string>
+    <string name="security_pin_setup_create_title">Activar PIN (4 a 6 dígitos)</string>
+    <string name="security_pin_setup_change_title">Cambiar PIN</string>
+    <string name="security_pin_setup_disable_title">Desactivar PIN</string>
+    <string name="security_pin_current_label">PIN actual</string>
+    <string name="security_pin_new_label">Nuevo PIN (4 a 6 dígitos)</string>
+    <string name="security_pin_confirm_label">Confirmar PIN</string>
+    <string name="security_pin_save_btn">Guardar</string>
+    <string name="security_pin_error_format">El PIN debe tener entre 4 y 6 números.</string>
+    <string name="security_pin_error_mismatch">Los PIN ingresados no coinciden.</string>
+    <string name="security_pin_error_wrong_current">El PIN actual es incorrecto.</string>
+    <string name="security_pin_saved">PIN de seguridad guardado</string>
+    <string name="security_pin_disabled_msg">Bloqueo por PIN desactivado</string>
+    <string name="security_lock_title">Ingresá tu PIN</string>
+    <string name="security_lock_subtitle">Protección local de Metanoia Hair Salon</string>
+    <string name="security_lock_enter_btn">Ingresar</string>
+    <string name="security_lock_wrong_pin">PIN incorrecto. Intentá nuevamente.</string>
+    <string name="security_lock_cooldown_format">Demasiados intentos fallidos. Esperá %1$d s.</string>
+    <string name="security_lock_dots_cd_format">%1$d dígitos ingresados</string>
+    <string name="security_lock_backspace_cd">Borrar último dígito</string>
+    <string name="security_lock_biometric_cd">Desbloquear con huella</string>
+    <string name="security_biometric_prompt_title">Desbloquear Metanoia</string>
+    <string name="security_biometric_prompt_subtitle">Usá tu huella o biometría del dispositivo</string>
+    <string name="security_biometric_use_pin">Usar PIN</string>
+    <string name="security_digit_0">0</string>
+    <string name="security_digit_1">1</string>
+    <string name="security_digit_2">2</string>
+    <string name="security_digit_3">3</string>
+    <string name="security_digit_4">4</string>
+    <string name="security_digit_5">5</string>
+    <string name="security_digit_6">6</string>
+    <string name="security_digit_7">7</string>
+    <string name="security_digit_8">8</string>
+    <string name="security_digit_9">9</string>
+
+    <!-- Accesibilidad TalkBack (F12.2) -->
+    <string name="cd_appointment_card_format">%1$s a %2$s, %3$s, %4$s, %5$s, %6$s</string>
+    <string name="cd_appointment_card_pending_format">%1$s a %2$s, %3$s, %4$s, %5$s, %6$s, saldo %7$s</string>
 </resources>

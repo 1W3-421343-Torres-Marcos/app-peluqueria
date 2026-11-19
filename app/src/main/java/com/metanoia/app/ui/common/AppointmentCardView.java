@@ -26,6 +26,8 @@ import com.metanoia.app.data.db.projection.AppointmentCardProjection;
 import com.metanoia.app.util.Formats;
 import com.metanoia.domain.model.AppointmentStatus;
 
+import java.util.EnumMap;
+
 /**
  * Tarjeta estándar de turno con barra lateral según estado ({@code docs/design.md} §7).
  */
@@ -40,6 +42,10 @@ public class AppointmentCardView extends MaterialCardView {
     private final TextView professionalView;
     private final StatusChip statusChip;
     private final MoneyTextView pendingBalanceView;
+    private final EnumMap<AppointmentStatus, Drawable> sideBarDrawables =
+            new EnumMap<>(AppointmentStatus.class);
+    @Nullable
+    private AppointmentStatus lastRenderedStatus;
 
     public AppointmentCardView(@NonNull Context context) {
         this(context, null);
@@ -109,15 +115,45 @@ public class AppointmentCardView extends MaterialCardView {
 
         AppointmentStatus status = AppointmentStatus.valueOf(card.status);
         statusChip.setVariant(toChipVariant(status));
-        statusBar.setBackground(buildSideBarDrawable(status));
+        if (status != lastRenderedStatus) {
+            statusBar.setBackground(getOrBuildSideBarDrawable(status));
+            lastRenderedStatus = status;
+        }
 
         long pending = card.pendingBalanceCents();
         if (status == AppointmentStatus.COMPLETED && pending > 0L) {
             pendingBalanceView.setMoneyCents(pending);
             pendingBalanceView.setVisibility(View.VISIBLE);
+            setContentDescription(context.getString(
+                    R.string.cd_appointment_card_pending_format,
+                    start,
+                    end,
+                    clientView.getText(),
+                    card.servicesSummary,
+                    professionalView.getText(),
+                    statusChip.getContentDescription(),
+                    Formats.formatMoney(pending)));
         } else {
             pendingBalanceView.setVisibility(View.GONE);
+            setContentDescription(context.getString(
+                    R.string.cd_appointment_card_format,
+                    start,
+                    end,
+                    clientView.getText(),
+                    card.servicesSummary,
+                    professionalView.getText(),
+                    statusChip.getContentDescription()));
         }
+    }
+
+    private Drawable getOrBuildSideBarDrawable(AppointmentStatus status) {
+        Drawable cached = sideBarDrawables.get(status);
+        if (cached != null) {
+            return cached;
+        }
+        Drawable created = buildSideBarDrawable(status);
+        sideBarDrawables.put(status, created);
+        return created;
     }
 
     private Drawable buildSideBarDrawable(AppointmentStatus status) {

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.metanoia.app.databinding.ActivityMainBinding;
+import com.metanoia.app.ui.lock.LockScreenDialogFragment;
 
 /**
  * Actividad única que aloja la navegación principal de cuatro destinos.
@@ -34,6 +35,22 @@ public class MainActivity extends AppCompatActivity {
 
         setupNavigation();
         handleNotificationIntent(getIntent());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ensureLockScreenIfNeeded();
+    }
+
+    private void ensureLockScreenIfNeeded() {
+        AppContainer container = MetanoiaApp.container(this);
+        if (container.lockController().checkNeedsLock(container.clock().nowMillis())
+                && !getSupportFragmentManager().isStateSaved()
+                && getSupportFragmentManager().findFragmentByTag(LockScreenDialogFragment.TAG) == null) {
+            LockScreenDialogFragment.newInstance()
+                    .show(getSupportFragmentManager(), LockScreenDialogFragment.TAG);
+        }
     }
 
     @Override

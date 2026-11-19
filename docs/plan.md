@@ -18,8 +18,8 @@
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
-| F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **79/86** | **92 %** |
+| F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
+| **Total** | | | **86/86** | **100 %** |
 
 ---
 
@@ -293,25 +293,25 @@ Módulo: `reportes`.
 6. [x] **F11.6 Verificación de fase**
    - Hecho: criterios de `reportes/skills.md` OK; `versionName 0.11.0`; merge de `fase/F11` a `main`, tag `fase-F11` y entrada en `docs/changelog.md`.
 
-## F12 — Seguridad y pulido final `[ ]`
+## F12 — Seguridad y pulido final `[~]`
 Módulos: `configuracion` y todos.
 
-1. [ ] **F12.1 PIN y huella**
+1. [x] **F12.1 PIN y huella**
    - Archivos: `ui/lock/`, `BiometricPrompt`
    - Hecho: bloqueo opcional al abrir y al volver de segundo plano (tiempo configurable); PIN con hash + sal.
-2. [ ] **F12.2 Accesibilidad**
+2. [x] **F12.2 Accesibilidad**
    - Hecho: TalkBack con `contentDescription`; texto escalable al 130 % sin cortes; contraste verificado.
-3. [ ] **F12.3 Rendimiento**
+3. [x] **F12.3 Rendimiento**
    - Hecho: arranque en frío < 2 s; sin jank en agenda con datos de prueba (perfilado).
-4. [ ] **F12.4 Revisión de seguridad**
+4. [x] **F12.4 Revisión de seguridad**
    - Hecho: manifiesto sin INTERNET; R8 activo; sin logs sensibles; exportaciones solo por acción explícita.
-5. [ ] **F12.5 APK release firmado (v1.0.0)**
+5. [x] **F12.5 APK release firmado (v1.0.0)**
    - Archivos: `app/build.gradle` (`versionName "1.0.0"`, `versionCode` +1, `signingConfig` leyendo `keystore.properties`), `docs/instalacion.md`
    - Hecho: keystore generada y guardada **fuera del repo** con copia en al menos dos lugares; `keystore.properties` ignorado por Git (verificado con `git status`); APK release instalable; `docs/instalacion.md` documenta instalación, ubicación/resguardo de la keystore y cómo firmar futuras versiones.
-6. [ ] **F12.6 Manual de usuario breve**
+6. [x] **F12.6 Manual de usuario breve**
    - Archivos: `docs/manual.md`
    - Hecho: tareas frecuentes y backup/restauración explicadas en ≤ 2 páginas.
-7. [ ] **F12.7 Verificación final**
+7. [x] **F12.7 Verificación final**
    - Hecho: todos los `skills.md` con criterios marcados; `./gradlew check` verde; merge de `fase/F12` a `main`, tags `fase-F12` y `v1.0.0`, entrada `1.0.0` en `docs/changelog.md`.
 
 ---
@@ -402,3 +402,10 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F11.4 | Exportador `CsvExporter` (`design.md` §9: UTF-8 con BOM, `;`, decimales con coma, fechas `dd/MM/yyyy`, escape RFC 4180, protección contra inyección de fórmulas y opt-in de teléfono en Clientes frecuentes sin notas) + `shared_reports` en `file_paths.xml`, guardado SAF / compartir `FileProvider` vía `ReportExportUiHelper` y `ReportFilterUiHelper` (`ReportsFragment` < 400 líneas), y `CsvExporterTest` (3/3 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.5 |
 | 19/11/2026 | F11.5 | Exportador PDF A4 blanco y negro `ReportPdfBuilder` + `ReportPdfSpec` + `ReportPdfSpecFactory` + `ReportExportPayloadHelper` (cabecera con logo reemplazable y marca Metanoia Hair Salon, KPIs, tablas con bordes `gray200`, alineación numérica y truncamiento, paginación multipágina y pie `"Página X de Y"`), botón `Exportar PDF` (SAF `CreateDocument("application/pdf")` / compartir `FileProvider`) y `ReportPdfSpecTest` (2/2 OK); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F11.6 |
 | 19/11/2026 | F11.6 | Cierre F11 Reportes (`versionCode 11`, `versionName 0.11.0`, `docs/changelog.md`, 5/5 criterios de `reportes/skills.md` verificados); `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 151/151, `:app:testDebugUnitTest` 32/32, total 183 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, 0 `.kt`/`.kts`, `:domain` puro, sin valores sueltos en layouts F11), `ReportsDaoTest` (benchmark 50.000 turnos) compilado en `androidTest` sin ejecución en dispositivo/emulador; merge `--no-ff fase/F11` en `main` y tags `fase-F11` / `v0.11.0`. | F12.1 |
+| 19/11/2026 | F12.1 | Rama `fase/F12`; reglas `PinHasher` (PBKDF2-HMAC-SHA256 con sal 16 bytes e `isEqual` constante) y `PinLockPolicy` (timeouts 0/1/5/15 min y cooldown progresivo 30 s tras 5 fallos) + `PinHasherTest` (2/2 OK) y `PinLockPolicyTest` (2/2 OK), almacenamiento local en `DevicePrefs`, `AppLockController` enlazado a `MetanoiaApp`/`MainActivity`, `LockScreenDialogFragment` (`FLAG_SECURE` + `BiometricPrompt`), `PinSetupDialogFragment` y `SecuritySettingsFragment` en `SettingsFragment`/`nav_main.xml`; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.2 |
+| 19/11/2026 | F12.2 | Descriptores TalkBack completos en los 7 `ExtendedFloatingActionButton`, `AppointmentCardView` (`cd_appointment_card_format` / `pending_format`), marcado `importantForAccessibility="no"` en íconos y divisores decorativos (`view_appointment_card`, `view_list_row`, `view_alert_banner`, `view_status_chip`), `maxLines="2"` en cliente de tarjeta de turno para escala 130 %, y `AccessibilityAuditTest` (2/2 OK: contraste WCAG AA >= 4.5:1 en Claro/Oscuro, cobertura TalkBack y cero alturas fijas en textos/botones de todos los layouts); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F12.3 |
+| 19/11/2026 | F12.3 | `MetanoiaApp` mueve la programación de backups, recordatorios y vencimiento de lista de espera a `executors().io()` (`runStartupBackgroundTasks`), `StatusChip` cachea paleta/dimensiones y reutiliza un único `GradientDrawable` con retorno temprano, `AppointmentCardView` cachea los `Drawable` laterales por estado en `EnumMap`, `AgendaFragment` configura `setItemViewCacheSize(12)` y filtra renders de observadores inactivos; `AgendaRenderPerformanceTest` (2/2 OK: 520 filas día en 7 ms y 3.500 turnos semana en 9 ms) + `AgendaStartupPerformanceTest` (50.000 turnos, `< 500 ms` compilado en `androidTest`); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug compileDebugAndroidTestJavaWithJavac` OK. | F12.4 |
+| 19/11/2026 | F12.4 | R8 activo en release (`minifyEnabled true` y `shrinkResources true` en `app/build.gradle`), reglas en `app/proguard-rules.pro` (Room, Fragments/ViewModels, Custom Views, Workers y `-assumenosideeffects` para `android.util.Log`) y `res/raw/keep.xml` para logo reemplazable; `ManifestPrivacyTest` actualizado a `merged_manifests/debug` y `release` (3/3 OK) y `SecurityAuditTest` (2/2 OK: cero logs sensibles o clientes HTTP en fuentes principales, `.gitignore` y manifiesto seguro); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug assembleRelease` OK. | F12.5 |
+| 19/11/2026 | F12.5 | `versionCode 12`, `versionName "1.0.0"` y `signingConfigs.release` leyendo `keystore.properties` ignorado por Git en `app/build.gradle`; keystore PKCS12 generada y respaldada fuera del repo en `MetanoiaReleaseKeys` y `MetanoiaReleaseKeys_Backup`; APK `app/build/outputs/apk/release/app-release.apk` (4.123.389 bytes) compilado con R8 y verificado con `apksigner` v2 (`CN=Metanoia Hair Salon`, RSA 2048, SHA-256 `55ce4dcf...`); `git status` libre de secretos y nueva guía `docs/instalacion.md`. | F12.6 |
+| 19/11/2026 | F12.6 | Creado `docs/manual.md` breve (<= 2 páginas imprimibles) cubriendo puesta en marcha inicial, operativa diaria (agenda, clientes, ficha de color, caja/cierre, WhatsApp, lista de espera, stock, comisiones y reportes CSV/PDF), bloqueo por PIN/biometría con procedimiento ante olvido y flujo de copia de seguridad / restauración JSON. | F12.7 |
+| 19/11/2026 | F12.7 | Cierre F12 y lanzamiento `v1.0.0`: todos los `skills.md` al 100 % (0 ítems pendientes tras marcar `configuracion/skills.md`), entrada `1.0.0` en `docs/changelog.md`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 155/155, `:app:testDebugUnitTest` 38/38, `:app:testReleaseUnitTest` 38/38, total 193 tests JVM únicos con 0 fallos, `:app:lintDebug` y `:app:lint` OK); checks §12 OK (`0` `.kt`/`.kts`, `0` `TODO`/`FIXME`, `0` `Log.*`, `allowBackup="false"` y `internetCount=0` en manifiestos `debug` y `release`), `androidTest` compilados (sin ejecución en dispositivo/emulador); `git status` sin secretos; merge `--no-ff fase/F12` en `main` con tags `fase-F12` y `v1.0.0`. | Proyecto v1.0.0 completado |

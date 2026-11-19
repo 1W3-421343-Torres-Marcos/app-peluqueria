@@ -7,6 +7,7 @@ import com.metanoia.app.data.backup.BackupScheduler;
 import com.metanoia.app.data.backup.RestoreManager;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
+import com.metanoia.app.ui.lock.AppLockController;
 import com.metanoia.app.data.repository.AppointmentRepositoryImpl;
 import com.metanoia.app.data.repository.AuditLogRepositoryImpl;
 import com.metanoia.app.data.repository.CashRepositoryImpl;
@@ -84,6 +85,7 @@ public final class AppContainer {
     private final Clock clock;
     private final IdGenerator idGenerator;
     private final DevicePrefs devicePrefs;
+    private final AppLockController lockController;
     private final AppDatabase database;
     private final AuditLogRepository auditLogRepository;
     private final SettingsRepository settingsRepository;
@@ -145,6 +147,7 @@ public final class AppContainer {
         this.clock = Clock.systemArgentina();
         this.idGenerator = IdGenerator.uuid();
         this.devicePrefs = new DevicePrefs(appContext);
+        this.lockController = new AppLockController(devicePrefs);
         this.database = AppDatabase.create(appContext);
         this.auditLogRepository = new AuditLogRepositoryImpl(database.auditLogDao());
         this.settingsRepository = new SettingsRepositoryImpl(database.settingsDao(), clock);
@@ -284,6 +287,10 @@ public final class AppContainer {
 
     public DevicePrefs devicePrefs() {
         return devicePrefs;
+    }
+
+    public AppLockController lockController() {
+        return lockController;
     }
 
     public AppDatabase database() {

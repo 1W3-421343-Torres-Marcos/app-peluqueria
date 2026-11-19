@@ -6,7 +6,8 @@
         android:layout_width="@dimen/chip_icon_size"
         android:layout_height="@dimen/chip_icon_size"
         android:layout_marginEnd="@dimen/space_xs"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
 
     <TextView
         android:id="@+id/statusChipLabel"
