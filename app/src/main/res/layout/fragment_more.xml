@@ -119,6 +119,15 @@
             app:rowTitle="@string/more_stock_title" />
 
         <com.metanoia.app.ui.common.ListRowView
+            android:id="@+id/rowCommissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:rowShowChevron="true"
+            app:rowShowDivider="true"
+            app:rowSubtitle="@string/more_commissions_subtitle"
+            app:rowTitle="@string/more_commissions_title" />
+
+        <com.metanoia.app.ui.common.ListRowView
             android:id="@+id/rowAbout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -11,6 +11,8 @@ import com.metanoia.domain.model.RecurrenceRule;
 import com.metanoia.domain.repository.AppointmentRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,6 +49,37 @@ public final class AppointmentRepositoryImpl implements AppointmentRepository {
     public List<Appointment> findByDayRange(long startDayEpoch, long endDayEpoch) {
         return AppointmentMapper.toDomainList(
                 appointmentDao.findByDayRangeSync(startDayEpoch, endDayEpoch));
+    }
+
+    @Override
+    public List<Appointment> findByProfessionalAndDayRange(
+            String professionalId,
+            long startDayEpoch,
+            long endDayEpoch
+    ) {
+        if (professionalId == null || professionalId.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return AppointmentMapper.toDomainList(
+                appointmentDao.findByProfessionalAndDayRangeSync(
+                        professionalId.trim(), startDayEpoch, endDayEpoch));
+    }
+
+    @Override
+    public List<Appointment> findByIds(Collection<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> cleanIds = new ArrayList<>(ids.size());
+        for (String id : ids) {
+            if (id != null && !id.trim().isEmpty()) {
+                cleanIds.add(id.trim());
+            }
+        }
+        if (cleanIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return AppointmentMapper.toDomainList(appointmentDao.findByIdsWithItemsSync(cleanIds));
     }
 
     @Override
