@@ -86,7 +86,10 @@ public final class ScheduleValidator {
         return true;
     }
 
-    private static List<TimeRange> mergeAdjacentByDay(List<TimeRange> ranges) {
+    public static List<TimeRange> mergeAdjacentByDay(List<TimeRange> ranges) {
+        if (ranges == null || ranges.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<TimeRange> sorted = new ArrayList<>(ranges);
         Collections.sort(sorted);
         List<TimeRange> merged = new ArrayList<>();

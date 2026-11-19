@@ -17,9 +17,9 @@
 | F8 | Lista de espera | [x] | 4/4 | 100 % |
 | F9 | Stock | [x] | 6/6 | 100 % |
 | F10 | Comisiones | [x] | 4/4 | 100 % |
-| F11 | Reportes | [ ] | 0/6 | 0 % |
+| F11 | Reportes | [~] | 1/6 | 17 % |
 | F12 | Seguridad y pulido final | [ ] | 0/7 | 0 % |
-| **Total** | | | **73/86** | **85 %** |
+| **Total** | | | **74/86** | **86 %** |
 
 ---
 
@@ -272,10 +272,10 @@ Módulo: `comisiones`.
 4. [x] **F10.4 Verificación de fase**
    - Hecho: criterios de `comisiones/skills.md` OK; `versionName 0.10.0`; merge de `fase/F10` a `main`, tag `fase-F10` y entrada en `docs/changelog.md`.
 
-## F11 — Reportes `[ ]`
+## F11 — Reportes `[~]`
 Módulo: `reportes`.
 
-1. [ ] **F11.1 Consultas agregadas**
+1. [x] **F11.1 Consultas agregadas**
    - Archivos: `ReportsDao`, `ReportsRepository`
    - Hecho: ingresos por día/mes (desde `CashMovement`), servicios top, clientes frecuentes y rendimiento por profesional (turnos COMPLETED o PAID), ocupación por franja, indicador "por cobrar"; tests DAO.
 2. [ ] **F11.2 Pantalla de reportes**
@@ -396,3 +396,4 @@ Módulos: `configuracion` y todos.
 | 19/11/2026 | F10.2 | Consultas por profesional/rango e IDs en `AppointmentDao`/`AppointmentRepositoryImpl`/`ClientDao`, y UI `ui/commissions/` (`CommissionsFragment`, `CommissionsViewModel`, `CommissionDetailsAdapter`) enlazada desde `MoreFragment` (`rowCommissions`, `nav_commissions`) con filtros Semana/Mes/Rango, total base/comisión/pendiente de cobro y detalle por turno e ítems; `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug` OK. | F10.3 |
 | 19/11/2026 | F10.3 | Persistencia Room v13 (`CommissionSettlementEntity`, `CommissionSettlementEntryEntity` FK RESTRICT, `CommissionDao`, `CommissionMapper`, `CommissionRepositoryImpl`, `Migration_12_13`, `13.json`, `BackupManager` v13), `SettleCommissionUseCase` (egreso `COMMISSION_PAYOUT` + liquidación inmutable + auditoría en una única transacción), diálogo `SettleCommissionDialogFragment`, `CommissionSettlementsAdapter` + alerta de solapamiento en `CommissionsFragment`; `SettleCommissionUseCaseTest` (4/4 OK), `SchemaExportTest` (13/13 OK), `MigrationTest` v13 y `CommissionSettlementAtomicityTest` compilados OK. | F10.4 |
 | 19/11/2026 | F10.4 | Cierre F10 Comisiones (`versionCode 10`, `versionName 0.10.0`, `docs/changelog.md`, 6/6 criterios de `comisiones/skills.md` verificados); fix Lint `DiffUtilEquals` en `CommissionDetailsAdapter`; `./gradlew.bat check assembleDebug compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 147/147, `:app:testDebugUnitTest` 24/24, total 171 unit tests OK, `:app:lintDebug` OK), checks §12 OK (`allowBackup="false"`, sin `INTERNET`, esquema `13.json`), `androidTest` compilados (sin ejecución en dispositivo/emulador); merge `--no-ff fase/F10` en `main` y tags `fase-F10` / `v0.10.0`. | F11.1 |
+| 19/11/2026 | F11.1 | Rama `fase/F11`; modelos de dominio para los 6 reportes (`ReportType`, `ReportFilter`, `IncomeReport`, `TopServicesReport`, `FrequentClientsReport`, `OccupancyReport`, `ProfessionalPerformanceReport`, `ReceivablesReport`), regla `OccupancyCalculator` + `ScheduleValidator.mergeAdjacentByDay`, `ReportsRepository`, proyecciones + `ReportsDao` (`GROUP BY`/CTEs SQL), `ReportsRepositoryImpl` y wiring en `AppDatabase`/`AppContainer`; `OccupancyCalculatorTest` (3/3 OK), `IncomeReportTest` (1/1 OK), `ReportsDaoTest` compilado (incluye benchmark 50.000 turnos); `./gradlew.bat :domain:test :app:testDebugUnitTest assembleDebug compileDebugAndroidTestJavaWithJavac` OK. | F11.2 |
