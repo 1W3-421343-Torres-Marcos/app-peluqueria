@@ -19,8 +19,8 @@
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
-| F13 | Clientes desde contactos | [~] | 4/7 | 57 % |
-| **Total** | | | **90/93** | **97 %** |
+| F13 | Clientes desde contactos | [~] | 5/7 | 71 % |
+| **Total** | | | **91/93** | **98 %** |
 
 ---
 
@@ -332,7 +332,7 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 4. [x] **F13.4 Flujo de importación masiva inicial (Clientes y asistente inicial)**
    - Archivos: `ClientsFragment`, `SettingsFragment` / asistente inicial (`SetupWizard` o diálogo inicial en primer uso), `ContactImportDialogFragment`, `ContactImportViewModel`, layouts y `strings.xml`
    - Hecho: botón "Importar desde contactos" visible en Clientes y en el asistente inicial; pantalla explicativa antes de solicitar `READ_CONTACTS`; vista previa con 3 contadores (a importar, ya cargados, omitidos) y botón "Importar todos"; ejecución en una sola transacción dentro de `AppExecutors.io()` con indicador de progreso y activación automática por defecto al finalizar.
-5. [ ] **F13.5 Filtros de cumpleaños pendientes e importados recientemente**
+5. [x] **F13.5 Filtros de cumpleaños pendientes e importados recientemente**
    - Archivos: `ClientsFragment`, `ClientsViewModel`, `ClientsAdapter`, `ClientFormDialogFragment`, layouts y `strings.xml`
    - Hecho: filtro **"Sin cumpleaños"** con contador visible y edición directa del campo cumpleaños con un toque; filtro **"Importados recientemente"** (últimos 7 días, `origin = CONTACT_SYNC`) para revisar altas automáticas y permitir baja lógica manual.
 6. [ ] **F13.6 Sincronización automática (WorkManager URI trigger, respaldo 15 min y Configuración)**
@@ -442,3 +442,4 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 | 19/11/2026 | F13.2 | Room `v14`: `ClientEntity` con columnas `contact_lookup_key` (indexada), `origin` (`DEFAULT 'MANUAL'`) y `created_from_contact_at`, `Migration_13_14`, `AppDatabase` v14, esquema `14.json` exportado, `ClientRowProjection`/`ClientMapper`/`ClientDao` (`observeSummariesFiltered`, `observeMissingBirthdayCount`, `observeActiveCount`, `upsert` seguro), `ClientRepositoryImpl` transaccional, `BackupManager` v14, `SchemaExportTest` (v14 OK), `MigrationTest` (`13→14` y `1→14`) y `BackupRestoreRoundTripTest` compilados en `androidTest`; `:domain:test` 165/165 y `:app:testDebugUnitTest` 39/39 OK. | F13.3 |
 | 19/11/2026 | F13.3 | Declarado `READ_CONTACTS` solo lectura en `AndroidManifest.xml` (sin `WRITE_CONTACTS`, manteniendo `INTERNET` removido y `allowBackup="false"`); implementado `DeviceContactsReader` en `app/data/contacts/` leyendo cuentas (`Contacts`, `Phone`, evento `BIRTHDAY`) sin modificar contactos ni loguear PII y cableado en `AppContainer`; `ManifestPrivacyTest` (3/3 OK) y `SecurityAuditTest` (2/2 OK), `:app:testDebugUnitTest` 39/39 OK y `assembleDebug` OK. | F13.4 |
 | 19/11/2026 | F13.4 | Flujo de importación masiva inicial: `DevicePrefs` ampliado con banderas de onboarding/sync; `ContactsImportViewModel`, `ContactsImportDialogFragment` y `dialog_contacts_import.xml` (explicación previa a `READ_CONTACTS`, vista previa con 3 contadores `a importar`/`ya cargados`/`omitidos`, botón `Importar todos` transaccional en `AppExecutors.io()` con progreso y activación automática por defecto); botón en `ClientsFragment` + estado vacío y asistente único `InitialSetupDialogFragment` en `AgendaFragment`/`AgendaViewModel`; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 (`AccessibilityAuditTest` y `SecurityAuditTest` OK) y `assembleDebug` OK. | F13.5 |
+| 19/11/2026 | F13.5 | Filtros en Clientes (`fragment_clients.xml`, `ClientsViewModel`, `ClientsFragment`, `ClientsAdapter` con `Objects.equals`, `ClientFormDialogFragment.newEditFocusBirthdayInstance`): chip `Sin cumpleaños (N)` con contador reactivo y apertura directa del editor enfocado en cumpleaños en un toque; chip `Importados recientemente` (últimos 7 días, `origin = CONTACT_SYNC`) para revisión y baja lógica desde detalle; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 y `assembleDebug` OK. | F13.6 |

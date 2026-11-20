@@ -40,28 +40,35 @@ public class ClientFormDialogFragment extends BottomSheetDialogFragment {
     private static final String ARG_NOTES = "notes";
     private static final String ARG_ACTIVE = "active";
     private static final String ARG_QUICK_CREATE = "quick_create";
+    private static final String ARG_FOCUS_BIRTHDAY = "focus_birthday";
 
     private DialogClientFormBinding binding;
     private ClientsViewModel viewModel;
 
     public static ClientFormDialogFragment newCreateInstance() {
-        return buildInstance(null, false);
+        return buildInstance(null, false, false);
     }
 
     public static ClientFormDialogFragment newQuickCreateInstance() {
-        return buildInstance(null, true);
+        return buildInstance(null, true, false);
     }
 
     public static ClientFormDialogFragment newEditInstance(@NonNull ClientEntity existing) {
-        return buildInstance(existing, false);
+        return buildInstance(existing, false, false);
+    }
+
+    public static ClientFormDialogFragment newEditFocusBirthdayInstance(@NonNull ClientEntity existing) {
+        return buildInstance(existing, false, true);
     }
 
     private static ClientFormDialogFragment buildInstance(
             @Nullable ClientEntity existing,
-            boolean quickCreate
+            boolean quickCreate,
+            boolean focusBirthday
     ) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_QUICK_CREATE, quickCreate);
+        args.putBoolean(ARG_FOCUS_BIRTHDAY, focusBirthday);
         if (existing != null) {
             args.putString(ARG_ID, existing.id);
             args.putString(ARG_NAME, existing.name);
@@ -153,6 +160,16 @@ public class ClientFormDialogFragment extends BottomSheetDialogFragment {
             }
             binding.inputClientNotes.setText(args.getString(ARG_NOTES, ""));
             binding.switchClientActive.setChecked(args.getBoolean(ARG_ACTIVE, true));
+            if (args.getBoolean(ARG_FOCUS_BIRTHDAY, false)) {
+                binding.inputClientBirthDay.post(() -> {
+                    if (binding == null) {
+                        return;
+                    }
+                    binding.inputClientBirthDay.requestFocus();
+                    binding.getRoot().smoothScrollTo(
+                            0, binding.clientOptionalDetailsSection.getTop());
+                });
+            }
         } else {
             binding.switchClientActive.setChecked(true);
         }

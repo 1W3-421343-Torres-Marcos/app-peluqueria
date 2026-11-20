@@ -1016,4 +1016,13 @@
     <string name="initial_setup_import_btn">Importar desde contactos</string>
     <string name="initial_setup_settings_btn">Configurar salón</string>
     <string name="initial_setup_skip_btn">Empezar ahora</string>
+
+    <!-- Filtros de cumpleaños pendientes e importados recientes (F13.5) -->
+    <string name="clients_filter_all">Todos</string>
+    <string name="clients_filter_missing_birthday_format">Sin cumpleaños (%1$d)</string>
+    <string name="clients_filter_recent_contacts">Importados recientemente</string>
+    <string name="clients_empty_missing_birthday">Todos tus clientes activos tienen cumpleaños cargado.</string>
+    <string name="clients_empty_recent_contacts">No se importaron clientes desde contactos en los últimos 7 días.</string>
+    <string name="client_missing_birthday_tag">Sin cumpleaños · tocar para completar</string>
+    <string name="client_recent_contact_tag">Importado %1$s</string>
 </resources>
