@@ -12,4 +12,4 @@
 - [x] Protección del ViewModel ante excepción Room.
 - [x] Prueba instrumentada agregada y compilada.
 - [x] Suite completa y APKs generados.
-- [~] Prueba física en dispositivo pendiente.
+- [x] Prueba física exitosa: se agregó el primer servicio sin cierre y quedó asignado.

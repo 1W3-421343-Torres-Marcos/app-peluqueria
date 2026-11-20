@@ -78,6 +78,7 @@
 | 20/11/2026 | U1.5/U3.1 | Prueba de rollback agregada y version corregida a `1.1.1` (`versionCode 14`). | Ejecutar suite completa y generar release |
 | 20/11/2026 | U2.5/U3.4/U3.5 | Suite completa, lint y APK debug/release verdes; firma v2 verificada con el certificado existente; merge y tag `v1.1.1` completados. | Prueba manual al conectar un dispositivo |
 | 20/11/2026 | U1.1/U2.4.1 | Capturado el cierre real con `adb logcat`: cobrar consultaba `getError()` sobre un resultado exitoso. Corregido en cobrar y completar y cobrar; versión `1.1.2` (`versionCode 15`), prueba manual en Motorola edge 40 sin cierres. Commit `d5919c0`, merge `7031bc9`, tag `v1.1.2`. | Mantener el tablero actualizado ante futuras incidencias |
+| 20/11/2026 | U4.5 | Prueba física aprobada en `1.1.3`: al editar un profesional sin servicios, agregar el primer servicio y guardar, la asignación quedó persistida y la app no se cerró. | Cierre documentado y listo para entrega |
 
 ## U4 — Profesional sin servicios al agregar el primer servicio
 
@@ -85,6 +86,6 @@
 |---|---|---|
 | U4.1 | [x] | Identificada la persistencia destructiva por `OnConflictStrategy.REPLACE` en profesionales existentes. |
 | U4.2 | [x] | Reemplazar `REPLACE` por actualización segura y proteger el ViewModel. |
-| U4.3 | [x] | Agregar prueba instrumentada con horario existente y primer servicio; suite Android compilada, ejecución física pendiente. |
+| U4.3 | [x] | Agregar prueba instrumentada con horario existente y primer servicio; suite Android compilada. |
 | U4.4 | [x] | Suite completa, lint y APK `1.1.3` generados; firma v2 verificada. |
-| U4.5 | [~] | Instalar en dispositivo y repetir agregar primer servicio; registrar `logcat` si vuelve a cerrar. |
+| U4.5 | [x] | Prueba física exitosa: editar el profesional sin servicios, agregar el primer servicio y guardar conservó la asignación sin cerrar la app. |
