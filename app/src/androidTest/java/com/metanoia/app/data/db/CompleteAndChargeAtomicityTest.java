@@ -144,7 +144,7 @@ public class CompleteAndChargeAtomicityTest {
 
         Clock clock = Clock.systemArgentina();
         CompleteAndChargeUseCase useCase = new CompleteAndChargeUseCase(
-                new AppointmentRepositoryImpl(db.appointmentDao(), db.recurrenceRuleDao()),
+                new AppointmentRepositoryImpl(db, db.appointmentDao(), db.recurrenceRuleDao()),
                 new ProfessionalRepositoryImpl(db.professionalDao(), db.appointmentDao()),
                 failingOnSaveCash,
                 new SettingsRepositoryImpl(db.settingsDao(), clock),

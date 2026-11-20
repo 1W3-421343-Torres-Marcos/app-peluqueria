@@ -258,11 +258,17 @@ public class AppointmentDetailViewModel extends AndroidViewModel {
             @Nullable String cancelReason
     ) {
         container.executors().io().execute(() -> {
-            long paidCents = AppointmentPaymentCalculator.netPaid(
-                    container.cashRepository().findMovementsByAppointmentId(appointmentId)
-            ).cents();
-            Result<Appointment> result = container.changeAppointmentStatusUseCase()
-                    .execute(appointmentId, targetStatus, cancelReason, paidCents);
+            Result<Appointment> result;
+            try {
+                long paidCents = AppointmentPaymentCalculator.netPaid(
+                        container.cashRepository().findMovementsByAppointmentId(appointmentId)
+                ).cents();
+                result = container.changeAppointmentStatusUseCase()
+                        .execute(appointmentId, targetStatus, cancelReason, paidCents);
+            } catch (RuntimeException ex) {
+                result = Result.failure(DomainError.DATABASE_ERROR,
+                        "No se pudo cambiar el estado del turno");
+            }
             if (result.isSuccess()) {
                 feedbackEvent.postValue(new Event<>(R.string.appointment_status_updated));
                 if (targetStatus == AppointmentStatus.CANCELLED) {

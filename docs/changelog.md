@@ -2,6 +2,11 @@
 
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
 
+## [1.1.1] — 20/11/2026 — Actualización U1
+- **Estabilidad de confirmaciones y cobros:** confirmar/completar/revertir/cancelar y cobrar ahora capturan excepciones de persistencia en los ViewModels y devuelven un error de base de datos, evitando que una excepción Room termine el proceso.
+- **Atomicidad:** el cambio de estado y su auditoría se guardan en una transacción común; los cobros y "Completar y cobrar" continúan dentro de una transacción Room y ahora convierten fallos inesperados en `DATABASE_ERROR`.
+- **Pruebas:** se agregó una prueba de rollback ante fallo de auditoría y se actualizaron las pruebas instrumentadas de atomicidad para usar la base transaccional real.
+
 ## [1.1.0] — 19/11/2026 — F13 Clientes desde contactos
 - **Dominio de importación y sincronización (F13.1):** extensión de `Client` (`contactLookupKey`, `origin`, `createdFromContactAt`), `ClientOrigin`, `ContactPhoneSelector`, `ContactBirthdayParser` (con año y `--MM-DD`), `ContactClientNameResolver`, `ClientContactSyncPlanner`, `PreviewContactImportUseCase` y `SyncContactsUseCase` (`AuditLog` con cantidad y fecha sin PII), más tests unitarios en `:domain` (`PhoneNormalizerTest`, `ContactPhoneSelectorTest`, `ContactBirthdayParserTest`, `ContactSyncUseCaseTest`).
 - **Persistencia Room v14 y backup (F13.2):** `Migration_13_14`, esquema `14.json`, índice en `contact_lookup_key`, clientes preexistentes en `MANUAL`, consultas filtradas en `ClientDao`, `ClientRepositoryImpl` transaccional, `BackupManager` v14, `SchemaExportTest` (v14), `MigrationTest` (`13→14` y `1→14`) y `BackupRestoreRoundTripTest` v14.

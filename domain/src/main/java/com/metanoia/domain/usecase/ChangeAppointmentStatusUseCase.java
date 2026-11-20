@@ -20,6 +20,7 @@ import com.metanoia.domain.rules.StatusTransitions;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Ejecuta transiciones manuales válidas de un turno: confirmar, completar (congelando comisión),
@@ -151,17 +152,27 @@ public final class ChangeAppointmentStatusUseCase {
         }
 
         Appointment updated = builder.build();
-        appointmentRepository.save(updated);
-        auditLogRepository.record(new AuditRecord.Builder()
-                .id(idGenerator.nextId())
-                .timestamp(now)
-                .operator(operator)
-                .action(auditAction)
-                .entityType("APPOINTMENT")
-                .entityId(updated.id())
-                .amountCents(auditAmountCents)
-                .concept(auditConcept)
-                .build());
-        return Result.success(updated);
+        final Long recordedAmountCents = auditAmountCents;
+        AtomicReference<Result<Appointment>> outcome = new AtomicReference<>();
+        try {
+            appointmentRepository.runInTransaction(() -> {
+                appointmentRepository.save(updated);
+                auditLogRepository.record(new AuditRecord.Builder()
+                        .id(idGenerator.nextId())
+                        .timestamp(now)
+                        .operator(operator)
+                        .action(auditAction)
+                        .entityType("APPOINTMENT")
+                        .entityId(updated.id())
+                        .amountCents(recordedAmountCents)
+                        .concept(auditConcept)
+                        .build());
+                outcome.set(Result.success(updated));
+            });
+        } catch (RuntimeException ex) {
+            return Result.failure(DomainError.DATABASE_ERROR,
+                    "No se pudo guardar la transición del turno");
+        }
+        return outcome.get();
     }
 }

@@ -109,7 +109,7 @@ public class CommissionSettlementAtomicityTest {
         Clock clock = Clock.systemArgentina();
         SettleCommissionUseCase useCase = new SettleCommissionUseCase(
                 failingComm,
-                new AppointmentRepositoryImpl(db.appointmentDao(), db.recurrenceRuleDao()),
+                new AppointmentRepositoryImpl(db, db.appointmentDao(), db.recurrenceRuleDao()),
                 new ProfessionalRepositoryImpl(db.professionalDao(), db.appointmentDao()),
                 new CashRepositoryImpl(db),
                 new SettingsRepositoryImpl(db.settingsDao(), clock),

@@ -184,6 +184,19 @@ public class ChangeAppointmentStatusUseCaseTest {
                 cancelled.getValue().cancelReason().orElseThrow());
     }
 
+    @Test
+    public void auditFailure_rollsBackStatusAndReturnsDatabaseError() {
+        auditRepo.failNextRecord = true;
+
+        Result<Appointment> result = useCase.execute(
+                "apt-1", AppointmentStatus.CONFIRMED, null);
+
+        assertEquals(DomainError.DATABASE_ERROR, result.getError());
+        assertEquals(AppointmentStatus.PENDING,
+                appointmentRepo.store.get("apt-1").status());
+        assertTrue(auditRepo.records.isEmpty());
+    }
+
     private static Appointment sample(String id, AppointmentStatus status) {
         return new Appointment.Builder()
                 .id(id)
@@ -248,6 +261,18 @@ public class ChangeAppointmentStatusUseCaseTest {
         @Override
         public void saveRecurrenceRule(RecurrenceRule rule) {
         }
+
+        @Override
+        public void runInTransaction(Runnable action) {
+            Map<String, Appointment> snapshot = new LinkedHashMap<>(store);
+            try {
+                action.run();
+            } catch (RuntimeException ex) {
+                store.clear();
+                store.putAll(snapshot);
+                throw ex;
+            }
+        }
     }
 
     private static final class FakeClientRepo implements ClientRepository {
@@ -276,9 +301,14 @@ public class ChangeAppointmentStatusUseCaseTest {
 
     private static final class FakeAuditRepo implements AuditLogRepository {
         final List<AuditRecord> records = new ArrayList<>();
+        boolean failNextRecord;
 
         @Override
         public void record(AuditRecord record) {
+            if (failNextRecord) {
+                failNextRecord = false;
+                throw new IllegalStateException("Fallo simulado de auditoría");
+            }
             records.add(record);
         }
     }
