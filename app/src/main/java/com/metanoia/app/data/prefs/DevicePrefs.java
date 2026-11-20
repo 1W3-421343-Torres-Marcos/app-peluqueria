@@ -364,13 +364,7 @@ public final class DevicePrefs {
     }
 
     private static int clampInt(int value, int min, int max) {
-        if (value < min) {
-            return min;
-        }
-        if (value > max) {
-            return max;
-        }
-        return value;
+        return Math.max(min, Math.min(max, value));
     }
 
     public static void applyTheme(int mode) {

@@ -19,8 +19,8 @@
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
-| F13 | Clientes desde contactos | [~] | 6/7 | 86 % |
-| **Total** | | | **92/93** | **99 %** |
+| F13 | Clientes desde contactos | [x] | 7/7 | 100 % |
+| **Total** | | | **93/93** | **100 %** |
 
 ---
 
@@ -317,7 +317,7 @@ Módulos: `configuracion` y todos.
 
 ---
 
-## F13 — Clientes desde contactos `[~]`
+## F13 — Clientes desde contactos `[x]`
 Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" e "Importados recientemente", sincronización automática en segundo plano y al volver a la app (Room v14), APK release firmado `v1.1.0`. Módulos: `clientes`, `configuracion`.
 
 1. [x] **F13.1 Dominio de importación, cumpleaños y sincronización de contactos**
@@ -338,7 +338,7 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 6. [x] **F13.6 Sincronización automática (WorkManager URI trigger, respaldo 15 min y Configuración)**
    - Archivos: `data/contacts/ContactSyncWorker.java`, `ContactSyncScheduler.java`, `DevicePrefs`, `MetanoiaApp`, `MainActivity`, `SecuritySettingsFragment` / `SettingsFragment`, layouts y `strings.xml`
    - Hecho: `ContactSyncWorker` con `Constraints.Builder.addContentUriTrigger(ContactsContract.Contacts.CONTENT_URI, true)` auto-reprogramable; respaldo al abrir y volver a primer plano con límite mínimo de 15 min; pausa sin fallos con aviso visible en Configuración cuando se revoca `READ_CONTACTS`; interruptor "Sincronizar contactos automáticamente" con fecha y resultado de la última sincronización.
-7. [ ] **F13.7 Verificación final F13, firma v1.1.0 y entrega**
+7. [x] **F13.7 Verificación final F13, firma v1.1.0 y entrega**
    - Archivos: `app/build.gradle` (`versionCode 13`, `versionName "1.1.0"`), `docs/modules/clientes/skills.md`, `docs/changelog.md`, `docs/plan.md`
    - Hecho: todos los criterios de `clientes/skills.md` marcados `[x]`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` verde sin errores de Lint; APK release firmado con la keystore existente de F12.5 (`keystore.properties`) verificado con `apksigner`; entrada `1.1.0` en `docs/changelog.md`; merge `--no-ff` de `fase/F13` a `main`, tags `fase-F13` y `v1.1.0`, entrega de ruta exacta del APK y guía breve de prueba manual.
 
@@ -444,3 +444,4 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 | 19/11/2026 | F13.4 | Flujo de importación masiva inicial: `DevicePrefs` ampliado con banderas de onboarding/sync; `ContactsImportViewModel`, `ContactsImportDialogFragment` y `dialog_contacts_import.xml` (explicación previa a `READ_CONTACTS`, vista previa con 3 contadores `a importar`/`ya cargados`/`omitidos`, botón `Importar todos` transaccional en `AppExecutors.io()` con progreso y activación automática por defecto); botón en `ClientsFragment` + estado vacío y asistente único `InitialSetupDialogFragment` en `AgendaFragment`/`AgendaViewModel`; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 (`AccessibilityAuditTest` y `SecurityAuditTest` OK) y `assembleDebug` OK. | F13.5 |
 | 19/11/2026 | F13.5 | Filtros en Clientes (`fragment_clients.xml`, `ClientsViewModel`, `ClientsFragment`, `ClientsAdapter` con `Objects.equals`, `ClientFormDialogFragment.newEditFocusBirthdayInstance`): chip `Sin cumpleaños (N)` con contador reactivo y apertura directa del editor enfocado en cumpleaños en un toque; chip `Importados recientemente` (últimos 7 días, `origin = CONTACT_SYNC`) para revisión y baja lógica desde detalle; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 y `assembleDebug` OK. | F13.6 |
 | 19/11/2026 | F13.6 | Sincronización automática: `ContactSyncCoordinator` (protegido con `ReentrantLock`), `ContactSyncWorker` auto-reprogramable tras `addContentUriTrigger(ContactsContract.Contacts.CONTENT_URI, true)` y `ContactSyncScheduler` con respaldo al iniciar/volver a primer plano (`ON_START` en `MetanoiaApp`) limitado cada 15 min y pausa limpia si falta `READ_CONTACTS`; sección Configuración (`fragment_settings.xml`, `ContactsSyncSettingsController`, `SettingsFragment`) con interruptor, última fecha/resultado y banner ante permiso revocado; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 y `assembleDebug` OK. | F13.7 |
+| 19/11/2026 | F13.7 | Cierre F13 y release `v1.1.0` (`versionCode 13`): `DevicePrefs` ajustado a 395 líneas (`< 400`), todos los criterios de `clientes/skills.md` marcados (`0` `- [ ]` en todo `docs/modules/*/skills.md`), entrada `1.1.0` en `docs/changelog.md`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 165/165, `:app:testDebugUnitTest` 39/39, `:app:testReleaseUnitTest` 39/39, total 204 tests JVM únicos con 0 fallos, `:app:lintDebug` y `:app:lint` OK); checks §12 OK (`0` `.kt`/`.kts`, `0` `TODO`/`FIXME`, `0` `Log.*`, `allowBackup="false"`, `internet=0`, `readContacts=1`, `writeContacts=0`), `androidTest` compilados (sin ejecución en dispositivo/emulador); APK `app-release.apk` (4.174.265 bytes) firmado con keystore de F12.5 verificado con `apksigner` v2 (SHA-256 `55ce4dcf...`); `git status` libre de secretos; merge `--no-ff fase/F13` a `main` y tags `fase-F13` / `v1.1.0`. | Proyecto v1.1.0 completado |
