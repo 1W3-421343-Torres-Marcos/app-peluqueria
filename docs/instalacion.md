@@ -1,6 +1,6 @@
-# instalacion.md — Instalación, firma y mantenimiento (v1.0.0)
+# instalacion.md — Instalación, firma y mantenimiento (v1.1.1)
 
-Guía rápida para instalar el APK release de **Metanoia Hair Salon** (`v1.0.0`, `versionCode 12`) y mantener futuras compilaciones firmadas.
+Guía rápida para instalar el APK release de **Metanoia Hair Salon** (`v1.1.1`, `versionCode 14`) y mantener futuras compilaciones firmadas.
 
 ---
 
