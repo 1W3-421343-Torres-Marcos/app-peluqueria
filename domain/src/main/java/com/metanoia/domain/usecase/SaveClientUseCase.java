@@ -6,6 +6,7 @@ import com.metanoia.domain.common.IdGenerator;
 import com.metanoia.domain.common.Result;
 import com.metanoia.domain.model.AuditRecord;
 import com.metanoia.domain.model.Client;
+import com.metanoia.domain.model.ClientOrigin;
 import com.metanoia.domain.repository.AuditLogRepository;
 import com.metanoia.domain.repository.ClientRepository;
 import com.metanoia.domain.repository.SettingsRepository;
@@ -97,6 +98,9 @@ public final class SaveClientUseCase {
                 .birthYear(request.birthYear)
                 .notes(request.notes == null ? "" : request.notes.trim())
                 .noShowCount(isEdit ? existing.noShowCount() : 0)
+                .contactLookupKey(isEdit ? existing.contactLookupKey().orElse(null) : null)
+                .origin(isEdit ? existing.origin() : ClientOrigin.MANUAL)
+                .createdFromContactAt(isEdit ? existing.createdFromContactAt().orElse(null) : null)
                 .active(request.active)
                 .createdAt(isEdit ? existing.createdAt() : now)
                 .updatedAt(now)

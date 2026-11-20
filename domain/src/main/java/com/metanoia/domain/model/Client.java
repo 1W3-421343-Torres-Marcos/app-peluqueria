@@ -17,6 +17,9 @@ public final class Client {
     private final Integer birthYear;
     private final String notes;
     private final int noShowCount;
+    private final String contactLookupKey;
+    private final ClientOrigin origin;
+    private final Long createdFromContactAt;
     private final boolean active;
     private final long createdAt;
     private final long updatedAt;
@@ -31,6 +34,9 @@ public final class Client {
         this.birthYear = builder.birthYear;
         this.notes = builder.notes == null ? "" : builder.notes;
         this.noShowCount = builder.noShowCount;
+        this.contactLookupKey = builder.contactLookupKey;
+        this.origin = builder.origin == null ? ClientOrigin.MANUAL : builder.origin;
+        this.createdFromContactAt = builder.createdFromContactAt;
         this.active = builder.active;
         this.createdAt = builder.createdAt;
         this.updatedAt = builder.updatedAt;
@@ -72,6 +78,18 @@ public final class Client {
         return noShowCount;
     }
 
+    public Optional<String> contactLookupKey() {
+        return Optional.ofNullable(contactLookupKey);
+    }
+
+    public ClientOrigin origin() {
+        return origin;
+    }
+
+    public Optional<Long> createdFromContactAt() {
+        return Optional.ofNullable(createdFromContactAt);
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -95,6 +113,9 @@ public final class Client {
                 .birthYear(birthYear)
                 .notes(notes)
                 .noShowCount(noShowCount)
+                .contactLookupKey(contactLookupKey)
+                .origin(origin)
+                .createdFromContactAt(createdFromContactAt)
                 .active(active)
                 .createdAt(createdAt)
                 .updatedAt(updatedAt);
@@ -110,6 +131,9 @@ public final class Client {
         private Integer birthYear;
         private String notes = "";
         private int noShowCount;
+        private String contactLookupKey;
+        private ClientOrigin origin = ClientOrigin.MANUAL;
+        private Long createdFromContactAt;
         private boolean active = true;
         private long createdAt;
         private long updatedAt;
@@ -156,6 +180,23 @@ public final class Client {
 
         public Builder noShowCount(int noShowCount) {
             this.noShowCount = noShowCount;
+            return this;
+        }
+
+        public Builder contactLookupKey(String contactLookupKey) {
+            this.contactLookupKey = contactLookupKey == null || contactLookupKey.trim().isEmpty()
+                    ? null
+                    : contactLookupKey.trim();
+            return this;
+        }
+
+        public Builder origin(ClientOrigin origin) {
+            this.origin = origin == null ? ClientOrigin.MANUAL : origin;
+            return this;
+        }
+
+        public Builder createdFromContactAt(Long createdFromContactAt) {
+            this.createdFromContactAt = createdFromContactAt;
             return this;
         }
 

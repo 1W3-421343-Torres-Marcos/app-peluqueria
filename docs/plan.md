@@ -19,8 +19,8 @@
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
-| F13 | Clientes desde contactos | [ ] | 0/7 | 0 % |
-| **Total** | | | **86/93** | **92 %** |
+| F13 | Clientes desde contactos | [~] | 1/7 | 14 % |
+| **Total** | | | **87/93** | **94 %** |
 
 ---
 
@@ -317,10 +317,10 @@ Módulos: `configuracion` y todos.
 
 ---
 
-## F13 — Clientes desde contactos `[ ]`
+## F13 — Clientes desde contactos `[~]`
 Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" e "Importados recientemente", sincronización automática en segundo plano y al volver a la app (Room v14), APK release firmado `v1.1.0`. Módulos: `clientes`, `configuracion`.
 
-1. [ ] **F13.1 Dominio de importación, cumpleaños y sincronización de contactos**
+1. [x] **F13.1 Dominio de importación, cumpleaños y sincronización de contactos**
    - Archivos: `domain/.../model/{Client,ClientOrigin,DeviceContactCandidate,ContactImportPreview,ContactSyncOutcome}`, `domain/.../rules/{ContactPhoneSelector,ContactBirthdayParser,ClientContactSyncPlanner}`, `domain/.../usecase/{PreviewContactImportUseCase,ImportAllContactsUseCase,SyncNewContactsUseCase}`, tests en `domain/src/test/...`
    - Hecho: selección de teléfono principal (primer móvil válido o primero disponible), normalización `+54`/espacios/guiones/`0`/`15`, parseo de cumpleaños con y sin año (`--MM-DD`), nombre recortado 2–80 caracteres o teléfono si falta, deduplicación por `contactLookupKey` y teléfono normalizado, protección contra sobrescritura y reactivación de inactivos, idempotencia y `AuditLog` sin PII; 100 % de los tests unitarios obligatorios en verde (`./gradlew.bat :domain:test`).
 2. [ ] **F13.2 Migración Room v14, DAOs y backup/restauración v14**
@@ -438,3 +438,4 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 | 19/11/2026 | F12.6 | Creado `docs/manual.md` breve (<= 2 páginas imprimibles) cubriendo puesta en marcha inicial, operativa diaria (agenda, clientes, ficha de color, caja/cierre, WhatsApp, lista de espera, stock, comisiones y reportes CSV/PDF), bloqueo por PIN/biometría con procedimiento ante olvido y flujo de copia de seguridad / restauración JSON. | F12.7 |
 | 19/11/2026 | F12.7 | Cierre F12 y lanzamiento `v1.0.0`: todos los `skills.md` al 100 % (0 ítems pendientes tras marcar `configuracion/skills.md`), entrada `1.0.0` en `docs/changelog.md`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 155/155, `:app:testDebugUnitTest` 38/38, `:app:testReleaseUnitTest` 38/38, total 193 tests JVM únicos con 0 fallos, `:app:lintDebug` y `:app:lint` OK); checks §12 OK (`0` `.kt`/`.kts`, `0` `TODO`/`FIXME`, `0` `Log.*`, `allowBackup="false"` y `internetCount=0` en manifiestos `debug` y `release`), `androidTest` compilados (sin ejecución en dispositivo/emulador); `git status` sin secretos; merge `--no-ff fase/F12` en `main` con tags `fase-F12` y `v1.0.0`. | Proyecto v1.0.0 completado |
 | 19/11/2026 | — | Documentación Paso 0 para F13 "Clientes desde contactos": habilitado `READ_CONTACTS` en solo lectura en `docs/agents.md` §6 (manteniendo prohibido `INTERNET`), agregada especificación y criterios de importación/sincronización en `docs/modules/clientes/skills.md` y planificados 7 pasos (`F13.1`–`F13.7`) en `docs/plan.md` (total `86/93`, 92 %). | F13.1 |
+| 19/11/2026 | F13.1 | Rama `fase/F13`; `Client` ampliado (`contactLookupKey`, `origin`, `createdFromContactAt`) y `SaveClientUseCase` preservando metadatos de origen; modelos `ClientOrigin`, `ContactPhone`, `DeviceContactCandidate`, `ContactBirthday`, `ContactImportPreview` y `ContactSyncOutcome`; reglas `ContactPhoneSelector`, `ContactBirthdayParser` (con año y `--MM-DD`), `ContactClientNameResolver` (2–80 chars / teléfono) y `ClientContactSyncPlanner` (deduplicación multi-cuenta, no sobrescritura ni reactivación de inactivos, idempotencia); casos de uso `PreviewContactImportUseCase` y `SyncContactsUseCase` (`AuditLog` sin PII); `:domain:test` 165/165 OK (`PhoneNormalizerTest`, `ContactPhoneSelectorTest`, `ContactBirthdayParserTest`, `ContactSyncUseCaseTest`) y `assembleDebug` OK. | F13.2 |
