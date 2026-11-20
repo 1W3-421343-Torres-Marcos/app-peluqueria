@@ -40,13 +40,24 @@ import java.util.Optional;
  */
 public class ClientsViewModel extends AndroidViewModel {
 
+    public enum ClientFilterMode {
+        ALL,
+        MISSING_BIRTHDAY,
+        RECENT_CONTACT
+    }
+
+    private static final long SEVEN_DAYS_MILLIS = 7L * 24L * 60L * 60L * 1000L;
+
     private final AppContainer container;
     private final MutableLiveData<SearchState> searchState =
-            new MutableLiveData<>(new SearchState("", false));
+            new MutableLiveData<>(new SearchState("", false, ClientFilterMode.ALL));
     private final LiveData<List<ClientRowProjection>> clients;
+    private final LiveData<Integer> missingBirthdayCount;
     private final MutableLiveData<Event<Integer>> feedbackEvent = new MutableLiveData<>();
     private final MutableLiveData<Event<Client>> savedClientEvent = new MutableLiveData<>();
     private final MutableLiveData<Event<String>> duplicateClientIdEvent = new MutableLiveData<>();
+    private final MutableLiveData<Event<ClientEntity>> openBirthdayEditEvent =
+            new MutableLiveData<>();
     private final MutableLiveData<LoadedFormulaState> loadedColorFormula = new MutableLiveData<>();
     private final MutableLiveData<Event<ColorFormula>> savedColorFormulaEvent =
             new MutableLiveData<>();
@@ -54,21 +65,29 @@ public class ClientsViewModel extends AndroidViewModel {
     public ClientsViewModel(@NonNull Application application) {
         super(application);
         container = ((MetanoiaApp) application).getContainer();
+        missingBirthdayCount = container.database().clientDao().observeMissingBirthdayCount();
         clients = Transformations.switchMap(searchState, state -> {
             ClientSearchFilter filter = ClientSearchFilter.fromRawQuery(
                     state.query, state.includeInactive);
-            return container.database().clientDao().observeSummaries(
+            long recentThreshold = container.clock().nowMillis() - SEVEN_DAYS_MILLIS;
+            return container.database().clientDao().observeSummariesFiltered(
                     filter.query,
                     filter.prefixPattern,
                     filter.wordPrefixPattern,
                     filter.phoneContainsPattern,
-                    filter.includeInactive
+                    filter.includeInactive,
+                    state.filterMode.name(),
+                    recentThreshold
             );
         });
     }
 
     public LiveData<List<ClientRowProjection>> observeClients() {
         return clients;
+    }
+
+    public LiveData<Integer> observeMissingBirthdayCount() {
+        return missingBirthdayCount;
     }
 
     public LiveData<ClientEntity> observeClientById(@NonNull String clientId) {
@@ -129,27 +148,57 @@ public class ClientsViewModel extends AndroidViewModel {
         return duplicateClientIdEvent;
     }
 
+    public LiveData<Event<ClientEntity>> observeOpenBirthdayEdit() {
+        return openBirthdayEditEvent;
+    }
+
     @NonNull
     public String currentQuery() {
         SearchState current = searchState.getValue();
         return current == null ? "" : current.query;
     }
 
+    @NonNull
+    public ClientFilterMode currentFilterMode() {
+        SearchState current = searchState.getValue();
+        return current == null ? ClientFilterMode.ALL : current.filterMode;
+    }
+
     public void setQuery(@Nullable String query) {
         String safe = query == null ? "" : query;
         SearchState current = searchState.getValue();
         boolean includeInactive = current != null && current.includeInactive;
+        ClientFilterMode filterMode = current == null ? ClientFilterMode.ALL : current.filterMode;
         if (current == null || !Objects.equals(current.query, safe)) {
-            searchState.setValue(new SearchState(safe, includeInactive));
+            searchState.setValue(new SearchState(safe, includeInactive, filterMode));
         }
     }
 
     public void setIncludeInactive(boolean includeInactive) {
         SearchState current = searchState.getValue();
         String query = current == null ? "" : current.query;
+        ClientFilterMode filterMode = current == null ? ClientFilterMode.ALL : current.filterMode;
         if (current == null || current.includeInactive != includeInactive) {
-            searchState.setValue(new SearchState(query, includeInactive));
+            searchState.setValue(new SearchState(query, includeInactive, filterMode));
         }
+    }
+
+    public void setFilterMode(@NonNull ClientFilterMode filterMode) {
+        SearchState current = searchState.getValue();
+        String query = current == null ? "" : current.query;
+        boolean includeInactive = current != null && current.includeInactive;
+        if (current == null || current.filterMode != filterMode) {
+            searchState.setValue(new SearchState(query, includeInactive, filterMode));
+        }
+    }
+
+    public void loadClientForBirthdayEdit(@NonNull String clientId) {
+        container.executors().io().execute(() -> {
+            ClientEntity entity = container.database().clientDao().findByIdSync(clientId);
+            if (entity != null) {
+                openBirthdayEditEvent.postValue(new Event<>(entity));
+            }
+        });
     }
 
     public void saveClient(
@@ -301,10 +350,12 @@ public class ClientsViewModel extends AndroidViewModel {
     private static final class SearchState {
         final String query;
         final boolean includeInactive;
+        final ClientFilterMode filterMode;
 
-        SearchState(String query, boolean includeInactive) {
+        SearchState(String query, boolean includeInactive, ClientFilterMode filterMode) {
             this.query = query;
             this.includeInactive = includeInactive;
+            this.filterMode = filterMode;
         }
     }
 }

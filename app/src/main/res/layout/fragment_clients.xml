@@ -17,6 +17,55 @@
             android:layout_marginTop="@dimen/space_s"
             app:searchHint="@string/clients_search_hint" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnImportContacts"
+            style="@style/Widget.Metanoia.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/clients_import_contacts_btn"
+            app:icon="@drawable/ic_clients" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/clientsFilterGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/screen_margin"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipClientsFilterAll"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/clients_filter_all" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipClientsFilterMissingBirthday"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clients_filter_missing_birthday_format" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipClientsFilterRecentContacts"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clients_filter_recent_contacts" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchClientsIncludeInactive"
             android:layout_width="match_parent"

@@ -71,11 +71,11 @@ Registro de clientes con búsqueda instantánea y visión completa de su relaci�
 - [x] Detalle muestra historial de visitas (COMPLETED/PAID), gastos y saldo pendiente.
 - [x] Contador de ausencias visible y correcto.
 - [x] Alta rápida disponible desde crear turno.
-- [ ] Botón "Importar desde contactos" en Clientes y asistente inicial, con pantalla explicativa previa a `READ_CONTACTS`.
-- [ ] Lectura de todas las cuentas del dispositivo, elección de móvil/primero válido, vista previa con 3 contadores ("Importar todos") e importación transaccional con progreso en `AppExecutors.io()`.
-- [ ] Parseo de cumpleaños con y sin año (`--MM-DD`), nombre recortado 2–80 caracteres (o teléfono si falta) y teléfonos E.164 sin `+` (`549`).
-- [ ] Filtro "Sin cumpleaños" con contador visible y edición directa del cumpleaños al tocar un cliente filtrado.
-- [ ] Sincronización automática vía WorkManager (`addContentUriTrigger` auto-reprogramable) + respaldo al abrir/primer plano cada >= 15 min, idempotente.
-- [ ] Protección de datos: vínculo `contactLookupKey`, sin borrados/desactivaciones, sin sobrescritura de nombre/notas/cumpleaños, omisión de inactivos y pausa con aviso si se revoca `READ_CONTACTS`.
-- [ ] Interruptor en Configuración con última fecha/resultado, `origin` (`MANUAL` / `CONTACT_SYNC`), filtro "Importados recientemente" (7 días) y `AuditLog` sin nombres ni teléfonos.
-- [ ] Migración Room `13 → 14` probada con `MigrationTestHelper`, esquema `14.json` exportado y backup/restauración v14 verificados de ida y vuelta.
+- [x] Botón "Importar desde contactos" en Clientes y asistente inicial, con pantalla explicativa previa a `READ_CONTACTS`.
+- [x] Lectura de todas las cuentas del dispositivo, elección de móvil/primero válido, vista previa con 3 contadores ("Importar todos") e importación transaccional con progreso en `AppExecutors.io()`.
+- [x] Parseo de cumpleaños con y sin año (`--MM-DD`), nombre recortado 2–80 caracteres (o teléfono si falta) y teléfonos E.164 sin `+` (`549`).
+- [x] Filtro "Sin cumpleaños" con contador visible y edición directa del cumpleaños al tocar un cliente filtrado.
+- [x] Sincronización automática vía WorkManager (`addContentUriTrigger` auto-reprogramable) + respaldo al abrir/primer plano cada >= 15 min, idempotente.
+- [x] Protección de datos: vínculo `contactLookupKey`, sin borrados/desactivaciones, sin sobrescritura de nombre/notas/cumpleaños, omisión de inactivos y pausa con aviso si se revoca `READ_CONTACTS`.
+- [x] Interruptor en Configuración con última fecha/resultado, `origin` (`MANUAL` / `CONTACT_SYNC`), filtro "Importados recientemente" (7 días) y `AuditLog` sin nombres ni teléfonos.
+- [x] Migración Room `13 → 14` probada con `MigrationTestHelper`, esquema `14.json` exportado y backup/restauración v14 verificados de ida y vuelta.

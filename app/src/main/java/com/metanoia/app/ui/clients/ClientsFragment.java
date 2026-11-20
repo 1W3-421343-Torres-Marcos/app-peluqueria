@@ -13,10 +13,14 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.metanoia.app.R;
+import com.metanoia.app.data.db.entity.ClientEntity;
+import com.metanoia.app.data.db.projection.ClientRowProjection;
 import com.metanoia.app.databinding.FragmentClientsBinding;
+import com.metanoia.app.ui.clients.ClientsViewModel.ClientFilterMode;
+import com.metanoia.app.ui.clients.importcontacts.ContactsImportDialogFragment;
 
 /**
- * Listado y búsqueda SQL liviana de clientes del salón.
+ * Listado, filtros y búsqueda SQL liviana de clientes del salón.
  */
 public class ClientsFragment extends Fragment {
 
@@ -39,17 +43,32 @@ public class ClientsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(ClientsViewModel.class);
 
-        adapter = new ClientsAdapter(client -> openClientDetail(client.id));
+        adapter = new ClientsAdapter(this::handleClientClick);
         binding.clientsRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.clientsRecycler.setAdapter(adapter);
 
+        setupControls();
+        observeData();
+    }
+
+    private void setupControls() {
         binding.clientsSearchField.setOnQueryChangeListener(query -> viewModel.setQuery(query));
         binding.switchClientsIncludeInactive.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> viewModel.setIncludeInactive(isChecked));
 
+        binding.clientsFilterGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            ClientFilterMode mode = resolveFilterMode(
+                    checkedIds.isEmpty() ? R.id.chipClientsFilterAll : checkedIds.get(0));
+            viewModel.setFilterMode(mode);
+            adapter.setFilterMode(mode);
+            binding.switchClientsIncludeInactive.setVisibility(
+                    mode == ClientFilterMode.ALL ? View.VISIBLE : View.GONE);
+        });
+
         binding.fabNewClient.setOnClickListener(v ->
                 ClientFormDialogFragment.newCreateInstance()
                         .show(getChildFragmentManager(), TAG_CLIENT_FORM));
+        binding.btnImportContacts.setOnClickListener(v -> openContactsImport());
 
         getChildFragmentManager().setFragmentResultListener(
                 ClientFormDialogFragment.REQUEST_KEY,
@@ -63,21 +82,81 @@ public class ClientsFragment extends Fragment {
                     }
                 }
         );
+    }
+
+    private void observeData() {
+        viewModel.observeMissingBirthdayCount().observe(getViewLifecycleOwner(), count -> {
+            int safeCount = count == null ? 0 : count;
+            binding.chipClientsFilterMissingBirthday.setText(
+                    getString(R.string.clients_filter_missing_birthday_format, safeCount));
+        });
+
+        viewModel.observeOpenBirthdayEdit().observe(getViewLifecycleOwner(), event -> {
+            ClientEntity entity = event.getContentIfNotHandled();
+            if (entity != null && !getChildFragmentManager().isStateSaved()) {
+                ClientFormDialogFragment.newEditFocusBirthdayInstance(entity)
+                        .show(getChildFragmentManager(), TAG_CLIENT_FORM);
+            }
+        });
 
         viewModel.observeClients().observe(getViewLifecycleOwner(), list -> {
             boolean empty = list == null || list.isEmpty();
             binding.clientsEmptyState.setVisibility(empty ? View.VISIBLE : View.GONE);
             binding.clientsRecycler.setVisibility(empty ? View.GONE : View.VISIBLE);
             if (empty) {
-                boolean hasQuery = !viewModel.currentQuery().trim().isEmpty();
-                binding.clientsEmptyState.setMessage(hasQuery
-                        ? R.string.clients_empty_search
-                        : R.string.empty_clients_title);
+                renderEmptyState();
                 adapter.submitList(null);
             } else {
                 adapter.submitList(list);
             }
         });
+    }
+
+    private void renderEmptyState() {
+        boolean hasQuery = !viewModel.currentQuery().trim().isEmpty();
+        ClientFilterMode mode = viewModel.currentFilterMode();
+        if (hasQuery) {
+            binding.clientsEmptyState.setMessage(R.string.clients_empty_search);
+            binding.clientsEmptyState.setAction(null, null);
+            return;
+        }
+        if (mode == ClientFilterMode.MISSING_BIRTHDAY) {
+            binding.clientsEmptyState.setMessage(R.string.clients_empty_missing_birthday);
+            binding.clientsEmptyState.setAction(null, null);
+            return;
+        }
+        if (mode == ClientFilterMode.RECENT_CONTACT) {
+            binding.clientsEmptyState.setMessage(R.string.clients_empty_recent_contacts);
+            binding.clientsEmptyState.setAction(null, null);
+            return;
+        }
+        binding.clientsEmptyState.setMessage(R.string.empty_clients_title);
+        binding.clientsEmptyState.setAction(
+                R.string.clients_import_contacts_btn,
+                v -> openContactsImport());
+    }
+
+    private void handleClientClick(@NonNull ClientRowProjection client) {
+        if (viewModel.currentFilterMode() == ClientFilterMode.MISSING_BIRTHDAY) {
+            viewModel.loadClientForBirthdayEdit(client.id);
+        } else {
+            openClientDetail(client.id);
+        }
+    }
+
+    private static ClientFilterMode resolveFilterMode(int checkedId) {
+        if (checkedId == R.id.chipClientsFilterMissingBirthday) {
+            return ClientFilterMode.MISSING_BIRTHDAY;
+        }
+        if (checkedId == R.id.chipClientsFilterRecentContacts) {
+            return ClientFilterMode.RECENT_CONTACT;
+        }
+        return ClientFilterMode.ALL;
+    }
+
+    private void openContactsImport() {
+        ContactsImportDialogFragment.newInstance()
+                .show(getChildFragmentManager(), ContactsImportDialogFragment.TAG);
     }
 
     private void openClientDetail(@NonNull String clientId) {

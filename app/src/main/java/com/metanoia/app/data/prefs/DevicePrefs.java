@@ -54,6 +54,19 @@ public final class DevicePrefs {
     private static final String KEY_PIN_FAILED_ATTEMPTS = "pin_failed_attempts";
     private static final String KEY_PIN_LOCKED_UNTIL_MILLIS = "pin_locked_until_millis";
     private static final String KEY_LAST_BACKGROUND_MILLIS = "last_background_millis";
+    private static final String KEY_INITIAL_SETUP_DISMISSED = "initial_setup_dismissed";
+    private static final String KEY_INITIAL_CONTACTS_IMPORT_DONE = "initial_contacts_import_done";
+    private static final String KEY_CONTACT_SYNC_ENABLED = "contact_sync_enabled";
+    private static final String KEY_LAST_CONTACT_SYNC_MILLIS = "last_contact_sync_millis";
+    private static final String KEY_LAST_CONTACT_SYNC_ADDED = "last_contact_sync_added";
+    private static final String KEY_LAST_CONTACT_SYNC_STATUS = "last_contact_sync_status";
+    private static final String KEY_LAST_CONTACT_SYNC_ATTEMPT_MILLIS =
+            "last_contact_sync_attempt_millis";
+
+    public static final String SYNC_STATUS_NONE = "";
+    public static final String SYNC_STATUS_OK = "OK";
+    public static final String SYNC_STATUS_NO_PERMISSION = "NO_PERMISSION";
+    public static final String SYNC_STATUS_ERROR = "ERROR";
 
     private final SharedPreferences prefs;
 
@@ -289,6 +302,60 @@ public final class DevicePrefs {
         prefs.edit().putLong(KEY_LAST_BACKGROUND_MILLIS, Math.max(0L, millis)).apply();
     }
 
+    public boolean isInitialSetupDismissed() {
+        return prefs.getBoolean(KEY_INITIAL_SETUP_DISMISSED, false);
+    }
+
+    public void setInitialSetupDismissed(boolean dismissed) {
+        prefs.edit().putBoolean(KEY_INITIAL_SETUP_DISMISSED, dismissed).apply();
+    }
+
+    public boolean isInitialContactsImportDone() {
+        return prefs.getBoolean(KEY_INITIAL_CONTACTS_IMPORT_DONE, false);
+    }
+
+    public void markInitialContactsImportDone() {
+        prefs.edit().putBoolean(KEY_INITIAL_CONTACTS_IMPORT_DONE, true).apply();
+    }
+
+    public boolean isContactSyncEnabled() {
+        return prefs.getBoolean(KEY_CONTACT_SYNC_ENABLED, false);
+    }
+
+    public void setContactSyncEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_CONTACT_SYNC_ENABLED, enabled).apply();
+    }
+
+    public long getLastContactSyncMillis() {
+        return Math.max(0L, prefs.getLong(KEY_LAST_CONTACT_SYNC_MILLIS, 0L));
+    }
+
+    public int getLastContactSyncAdded() {
+        return Math.max(0, prefs.getInt(KEY_LAST_CONTACT_SYNC_ADDED, 0));
+    }
+
+    @NonNull
+    public String getLastContactSyncStatus() {
+        String raw = prefs.getString(KEY_LAST_CONTACT_SYNC_STATUS, SYNC_STATUS_NONE);
+        return raw == null ? SYNC_STATUS_NONE : raw;
+    }
+
+    public void recordContactSyncResult(long millis, int addedCount, @NonNull String status) {
+        prefs.edit()
+                .putLong(KEY_LAST_CONTACT_SYNC_MILLIS, Math.max(0L, millis))
+                .putInt(KEY_LAST_CONTACT_SYNC_ADDED, Math.max(0, addedCount))
+                .putString(KEY_LAST_CONTACT_SYNC_STATUS, status)
+                .apply();
+    }
+
+    public long getLastContactSyncAttemptMillis() {
+        return Math.max(0L, prefs.getLong(KEY_LAST_CONTACT_SYNC_ATTEMPT_MILLIS, 0L));
+    }
+
+    public void setLastContactSyncAttemptMillis(long millis) {
+        prefs.edit().putLong(KEY_LAST_CONTACT_SYNC_ATTEMPT_MILLIS, Math.max(0L, millis)).apply();
+    }
+
     private static int normalizeFrequencyHours(int hours) {
         if (hours == AUTO_FREQ_12H || hours == AUTO_FREQ_48H) {
             return hours;
@@ -297,13 +364,7 @@ public final class DevicePrefs {
     }
 
     private static int clampInt(int value, int min, int max) {
-        if (value < min) {
-            return min;
-        }
-        if (value > max) {
-            return max;
-        }
-        return value;
+        return Math.max(min, Math.min(max, value));
     }
 
     public static void applyTheme(int mode) {

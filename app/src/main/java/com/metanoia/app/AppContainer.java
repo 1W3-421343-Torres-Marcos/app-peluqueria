@@ -5,6 +5,7 @@ import android.content.Context;
 import com.metanoia.app.data.backup.BackupManager;
 import com.metanoia.app.data.backup.BackupScheduler;
 import com.metanoia.app.data.backup.RestoreManager;
+import com.metanoia.app.data.contacts.DeviceContactsReader;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.ui.lock.AppLockController;
@@ -57,6 +58,7 @@ import com.metanoia.domain.usecase.GenerateRecurringAppointmentsUseCase;
 import com.metanoia.domain.usecase.GetSettingsUseCase;
 import com.metanoia.domain.usecase.ManageProfessionalDayOffUseCase;
 import com.metanoia.domain.usecase.OfferWaitlistEntryUseCase;
+import com.metanoia.domain.usecase.PreviewContactImportUseCase;
 import com.metanoia.domain.usecase.RecordReminderSentUseCase;
 import com.metanoia.domain.usecase.RecordStockMovementUseCase;
 import com.metanoia.domain.usecase.RescheduleAppointmentUseCase;
@@ -73,6 +75,7 @@ import com.metanoia.domain.usecase.SetProductActiveUseCase;
 import com.metanoia.domain.usecase.SetProfessionalActiveUseCase;
 import com.metanoia.domain.usecase.SetSalonServiceActiveUseCase;
 import com.metanoia.domain.usecase.SettleCommissionUseCase;
+import com.metanoia.domain.usecase.SyncContactsUseCase;
 import com.metanoia.domain.usecase.UpdateAppointmentUseCase;
 import com.metanoia.domain.usecase.UpdateSettingsUseCase;
 
@@ -110,6 +113,8 @@ public final class AppContainer {
     private final ManageProfessionalDayOffUseCase manageProfessionalDayOffUseCase;
     private final SaveClientUseCase saveClientUseCase;
     private final SetClientActiveUseCase setClientActiveUseCase;
+    private final PreviewContactImportUseCase previewContactImportUseCase;
+    private final SyncContactsUseCase syncContactsUseCase;
     private final CreateAppointmentUseCase createAppointmentUseCase;
     private final UpdateAppointmentUseCase updateAppointmentUseCase;
     private final ChangeAppointmentStatusUseCase changeAppointmentStatusUseCase;
@@ -140,6 +145,7 @@ public final class AppContainer {
     private final SettleCommissionUseCase settleCommissionUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
+    private final DeviceContactsReader deviceContactsReader;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -154,7 +160,7 @@ public final class AppContainer {
         this.salonServiceRepository = new SalonServiceRepositoryImpl(database.salonServiceDao());
         this.professionalRepository = new ProfessionalRepositoryImpl(
                 database.professionalDao(), database.appointmentDao());
-        this.clientRepository = new ClientRepositoryImpl(database.clientDao());
+        this.clientRepository = new ClientRepositoryImpl(database);
         this.appointmentRepository = new AppointmentRepositoryImpl(
                 database.appointmentDao(), database.recurrenceRuleDao());
         this.scheduleBlockRepository = new ScheduleBlockRepositoryImpl(database.scheduleBlockDao());
@@ -187,6 +193,10 @@ public final class AppContainer {
                 clientRepository, settingsRepository, auditLogRepository, clock, idGenerator);
         this.setClientActiveUseCase = new SetClientActiveUseCase(
                 clientRepository, settingsRepository, auditLogRepository, clock, idGenerator);
+        this.previewContactImportUseCase = new PreviewContactImportUseCase(
+                clientRepository, clock, idGenerator);
+        this.syncContactsUseCase = new SyncContactsUseCase(
+                clientRepository, settingsRepository, clock, idGenerator);
         this.createAppointmentUseCase = new CreateAppointmentUseCase(
                 appointmentRepository, clientRepository, professionalRepository,
                 salonServiceRepository, scheduleBlockRepository, settingsRepository,
@@ -271,6 +281,7 @@ public final class AppContainer {
                 settingsRepository, clock, idGenerator);
         this.restoreManager = new RestoreManager(
                 appContext, database, devicePrefs, backupManager);
+        this.deviceContactsReader = new DeviceContactsReader(appContext);
     }
 
     public AppExecutors executors() {
@@ -507,5 +518,17 @@ public final class AppContainer {
 
     public ReportsRepository reportsRepository() {
         return reportsRepository;
+    }
+
+    public PreviewContactImportUseCase previewContactImportUseCase() {
+        return previewContactImportUseCase;
+    }
+
+    public SyncContactsUseCase syncContactsUseCase() {
+        return syncContactsUseCase;
+    }
+
+    public DeviceContactsReader deviceContactsReader() {
+        return deviceContactsReader;
     }
 }

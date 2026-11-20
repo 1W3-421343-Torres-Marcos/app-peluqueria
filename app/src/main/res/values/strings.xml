@@ -179,6 +179,14 @@
         <item quantity="one">%1$d ausencia</item>
         <item quantity="other">%1$d ausencias</item>
     </plurals>
+    <plurals name="contacts_import_done_count">
+        <item quantity="one">Se importó %1$d cliente nuevo. La sincronización automática para contactos nuevos quedó activada.</item>
+        <item quantity="other">Se importaron %1$d clientes nuevos. La sincronización automática para contactos nuevos quedó activada.</item>
+    </plurals>
+    <plurals name="settings_contacts_sync_added_format">
+        <item quantity="one">Última sincronización: %1$s · %2$d cliente nuevo</item>
+        <item quantity="other">Última sincronización: %1$s · %2$d clientes nuevos</item>
+    </plurals>
     <string name="client_inactive_tag">Inactivo</string>
     <string name="client_row_inactive_with_absences">%1$s · %2$s</string>
     <string name="client_form_new_title">Nuevo cliente</string>
@@ -984,4 +992,56 @@
     <!-- Accesibilidad TalkBack (F12.2) -->
     <string name="cd_appointment_card_format">%1$s a %2$s, %3$s, %4$s, %5$s, %6$s</string>
     <string name="cd_appointment_card_pending_format">%1$s a %2$s, %3$s, %4$s, %5$s, %6$s, saldo %7$s</string>
+
+    <!-- Importación desde contactos y asistente inicial (F13.4) -->
+    <string name="clients_import_contacts_btn">Importar desde contactos</string>
+    <string name="contacts_import_title">Importar clientes desde contactos</string>
+    <string name="contacts_import_explain_body">Metanoia leerá la agenda de este teléfono solo para cargar clientes (nombre, teléfono y cumpleaños si está guardado).\n\nTus contactos nunca salen del dispositivo y nunca se modifican ni eliminan.</string>
+    <string name="contacts_import_permission_denied">Sin permiso para leer contactos. Podés habilitarlo ahora o desde los ajustes de Android.</string>
+    <string name="contacts_import_continue_btn">Continuar</string>
+    <string name="contacts_import_open_settings_btn">Abrir ajustes</string>
+    <string name="contacts_import_not_now_btn">Ahora no</string>
+    <string name="contacts_import_reading_status">Leyendo contactos de todas tus cuentas…</string>
+    <string name="contacts_import_saving_status">Guardando clientes nuevos en la base local…</string>
+    <string name="contacts_import_preview_subtitle">Se encontraron estos contactos en tu agenda:</string>
+    <string name="contacts_preview_to_import_label">A importar</string>
+    <string name="contacts_preview_already_loaded_label">Ya cargados</string>
+    <string name="contacts_preview_skipped_label">Omitidos</string>
+    <string name="contacts_preview_skipped_note">Los contactos sin un teléfono válido se omiten automáticamente.</string>
+    <string name="contacts_import_all_btn">Importar todos</string>
+    <string name="contacts_import_finish_empty_btn">Activar sincronización y cerrar</string>
+    <string name="contacts_import_done_title">Importación completada</string>
+    <string name="contacts_import_done_none">Todos tus contactos válidos ya estaban cargados. La sincronización automática quedó activada para contactos nuevos.</string>
+    <string name="contacts_import_done_close_btn">Listo</string>
+    <string name="contacts_import_retry_btn">Reintentar</string>
+    <string name="contacts_import_error">No se pudieron leer los contactos del teléfono.</string>
+    <string name="initial_setup_title">Bienvenido a Metanoia</string>
+    <string name="initial_setup_subtitle">Dejá listo tu salón en un minuto: podés importar tu agenda de clientes de este teléfono o configurar tus horarios y servicios.</string>
+    <string name="initial_setup_import_btn">Importar desde contactos</string>
+    <string name="initial_setup_settings_btn">Configurar salón</string>
+    <string name="initial_setup_skip_btn">Empezar ahora</string>
+
+    <!-- Filtros de cumpleaños pendientes e importados recientes (F13.5) -->
+    <string name="clients_filter_all">Todos</string>
+    <string name="clients_filter_missing_birthday_format">Sin cumpleaños (%1$d)</string>
+    <string name="clients_filter_recent_contacts">Importados recientemente</string>
+    <string name="clients_empty_missing_birthday">Todos tus clientes activos tienen cumpleaños cargado.</string>
+    <string name="clients_empty_recent_contacts">No se importaron clientes desde contactos en los últimos 7 días.</string>
+    <string name="client_missing_birthday_tag">Sin cumpleaños · tocar para completar</string>
+    <string name="client_recent_contact_tag">Importado %1$s</string>
+
+    <!-- Sincronización automática de contactos en Configuración (F13.6) -->
+    <string name="settings_section_contacts_sync">Sincronización de contactos</string>
+    <string name="settings_contacts_sync_switch">Sincronizar contactos automáticamente</string>
+    <string name="settings_contacts_sync_hint">Cada contacto nuevo con teléfono válido se agregará como cliente sin sobrescribir datos existentes.</string>
+    <string name="settings_contacts_sync_banner_revoked">Permiso de contactos revocado: la sincronización automática está pausada.</string>
+    <string name="settings_contacts_sync_banner_action">Habilitar</string>
+    <string name="settings_contacts_sync_never">Todavía no se realizó ninguna sincronización automática.</string>
+    <string name="settings_contacts_sync_paused_permission">Pausada: falta el permiso para leer contactos.</string>
+    <string name="settings_contacts_sync_paused_permission_dated">Pausada (%1$s): permiso de contactos revocado.</string>
+    <string name="settings_contacts_sync_error">Último intento (%1$s): no se pudieron leer los contactos.</string>
+    <string name="settings_contacts_sync_none_added">Última sincronización: %1$s · sin contactos nuevos</string>
+    <string name="settings_contacts_sync_in_progress">Sincronizando contactos…</string>
+    <string name="settings_contacts_sync_explain_title">Leer agenda de contactos</string>
+    <string name="settings_contacts_sync_explain_body">Metanoia leerá los contactos de este teléfono solo para detectar clientes nuevos. Tus datos nunca salen del teléfono y nunca se modifican contactos.</string>
 </resources>

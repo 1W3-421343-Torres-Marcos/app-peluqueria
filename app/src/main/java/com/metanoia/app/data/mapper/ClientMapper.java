@@ -3,6 +3,7 @@ package com.metanoia.app.data.mapper;
 import com.metanoia.app.data.db.entity.ClientEntity;
 import com.metanoia.app.data.db.projection.ClientRowProjection;
 import com.metanoia.domain.model.Client;
+import com.metanoia.domain.model.ClientOrigin;
 import com.metanoia.domain.model.ClientSummary;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public final class ClientMapper {
                 .birthYear(entity.birthYear)
                 .notes(entity.notes)
                 .noShowCount(entity.noShowCount)
+                .contactLookupKey(entity.contactLookupKey)
+                .origin(ClientOrigin.fromStorage(entity.origin))
+                .createdFromContactAt(entity.createdFromContactAt)
                 .active(entity.active)
                 .createdAt(entity.createdAt)
                 .updatedAt(entity.updatedAt)
@@ -46,7 +50,10 @@ public final class ClientMapper {
                 client.noShowCount(),
                 client.isActive(),
                 client.createdAt(),
-                client.updatedAt()
+                client.updatedAt(),
+                client.contactLookupKey().orElse(null),
+                client.origin().name(),
+                client.createdFromContactAt().orElse(null)
         );
     }
 

@@ -28,6 +28,7 @@ import com.metanoia.app.ui.agenda.AgendaViewModel.AgendaFilter;
 import com.metanoia.app.ui.agenda.AgendaViewModel.ViewMode;
 import com.metanoia.app.ui.agenda.create.AppointmentCreateFragment;
 import com.metanoia.app.ui.agenda.detail.AppointmentDetailFragment;
+import com.metanoia.app.ui.onboarding.InitialSetupDialogFragment;
 import com.metanoia.app.util.Formats;
 import com.metanoia.domain.rules.BackupRetentionPolicy;
 
@@ -73,6 +74,7 @@ public class AgendaFragment extends Fragment {
 
         setupControls();
         observeData();
+        InitialSetupDialogFragment.bindToAgenda(this, viewModel, getViewLifecycleOwner());
     }
 
     private void setupControls() {

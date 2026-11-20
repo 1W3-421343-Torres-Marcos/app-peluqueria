@@ -39,6 +39,7 @@ public class AgendaViewModel extends AndroidViewModel {
     private final LiveData<List<AppointmentCardProjection>> weekAppointments;
     private final LiveData<List<ScheduleBlockEntity>> weekBlocks;
     private final LiveData<Integer> lowStockCount;
+    private final LiveData<Integer> activeClientsCount;
 
     public AgendaViewModel(@NonNull Application application) {
         super(application);
@@ -48,6 +49,7 @@ public class AgendaViewModel extends AndroidViewModel {
 
         activeProfessionals = container.database().professionalDao().observeAllWithDetails(false);
         lowStockCount = container.database().stockDao().observeLowStockCount();
+        activeClientsCount = container.database().clientDao().observeActiveCount();
 
         dayAppointments = Transformations.switchMap(filterState, filter ->
                 container.database().appointmentDao().observeDayCards(
@@ -96,6 +98,10 @@ public class AgendaViewModel extends AndroidViewModel {
 
     public LiveData<List<ScheduleBlockEntity>> observeWeekBlocks() {
         return weekBlocks;
+    }
+
+    public LiveData<Integer> observeActiveClientsCount() {
+        return activeClientsCount;
     }
 
     public LiveData<Integer> observeLowStockCount() {

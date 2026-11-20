@@ -38,4 +38,13 @@ public class PhoneNormalizerTest {
         assertFalse(PhoneNormalizer.isValid(PhoneNormalizer.normalize("abc")));
         assertFalse(PhoneNormalizer.isValid(null));
     }
+
+    @Test
+    public void normalize_contactAgendaFormats_handlesParenthesesDotsZerosAndFifteen() {
+        assertEquals("5491122334455", PhoneNormalizer.normalize("(011) 15-2233-4455"));
+        assertEquals("5491122334455", PhoneNormalizer.normalize("+54 9 11 15 2233-4455"));
+        assertEquals("5491122334455", PhoneNormalizer.normalize("0054 9 11 2233-4455"));
+        assertEquals("5493515556677", PhoneNormalizer.normalize("0351 15-555.6677"));
+        assertEquals("5493515556677", PhoneNormalizer.normalize("+54 351 15 555-6677"));
+    }
 }

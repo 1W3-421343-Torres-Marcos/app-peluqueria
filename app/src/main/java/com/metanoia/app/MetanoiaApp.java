@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.metanoia.app.data.backup.BackupScheduler;
+import com.metanoia.app.data.contacts.ContactSyncScheduler;
 import com.metanoia.app.data.reminders.ReminderDigestScheduler;
 
 /**
@@ -35,6 +36,7 @@ public class MetanoiaApp extends Application {
             ReminderDigestScheduler.syncSchedule(
                     appContext, active.devicePrefs(), active.clock());
             active.expireWaitlistEntriesUseCase().execute();
+            ContactSyncScheduler.syncOnForegroundIfDue(appContext, active);
         });
     }
 
@@ -45,8 +47,15 @@ public class MetanoiaApp extends Application {
         lifecycleRegistered = true;
         ProcessLifecycleOwner.get().getLifecycle().addObserver(
                 (LifecycleEventObserver) (source, event) -> {
-                    if (event == Lifecycle.Event.ON_STOP && container != null) {
-                        AppContainer active = container;
+                    if (container == null) {
+                        return;
+                    }
+                    AppContainer active = container;
+                    if (event == Lifecycle.Event.ON_START) {
+                        active.executors().io().execute(() ->
+                                ContactSyncScheduler.syncOnForegroundIfDue(
+                                        MetanoiaApp.this, active));
+                    } else if (event == Lifecycle.Event.ON_STOP) {
                         active.lockController().onAppBackgrounded(active.clock().nowMillis());
                         active.executors().io().execute(() ->
                                 BackupScheduler.enqueueOnBackgroundIfNeeded(
