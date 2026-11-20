@@ -112,7 +112,7 @@ public class ChargeAppointmentViewModel extends AndroidViewModel {
                         "No se pudo registrar el cobro");
             }
             busy = false;
-            handleResult(result.isSuccess(), result.getError());
+            handleResult(result);
         });
     }
 
@@ -138,17 +138,19 @@ public class ChargeAppointmentViewModel extends AndroidViewModel {
                         "No se pudo completar y cobrar el turno");
             }
             busy = false;
-            handleResult(result.isSuccess(), result.getError());
+            handleResult(result);
         });
     }
 
-    protected void handleResult(boolean success, @Nullable DomainError error) {
-        if (success) {
+    protected void handleResult(
+            @NonNull Result<ChargeAppointmentUseCase.ChargeResult> result
+    ) {
+        if (result.isSuccess()) {
             feedbackEvent.postValue(new Event<>(R.string.charge_success));
             closeSheetEvent.postValue(new Event<>(true));
-        } else if (error == DomainError.CONFLICT) {
+        } else if (result.getError() == DomainError.CONFLICT) {
             feedbackEvent.postValue(new Event<>(R.string.charge_error_conflict));
-        } else if (error == DomainError.VALIDATION_ERROR) {
+        } else if (result.getError() == DomainError.VALIDATION_ERROR) {
             feedbackEvent.postValue(new Event<>(R.string.charge_error_validation));
         } else {
             feedbackEvent.postValue(new Event<>(R.string.charge_error_unexpected));
