@@ -17,6 +17,16 @@
             android:layout_marginTop="@dimen/space_s"
             app:searchHint="@string/clients_search_hint" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnImportContacts"
+            style="@style/Widget.Metanoia.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_margin"
+            android:layout_marginTop="@dimen/space_xs"
+            android:text="@string/clients_import_contacts_btn"
+            app:icon="@drawable/ic_clients" />
+
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchClientsIncludeInactive"
             android:layout_width="match_parent"

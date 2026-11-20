@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.metanoia.app.R;
 import com.metanoia.app.databinding.FragmentClientsBinding;
+import com.metanoia.app.ui.clients.importcontacts.ContactsImportDialogFragment;
 
 /**
  * Listado y búsqueda SQL liviana de clientes del salón.
@@ -50,6 +51,7 @@ public class ClientsFragment extends Fragment {
         binding.fabNewClient.setOnClickListener(v ->
                 ClientFormDialogFragment.newCreateInstance()
                         .show(getChildFragmentManager(), TAG_CLIENT_FORM));
+        binding.btnImportContacts.setOnClickListener(v -> openContactsImport());
 
         getChildFragmentManager().setFragmentResultListener(
                 ClientFormDialogFragment.REQUEST_KEY,
@@ -73,11 +75,23 @@ public class ClientsFragment extends Fragment {
                 binding.clientsEmptyState.setMessage(hasQuery
                         ? R.string.clients_empty_search
                         : R.string.empty_clients_title);
+                if (hasQuery) {
+                    binding.clientsEmptyState.setAction(null, null);
+                } else {
+                    binding.clientsEmptyState.setAction(
+                            R.string.clients_import_contacts_btn,
+                            v -> openContactsImport());
+                }
                 adapter.submitList(null);
             } else {
                 adapter.submitList(list);
             }
         });
+    }
+
+    private void openContactsImport() {
+        ContactsImportDialogFragment.newInstance()
+                .show(getChildFragmentManager(), ContactsImportDialogFragment.TAG);
     }
 
     private void openClientDetail(@NonNull String clientId) {

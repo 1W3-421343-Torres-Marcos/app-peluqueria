@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_agenda_to_stock"
             app:destination="@id/nav_stock" />
+        <action
+            android:id="@+id/action_agenda_to_settings"
+            app:destination="@id/nav_settings" />
     </fragment>
 
     <fragment
