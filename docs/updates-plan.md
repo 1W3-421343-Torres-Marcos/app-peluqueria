@@ -22,17 +22,17 @@
 | U2.2 | [x] | `./gradlew.bat lint assembleDebug` verde. |
 | U2.3 | [x] | Tests instrumentados de caja y agenda compilados. |
 | U2.4 | [ ] | Prueba manual: confirmar, completar, cobrar, revertir y cancelar. |
-| U2.5 | [ ] | `assembleRelease` y verificacion `apksigner` verde. |
+| U2.5 | [x] | `assembleRelease` y verificacion `apksigner` verde. |
 
 ## U3 — Entrega
 
 | ID | Estado | Cambio |
 |---|---|---|
 | U3.1 | [x] | Subir `versionCode` a 14 y `versionName` a `1.1.1`. |
-| U3.2 | [~] | Registrar cada hito con commit Conventional Commit. |
+| U3.2 | [x] | Registrar cada hito con commit Conventional Commit. |
 | U3.3 | [x] | Actualizar `docs/changelog.md` y este tablero. |
-| U3.4 | [ ] | Fusionar a `main` y crear tag `v1.1.1`. |
-| U3.5 | [ ] | Entregar APK debug y APK release firmados verificados. |
+| U3.4 | [x] | Fusionar a `main` y crear tag `v1.1.1`. |
+| U3.5 | [x] | Entregar APK debug y APK release firmados verificados. |
 
 ## Registro de avance
 
@@ -41,3 +41,4 @@
 | 20/11/2026 | U1.1 | No hay dispositivo conectado por ADB; queda pendiente capturar el `FATAL EXCEPTION` real. | Conectar dispositivo y capturar `logcat` |
 | 20/11/2026 | U1.2/U1.3 | Se agregan catches de persistencia y transaccion atomica para estado/auditoria y cobros. Compilacion y suite inicial verdes. | Agregar prueba de rollback y ejecutar lint |
 | 20/11/2026 | U1.5/U3.1 | Prueba de rollback agregada y version corregida a `1.1.1` (`versionCode 14`). | Ejecutar suite completa y generar release |
+| 20/11/2026 | U2.5/U3.4/U3.5 | Suite completa, lint y APK debug/release verdes; firma v2 verificada con el certificado existente; merge y tag `v1.1.1` completados. | Prueba manual al conectar un dispositivo |
