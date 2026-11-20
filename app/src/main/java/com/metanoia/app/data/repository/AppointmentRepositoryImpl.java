@@ -1,5 +1,6 @@
 package com.metanoia.app.data.repository;
 
+import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.db.dao.AppointmentDao;
 import com.metanoia.app.data.db.dao.RecurrenceRuleDao;
 import com.metanoia.app.data.db.entity.AppointmentEntity;
@@ -22,13 +23,16 @@ import java.util.Optional;
  */
 public final class AppointmentRepositoryImpl implements AppointmentRepository {
 
+    private final AppDatabase database;
     private final AppointmentDao appointmentDao;
     private final RecurrenceRuleDao recurrenceRuleDao;
 
     public AppointmentRepositoryImpl(
+            AppDatabase database,
             AppointmentDao appointmentDao,
             RecurrenceRuleDao recurrenceRuleDao
     ) {
+        this.database = Objects.requireNonNull(database, "database");
         this.appointmentDao = Objects.requireNonNull(appointmentDao, "appointmentDao");
         this.recurrenceRuleDao = Objects.requireNonNull(recurrenceRuleDao, "recurrenceRuleDao");
     }
@@ -124,5 +128,10 @@ public final class AppointmentRepositoryImpl implements AppointmentRepository {
     @Override
     public void saveRecurrenceRule(RecurrenceRule rule) {
         recurrenceRuleDao.upsert(AppointmentMapper.toRecurrenceEntity(rule));
+    }
+
+    @Override
+    public void runInTransaction(Runnable action) {
+        database.runInTransaction(action);
     }
 }

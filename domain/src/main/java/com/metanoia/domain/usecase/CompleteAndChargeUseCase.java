@@ -100,108 +100,118 @@ public final class CompleteAndChargeUseCase {
         String appointmentId = request.appointmentId.trim();
 
         AtomicReference<Result<ChargeResult>> outcome = new AtomicReference<>();
-        cashRepository.runInTransaction(() -> {
-            if (cashRepository.isDayClosed(today)) {
-                outcome.set(Result.failure(
-                        DomainError.CONFLICT, "La caja de hoy ya está cerrada"));
-                return;
-            }
-            Optional<Appointment> found = appointmentRepository.findById(appointmentId);
-            if (!found.isPresent()) {
-                outcome.set(Result.failure(DomainError.NOT_FOUND, "Turno no encontrado"));
-                return;
-            }
-            Appointment current = found.get();
-            if (current.status() != AppointmentStatus.PENDING
-                    && current.status() != AppointmentStatus.CONFIRMED) {
-                outcome.set(Result.failure(
-                        DomainError.CONFLICT,
-                        "Solo se puede completar y cobrar desde Pendiente o Confirmado"));
-                return;
-            }
-            Optional<Professional> proOpt = professionalRepository.findById(
-                    current.professionalId());
-            if (!proOpt.isPresent()) {
-                outcome.set(Result.failure(DomainError.NOT_FOUND, "Profesional no encontrado"));
-                return;
-            }
+        try {
+            cashRepository.runInTransaction(() -> {
+                if (cashRepository.isDayClosed(today)) {
+                    outcome.set(Result.failure(
+                            DomainError.CONFLICT, "La caja de hoy ya está cerrada"));
+                    return;
+                }
+                Optional<Appointment> found = appointmentRepository.findById(appointmentId);
+                if (!found.isPresent()) {
+                    outcome.set(Result.failure(DomainError.NOT_FOUND, "Turno no encontrado"));
+                    return;
+                }
+                Appointment current = found.get();
+                if (current.status() != AppointmentStatus.PENDING
+                        && current.status() != AppointmentStatus.CONFIRMED) {
+                    outcome.set(Result.failure(
+                            DomainError.CONFLICT,
+                            "Solo se puede completar y cobrar desde Pendiente o Confirmado"));
+                    return;
+                }
+                Optional<Professional> proOpt = professionalRepository.findById(
+                        current.professionalId());
+                if (!proOpt.isPresent()) {
+                    outcome.set(Result.failure(
+                            DomainError.NOT_FOUND, "Profesional no encontrado"));
+                    return;
+                }
 
-            Result<Money> adjustmentResult = CashPaymentSupport.resolveAdjustment(
-                    current.adjustment(), request.adjustment, request.adjustmentReason);
-            if (!adjustmentResult.isSuccess()) {
-                outcome.set(Result.failure(
-                        adjustmentResult.getError(), adjustmentResult.getErrorMessage()));
-                return;
-            }
-            Money effectiveAdjustment = adjustmentResult.getValue();
-            long totalCents = current.itemsSubtotal().cents() + effectiveAdjustment.cents();
-            if (totalCents <= 0L) {
-                outcome.set(Result.failure(
-                        DomainError.VALIDATION_ERROR,
-                        "El total ajustado debe ser mayor a cero"));
-                return;
-            }
-            Money paidNow = splitsResult.getValue();
-            if (paidNow.cents() > totalCents) {
-                outcome.set(Result.failure(
-                        DomainError.VALIDATION_ERROR,
-                        "El importe a cobrar supera el total del turno"));
-                return;
-            }
+                Result<Money> adjustmentResult = CashPaymentSupport.resolveAdjustment(
+                        current.adjustment(), request.adjustment, request.adjustmentReason);
+                if (!adjustmentResult.isSuccess()) {
+                    outcome.set(Result.failure(
+                            adjustmentResult.getError(), adjustmentResult.getErrorMessage()));
+                    return;
+                }
+                Money effectiveAdjustment = adjustmentResult.getValue();
+                long totalCents =
+                        current.itemsSubtotal().cents() + effectiveAdjustment.cents();
+                if (totalCents <= 0L) {
+                    outcome.set(Result.failure(
+                            DomainError.VALIDATION_ERROR,
+                            "El total ajustado debe ser mayor a cero"));
+                    return;
+                }
+                Money paidNow = splitsResult.getValue();
+                if (paidNow.cents() > totalCents) {
+                    outcome.set(Result.failure(
+                            DomainError.VALIDATION_ERROR,
+                            "El importe a cobrar supera el total del turno"));
+                    return;
+                }
 
-            List<AppointmentItem> frozenItems = StatusTransitions.freezeCommissions(
-                    current.items(), proOpt.get().commissionBasisPoints());
-            Appointment completedWithAdjust = current.toBuilder()
-                    .items(frozenItems)
-                    .adjustment(effectiveAdjustment)
-                    .updatedAt(now)
-                    .build();
+                List<AppointmentItem> frozenItems = StatusTransitions.freezeCommissions(
+                        current.items(), proOpt.get().commissionBasisPoints());
+                Appointment completedWithAdjust = current.toBuilder()
+                        .items(frozenItems)
+                        .adjustment(effectiveAdjustment)
+                        .updatedAt(now)
+                        .build();
 
-            AppointmentBalance balance = AppointmentBalance.of(completedWithAdjust, paidNow);
-            AppointmentStatus finalStatus = StatusTransitions.resolveStatusAfterPaymentChange(
-                    AppointmentStatus.COMPLETED, balance);
-            Appointment savedAppointment = completedWithAdjust.toBuilder()
-                    .status(finalStatus)
-                    .build();
-            appointmentRepository.save(savedAppointment);
+                AppointmentBalance balance =
+                        AppointmentBalance.of(completedWithAdjust, paidNow);
+                AppointmentStatus finalStatus =
+                        StatusTransitions.resolveStatusAfterPaymentChange(
+                                AppointmentStatus.COMPLETED, balance);
+                Appointment savedAppointment = completedWithAdjust.toBuilder()
+                        .status(finalStatus)
+                        .build();
+                appointmentRepository.save(savedAppointment);
 
-            auditLogRepository.record(new AuditRecord.Builder()
-                    .id(idGenerator.nextId())
-                    .timestamp(now)
-                    .operator(operator)
-                    .action("APPOINTMENT_COMPLETE")
-                    .entityType("APPOINTMENT")
-                    .entityId(appointmentId)
-                    .amountCents(balance.total().cents())
-                    .concept("Servicio completado al cobrar")
-                    .build());
-
-            if (!effectiveAdjustment.equals(current.adjustment())) {
                 auditLogRepository.record(new AuditRecord.Builder()
                         .id(idGenerator.nextId())
                         .timestamp(now)
                         .operator(operator)
-                        .action("APPOINTMENT_ADJUSTMENT")
+                        .action("APPOINTMENT_COMPLETE")
                         .entityType("APPOINTMENT")
                         .entityId(appointmentId)
-                        .amountCents(effectiveAdjustment.cents())
-                        .concept("Ajuste al cobrar: " + request.adjustmentReason.trim())
+                        .amountCents(balance.total().cents())
+                        .concept("Servicio completado al cobrar")
                         .build());
-            }
 
-            List<CashMovement> movements = CashPaymentSupport.recordAppointmentSplits(
-                    savedAppointment,
-                    request.splits,
-                    today,
-                    now,
-                    operator,
-                    cashRepository,
-                    auditLogRepository,
-                    idGenerator
-            );
+                if (!effectiveAdjustment.equals(current.adjustment())) {
+                    auditLogRepository.record(new AuditRecord.Builder()
+                            .id(idGenerator.nextId())
+                            .timestamp(now)
+                            .operator(operator)
+                            .action("APPOINTMENT_ADJUSTMENT")
+                            .entityType("APPOINTMENT")
+                            .entityId(appointmentId)
+                            .amountCents(effectiveAdjustment.cents())
+                            .concept("Ajuste al cobrar: " + request.adjustmentReason.trim())
+                            .build());
+                }
 
-            outcome.set(Result.success(new ChargeResult(savedAppointment, movements, balance)));
-        });
+                List<CashMovement> movements = CashPaymentSupport.recordAppointmentSplits(
+                        savedAppointment,
+                        request.splits,
+                        today,
+                        now,
+                        operator,
+                        cashRepository,
+                        auditLogRepository,
+                        idGenerator
+                );
+
+                outcome.set(Result.success(
+                        new ChargeResult(savedAppointment, movements, balance)));
+            });
+        } catch (RuntimeException ex) {
+            return Result.failure(DomainError.DATABASE_ERROR,
+                    "No se pudo completar y cobrar el turno");
+        }
 
         return outcome.get();
     }

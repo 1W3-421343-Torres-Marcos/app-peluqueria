@@ -121,105 +121,113 @@ public final class ChargeAppointmentUseCase {
         String appointmentId = request.appointmentId.trim();
 
         AtomicReference<Result<ChargeResult>> outcome = new AtomicReference<>();
-        cashRepository.runInTransaction(() -> {
-            if (cashRepository.isDayClosed(today)) {
-                outcome.set(Result.failure(
-                        DomainError.CONFLICT, "La caja de hoy ya está cerrada"));
-                return;
-            }
-            Optional<Appointment> found = appointmentRepository.findById(appointmentId);
-            if (!found.isPresent()) {
-                outcome.set(Result.failure(DomainError.NOT_FOUND, "Turno no encontrado"));
-                return;
-            }
-            Appointment current = found.get();
-            if (current.status() != AppointmentStatus.COMPLETED) {
-                outcome.set(Result.failure(
-                        DomainError.CONFLICT,
-                        "Solo se pueden cobrar turnos en estado COMPLETADO con saldo pendiente"));
-                return;
-            }
+        try {
+            cashRepository.runInTransaction(() -> {
+                if (cashRepository.isDayClosed(today)) {
+                    outcome.set(Result.failure(
+                            DomainError.CONFLICT, "La caja de hoy ya está cerrada"));
+                    return;
+                }
+                Optional<Appointment> found = appointmentRepository.findById(appointmentId);
+                if (!found.isPresent()) {
+                    outcome.set(Result.failure(DomainError.NOT_FOUND, "Turno no encontrado"));
+                    return;
+                }
+                Appointment current = found.get();
+                if (current.status() != AppointmentStatus.COMPLETED) {
+                    outcome.set(Result.failure(
+                            DomainError.CONFLICT,
+                            "Solo se pueden cobrar turnos en estado COMPLETADO con saldo pendiente"));
+                    return;
+                }
 
-            Result<Money> adjustmentResult = CashPaymentSupport.resolveAdjustment(
-                    current.adjustment(), request.newAdjustment, request.adjustmentReason);
-            if (!adjustmentResult.isSuccess()) {
-                outcome.set(Result.failure(
-                        adjustmentResult.getError(), adjustmentResult.getErrorMessage()));
-                return;
-            }
-            Money effectiveAdjustment = adjustmentResult.getValue();
-            long newTotalCents = current.itemsSubtotal().cents() + effectiveAdjustment.cents();
-            if (newTotalCents <= 0L) {
-                outcome.set(Result.failure(
-                        DomainError.VALIDATION_ERROR,
-                        "El total ajustado debe ser mayor a cero"));
-                return;
-            }
+                Result<Money> adjustmentResult = CashPaymentSupport.resolveAdjustment(
+                        current.adjustment(), request.newAdjustment, request.adjustmentReason);
+                if (!adjustmentResult.isSuccess()) {
+                    outcome.set(Result.failure(
+                            adjustmentResult.getError(), adjustmentResult.getErrorMessage()));
+                    return;
+                }
+                Money effectiveAdjustment = adjustmentResult.getValue();
+                long newTotalCents =
+                        current.itemsSubtotal().cents() + effectiveAdjustment.cents();
+                if (newTotalCents <= 0L) {
+                    outcome.set(Result.failure(
+                            DomainError.VALIDATION_ERROR,
+                            "El total ajustado debe ser mayor a cero"));
+                    return;
+                }
 
-            Money alreadyPaid = AppointmentPaymentCalculator.netPaid(
-                    cashRepository.findMovementsByAppointmentId(appointmentId));
-            long remainingCents = newTotalCents - alreadyPaid.cents();
-            if (newTotalCents < alreadyPaid.cents()) {
-                outcome.set(Result.failure(
-                        DomainError.VALIDATION_ERROR,
-                        "El ajuste no puede dejar el total por debajo de lo ya pagado"));
-                return;
-            }
-            if (remainingCents <= 0L) {
-                outcome.set(Result.failure(
-                        DomainError.CONFLICT, "El turno no tiene saldo pendiente de cobro"));
-                return;
-            }
+                Money alreadyPaid = AppointmentPaymentCalculator.netPaid(
+                        cashRepository.findMovementsByAppointmentId(appointmentId));
+                long remainingCents = newTotalCents - alreadyPaid.cents();
+                if (newTotalCents < alreadyPaid.cents()) {
+                    outcome.set(Result.failure(
+                            DomainError.VALIDATION_ERROR,
+                            "El ajuste no puede dejar el total por debajo de lo ya pagado"));
+                    return;
+                }
+                if (remainingCents <= 0L) {
+                    outcome.set(Result.failure(
+                            DomainError.CONFLICT, "El turno no tiene saldo pendiente de cobro"));
+                    return;
+                }
 
-            long payingCents = splitsResult.getValue().cents();
-            if (payingCents > remainingCents) {
-                outcome.set(Result.failure(
-                        DomainError.VALIDATION_ERROR,
-                        "El importe a cobrar supera el saldo pendiente"));
-                return;
-            }
+                long payingCents = splitsResult.getValue().cents();
+                if (payingCents > remainingCents) {
+                    outcome.set(Result.failure(
+                            DomainError.VALIDATION_ERROR,
+                            "El importe a cobrar supera el saldo pendiente"));
+                    return;
+                }
 
-            Money updatedNetPaid = alreadyPaid.plus(splitsResult.getValue());
-            Appointment adjustedApt = current.toBuilder()
-                    .adjustment(effectiveAdjustment)
-                    .updatedAt(now)
-                    .build();
-            AppointmentBalance updatedBalance = AppointmentBalance.of(adjustedApt, updatedNetPaid);
-            AppointmentStatus nextStatus = StatusTransitions.resolveStatusAfterPaymentChange(
-                    AppointmentStatus.COMPLETED, updatedBalance);
+                Money updatedNetPaid = alreadyPaid.plus(splitsResult.getValue());
+                Appointment adjustedApt = current.toBuilder()
+                        .adjustment(effectiveAdjustment)
+                        .updatedAt(now)
+                        .build();
+                AppointmentBalance updatedBalance =
+                        AppointmentBalance.of(adjustedApt, updatedNetPaid);
+                AppointmentStatus nextStatus =
+                        StatusTransitions.resolveStatusAfterPaymentChange(
+                                AppointmentStatus.COMPLETED, updatedBalance);
 
-            Appointment savedAppointment = adjustedApt.toBuilder()
-                    .status(nextStatus)
-                    .build();
-            appointmentRepository.save(savedAppointment);
+                Appointment savedAppointment = adjustedApt.toBuilder()
+                        .status(nextStatus)
+                        .build();
+                appointmentRepository.save(savedAppointment);
 
-            if (!effectiveAdjustment.equals(current.adjustment())) {
-                auditLogRepository.record(new AuditRecord.Builder()
-                        .id(idGenerator.nextId())
-                        .timestamp(now)
-                        .operator(operator)
-                        .action("APPOINTMENT_ADJUSTMENT")
-                        .entityType("APPOINTMENT")
-                        .entityId(appointmentId)
-                        .amountCents(effectiveAdjustment.cents())
-                        .concept("Ajuste en cobro: " + request.adjustmentReason.trim())
-                        .build());
-            }
+                if (!effectiveAdjustment.equals(current.adjustment())) {
+                    auditLogRepository.record(new AuditRecord.Builder()
+                            .id(idGenerator.nextId())
+                            .timestamp(now)
+                            .operator(operator)
+                            .action("APPOINTMENT_ADJUSTMENT")
+                            .entityType("APPOINTMENT")
+                            .entityId(appointmentId)
+                            .amountCents(effectiveAdjustment.cents())
+                            .concept("Ajuste en cobro: " + request.adjustmentReason.trim())
+                            .build());
+                }
 
-            List<CashMovement> movements = CashPaymentSupport.recordAppointmentSplits(
-                    savedAppointment,
-                    request.splits,
-                    today,
-                    now,
-                    operator,
-                    cashRepository,
-                    auditLogRepository,
-                    idGenerator
-            );
+                List<CashMovement> movements = CashPaymentSupport.recordAppointmentSplits(
+                        savedAppointment,
+                        request.splits,
+                        today,
+                        now,
+                        operator,
+                        cashRepository,
+                        auditLogRepository,
+                        idGenerator
+                );
 
-            outcome.set(Result.success(new ChargeResult(
-                    savedAppointment, movements, updatedBalance)));
-        });
+                outcome.set(Result.success(new ChargeResult(
+                        savedAppointment, movements, updatedBalance)));
+            });
+        } catch (RuntimeException ex) {
+            return Result.failure(DomainError.DATABASE_ERROR,
+                    "No se pudo guardar el cobro del turno");
+        }
 
         return outcome.get();
     }

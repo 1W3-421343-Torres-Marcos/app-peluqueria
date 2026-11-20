@@ -64,4 +64,8 @@ public interface AppointmentRepository {
     void saveAll(List<Appointment> appointments);
 
     void saveRecurrenceRule(RecurrenceRule rule);
+
+    default void runInTransaction(Runnable action) {
+        action.run();
+    }
 }

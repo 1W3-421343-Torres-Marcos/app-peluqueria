@@ -101,10 +101,16 @@ public class ChargeAppointmentViewModel extends AndroidViewModel {
         }
         busy = true;
         container.executors().io().execute(() -> {
-            Result<ChargeAppointmentUseCase.ChargeResult> result = container
-                    .chargeAppointmentUseCase()
-                    .execute(new ChargeAppointmentUseCase.Request(
-                            appointmentId, requestedAdjustment, adjustmentReason, splits));
+            Result<ChargeAppointmentUseCase.ChargeResult> result;
+            try {
+                result = container
+                        .chargeAppointmentUseCase()
+                        .execute(new ChargeAppointmentUseCase.Request(
+                                appointmentId, requestedAdjustment, adjustmentReason, splits));
+            } catch (RuntimeException ex) {
+                result = Result.failure(DomainError.DATABASE_ERROR,
+                        "No se pudo registrar el cobro");
+            }
             busy = false;
             handleResult(result.isSuccess(), result.getError());
         });
@@ -121,10 +127,16 @@ public class ChargeAppointmentViewModel extends AndroidViewModel {
         }
         busy = true;
         container.executors().io().execute(() -> {
-            Result<ChargeAppointmentUseCase.ChargeResult> result = container
-                    .completeAndChargeUseCase()
-                    .execute(new CompleteAndChargeUseCase.Request(
-                            appointmentId, requestedAdjustment, adjustmentReason, splits));
+            Result<ChargeAppointmentUseCase.ChargeResult> result;
+            try {
+                result = container
+                        .completeAndChargeUseCase()
+                        .execute(new CompleteAndChargeUseCase.Request(
+                                appointmentId, requestedAdjustment, adjustmentReason, splits));
+            } catch (RuntimeException ex) {
+                result = Result.failure(DomainError.DATABASE_ERROR,
+                        "No se pudo completar y cobrar el turno");
+            }
             busy = false;
             handleResult(result.isSuccess(), result.getError());
         });

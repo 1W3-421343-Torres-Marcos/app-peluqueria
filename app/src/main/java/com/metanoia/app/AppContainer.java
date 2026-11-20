@@ -162,7 +162,7 @@ public final class AppContainer {
                 database.professionalDao(), database.appointmentDao());
         this.clientRepository = new ClientRepositoryImpl(database);
         this.appointmentRepository = new AppointmentRepositoryImpl(
-                database.appointmentDao(), database.recurrenceRuleDao());
+                database, database.appointmentDao(), database.recurrenceRuleDao());
         this.scheduleBlockRepository = new ScheduleBlockRepositoryImpl(database.scheduleBlockDao());
         this.cashRepository = new CashRepositoryImpl(database);
         this.reminderRepository = new ReminderRepositoryImpl(database.reminderDao());
