@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.metanoia.app.AppContainer;
 import com.metanoia.app.MetanoiaApp;
 import com.metanoia.app.R;
+import com.metanoia.app.data.contacts.ContactSyncScheduler;
 import com.metanoia.app.data.contacts.DeviceContactsReader;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.domain.common.Result;
@@ -139,6 +140,7 @@ public class ContactsImportViewModel extends AndroidViewModel {
                     outcome.importedCount(),
                     DevicePrefs.SYNC_STATUS_OK);
             prefs.setLastContactSyncAttemptMillis(outcome.executedAtMillis());
+            ContactSyncScheduler.scheduleContentUriTrigger(getApplication(), true);
             state.postValue(new UiState(Step.DONE, null, outcome, false, 0));
         });
     }

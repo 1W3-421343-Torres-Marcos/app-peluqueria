@@ -222,6 +222,44 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_s" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_l"
+                android:text="@string/settings_section_contacts_sync"
+                android:textAppearance="@style/TextAppearance.Metanoia.Title"
+                android:textColor="?attr/colorOnSurface" />
+
+            <com.metanoia.app.ui.common.AlertBanner
+                android:id="@+id/bannerContactsSyncPermission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_s"
+                android:visibility="gone" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchContactsAutoSync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/settings_contacts_sync_switch" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_contacts_sync_hint"
+                android:textAppearance="@style/TextAppearance.Metanoia.BodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <TextView
+                android:id="@+id/textContactsSyncStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:textAppearance="@style/TextAppearance.Metanoia.Caption"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
             <com.metanoia.app.ui.common.ListRowView
                 android:id="@+id/rowSettingsTemplates"
                 android:layout_width="match_parent"

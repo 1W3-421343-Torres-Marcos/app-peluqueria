@@ -31,6 +31,8 @@ public class SettingsFragment extends Fragment {
     private final List<String> operators = new ArrayList<>();
     private String selectedOperator = Settings.DEFAULT_OPERATOR;
     private boolean formPopulated;
+    private final ContactsSyncSettingsController contactsSyncController =
+            new ContactsSyncSettingsController(this);
 
     @Nullable
     @Override
@@ -68,6 +70,13 @@ public class SettingsFragment extends Fragment {
                 .findNavController(this)
                 .navigate(R.id.action_settings_to_security));
         binding.btnSaveSettings.setOnClickListener(v -> submitForm());
+        contactsSyncController.bind(binding);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        contactsSyncController.refresh();
     }
 
     private void populateForm(Settings settings) {
@@ -179,6 +188,7 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        contactsSyncController.unbind();
         super.onDestroyView();
         binding = null;
     }

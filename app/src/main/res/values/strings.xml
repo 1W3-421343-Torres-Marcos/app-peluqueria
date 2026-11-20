@@ -183,6 +183,10 @@
         <item quantity="one">Se importó %1$d cliente nuevo. La sincronización automática para contactos nuevos quedó activada.</item>
         <item quantity="other">Se importaron %1$d clientes nuevos. La sincronización automática para contactos nuevos quedó activada.</item>
     </plurals>
+    <plurals name="settings_contacts_sync_added_format">
+        <item quantity="one">Última sincronización: %1$s · %2$d cliente nuevo</item>
+        <item quantity="other">Última sincronización: %1$s · %2$d clientes nuevos</item>
+    </plurals>
     <string name="client_inactive_tag">Inactivo</string>
     <string name="client_row_inactive_with_absences">%1$s · %2$s</string>
     <string name="client_form_new_title">Nuevo cliente</string>
@@ -1025,4 +1029,19 @@
     <string name="clients_empty_recent_contacts">No se importaron clientes desde contactos en los últimos 7 días.</string>
     <string name="client_missing_birthday_tag">Sin cumpleaños · tocar para completar</string>
     <string name="client_recent_contact_tag">Importado %1$s</string>
+
+    <!-- Sincronización automática de contactos en Configuración (F13.6) -->
+    <string name="settings_section_contacts_sync">Sincronización de contactos</string>
+    <string name="settings_contacts_sync_switch">Sincronizar contactos automáticamente</string>
+    <string name="settings_contacts_sync_hint">Cada contacto nuevo con teléfono válido se agregará como cliente sin sobrescribir datos existentes.</string>
+    <string name="settings_contacts_sync_banner_revoked">Permiso de contactos revocado: la sincronización automática está pausada.</string>
+    <string name="settings_contacts_sync_banner_action">Habilitar</string>
+    <string name="settings_contacts_sync_never">Todavía no se realizó ninguna sincronización automática.</string>
+    <string name="settings_contacts_sync_paused_permission">Pausada: falta el permiso para leer contactos.</string>
+    <string name="settings_contacts_sync_paused_permission_dated">Pausada (%1$s): permiso de contactos revocado.</string>
+    <string name="settings_contacts_sync_error">Último intento (%1$s): no se pudieron leer los contactos.</string>
+    <string name="settings_contacts_sync_none_added">Última sincronización: %1$s · sin contactos nuevos</string>
+    <string name="settings_contacts_sync_in_progress">Sincronizando contactos…</string>
+    <string name="settings_contacts_sync_explain_title">Leer agenda de contactos</string>
+    <string name="settings_contacts_sync_explain_body">Metanoia leerá los contactos de este teléfono solo para detectar clientes nuevos. Tus datos nunca salen del teléfono y nunca se modifican contactos.</string>
 </resources>

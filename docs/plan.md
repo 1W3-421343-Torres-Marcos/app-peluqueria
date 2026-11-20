@@ -19,8 +19,8 @@
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
-| F13 | Clientes desde contactos | [~] | 5/7 | 71 % |
-| **Total** | | | **91/93** | **98 %** |
+| F13 | Clientes desde contactos | [~] | 6/7 | 86 % |
+| **Total** | | | **92/93** | **99 %** |
 
 ---
 
@@ -335,7 +335,7 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 5. [x] **F13.5 Filtros de cumpleaños pendientes e importados recientemente**
    - Archivos: `ClientsFragment`, `ClientsViewModel`, `ClientsAdapter`, `ClientFormDialogFragment`, layouts y `strings.xml`
    - Hecho: filtro **"Sin cumpleaños"** con contador visible y edición directa del campo cumpleaños con un toque; filtro **"Importados recientemente"** (últimos 7 días, `origin = CONTACT_SYNC`) para revisar altas automáticas y permitir baja lógica manual.
-6. [ ] **F13.6 Sincronización automática (WorkManager URI trigger, respaldo 15 min y Configuración)**
+6. [x] **F13.6 Sincronización automática (WorkManager URI trigger, respaldo 15 min y Configuración)**
    - Archivos: `data/contacts/ContactSyncWorker.java`, `ContactSyncScheduler.java`, `DevicePrefs`, `MetanoiaApp`, `MainActivity`, `SecuritySettingsFragment` / `SettingsFragment`, layouts y `strings.xml`
    - Hecho: `ContactSyncWorker` con `Constraints.Builder.addContentUriTrigger(ContactsContract.Contacts.CONTENT_URI, true)` auto-reprogramable; respaldo al abrir y volver a primer plano con límite mínimo de 15 min; pausa sin fallos con aviso visible en Configuración cuando se revoca `READ_CONTACTS`; interruptor "Sincronizar contactos automáticamente" con fecha y resultado de la última sincronización.
 7. [ ] **F13.7 Verificación final F13, firma v1.1.0 y entrega**
@@ -443,3 +443,4 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 | 19/11/2026 | F13.3 | Declarado `READ_CONTACTS` solo lectura en `AndroidManifest.xml` (sin `WRITE_CONTACTS`, manteniendo `INTERNET` removido y `allowBackup="false"`); implementado `DeviceContactsReader` en `app/data/contacts/` leyendo cuentas (`Contacts`, `Phone`, evento `BIRTHDAY`) sin modificar contactos ni loguear PII y cableado en `AppContainer`; `ManifestPrivacyTest` (3/3 OK) y `SecurityAuditTest` (2/2 OK), `:app:testDebugUnitTest` 39/39 OK y `assembleDebug` OK. | F13.4 |
 | 19/11/2026 | F13.4 | Flujo de importación masiva inicial: `DevicePrefs` ampliado con banderas de onboarding/sync; `ContactsImportViewModel`, `ContactsImportDialogFragment` y `dialog_contacts_import.xml` (explicación previa a `READ_CONTACTS`, vista previa con 3 contadores `a importar`/`ya cargados`/`omitidos`, botón `Importar todos` transaccional en `AppExecutors.io()` con progreso y activación automática por defecto); botón en `ClientsFragment` + estado vacío y asistente único `InitialSetupDialogFragment` en `AgendaFragment`/`AgendaViewModel`; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 (`AccessibilityAuditTest` y `SecurityAuditTest` OK) y `assembleDebug` OK. | F13.5 |
 | 19/11/2026 | F13.5 | Filtros en Clientes (`fragment_clients.xml`, `ClientsViewModel`, `ClientsFragment`, `ClientsAdapter` con `Objects.equals`, `ClientFormDialogFragment.newEditFocusBirthdayInstance`): chip `Sin cumpleaños (N)` con contador reactivo y apertura directa del editor enfocado en cumpleaños en un toque; chip `Importados recientemente` (últimos 7 días, `origin = CONTACT_SYNC`) para revisión y baja lógica desde detalle; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 y `assembleDebug` OK. | F13.6 |
+| 19/11/2026 | F13.6 | Sincronización automática: `ContactSyncCoordinator` (protegido con `ReentrantLock`), `ContactSyncWorker` auto-reprogramable tras `addContentUriTrigger(ContactsContract.Contacts.CONTENT_URI, true)` y `ContactSyncScheduler` con respaldo al iniciar/volver a primer plano (`ON_START` en `MetanoiaApp`) limitado cada 15 min y pausa limpia si falta `READ_CONTACTS`; sección Configuración (`fragment_settings.xml`, `ContactsSyncSettingsController`, `SettingsFragment`) con interruptor, última fecha/resultado y banner ante permiso revocado; `:domain:test` 165/165, `:app:testDebugUnitTest` 39/39 y `assembleDebug` OK. | F13.7 |
