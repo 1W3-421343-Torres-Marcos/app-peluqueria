@@ -104,6 +104,37 @@ public class SaveProfessionalUseCaseTest {
     }
 
     @Test
+    public void editProfessionalWithoutServices_addsFirstService() {
+        Result<Professional> created = saveUseCase.execute(
+                new SaveProfessionalUseCase.Request(
+                        null,
+                        "Ana López",
+                        "",
+                        "",
+                        4_000,
+                        true,
+                        Collections.singletonList(new TimeRange(1, 540, 1140)),
+                        Collections.emptySet(),
+                        Collections.emptySet()));
+        assertTrue(created.isSuccess());
+
+        Result<Professional> edited = saveUseCase.execute(
+                new SaveProfessionalUseCase.Request(
+                        created.getValue().id(),
+                        "Ana López",
+                        "",
+                        "",
+                        4_000,
+                        true,
+                        created.getValue().workSchedules(),
+                        Collections.singleton("svc-1"),
+                        created.getValue().daysOff()));
+
+        assertTrue(edited.isSuccess());
+        assertTrue(edited.getValue().serviceIds().contains("svc-1"));
+    }
+
+    @Test
     public void execute_scheduleOutsideSalonOrInactiveService_failsValidation() {
         Result<Professional> outsideSalon = saveUseCase.execute(
                 new SaveProfessionalUseCase.Request(

@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import com.metanoia.app.data.db.entity.ProfessionalDayOffEntity;
 import com.metanoia.app.data.db.entity.ProfessionalEntity;
@@ -34,8 +35,18 @@ public interface ProfessionalDao {
     @Query("SELECT * FROM professionals WHERE id = :id LIMIT 1")
     ProfessionalWithDetails findByIdWithDetailsSync(String id);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void upsertProfessional(ProfessionalEntity entity);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insertProfessionalIgnore(ProfessionalEntity entity);
+
+    @Update
+    void updateProfessional(ProfessionalEntity entity);
+
+    @Transaction
+    default void upsertProfessional(ProfessionalEntity entity) {
+        if (insertProfessionalIgnore(entity) == -1L) {
+            updateProfessional(entity);
+        }
+    }
 
     @Query("DELETE FROM work_schedules WHERE professional_id = :professionalId")
     void clearWorkSchedules(String professionalId);

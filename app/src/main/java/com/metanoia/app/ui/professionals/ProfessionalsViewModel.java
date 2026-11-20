@@ -107,7 +107,13 @@ public class ProfessionalsViewModel extends AndroidViewModel {
             SaveProfessionalUseCase.Request request = new SaveProfessionalUseCase.Request(
                     id, name, phone, "", commissionBasisPoints,
                     active, schedules, serviceIds, daysOff);
-            Result<Professional> result = container.saveProfessionalUseCase().execute(request);
+            Result<Professional> result;
+            try {
+                result = container.saveProfessionalUseCase().execute(request);
+            } catch (RuntimeException ex) {
+                result = Result.failure(DomainError.DATABASE_ERROR,
+                        "No se pudo guardar el profesional");
+            }
             if (result.isSuccess()) {
                 feedbackEvent.postValue(new Event<>(R.string.professional_saved));
                 savedSuccessEvent.postValue(new Event<>(true));

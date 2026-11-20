@@ -1,6 +1,12 @@
 # changelog.md — Historial de versiones
 
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
+> Documentación completa por versión: `docs/releases/`.
+
+## [1.1.3] — 20/11/2026 — Corrección al agregar el primer servicio a profesionales
+- **Persistencia:** reemplazo de `OnConflictStrategy.REPLACE` por `INSERT IGNORE` + `UPDATE` al guardar profesionales existentes, evitando borrar físicamente la fila padre y activar relaciones `RESTRICT`.
+- **Robustez:** el ViewModel captura excepciones inesperadas de Room y devuelve un error controlado.
+- **Pruebas:** agrega una prueba unitaria de edición con primer servicio y una prueba instrumentada con horario existente y primera relación de servicio.
 
 ## [1.1.2] — 20/11/2026 — Corrección U1.1 del cierre al cobrar
 - **Causa real confirmada por `logcat`:** el resultado exitoso de un cobro ejecutaba `result.getError()` dentro de `handleResult`, y `Result.getError()` lanzaba `IllegalStateException: No hay error porque el resultado fue exitoso`.
