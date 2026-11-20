@@ -5,6 +5,7 @@ import android.content.Context;
 import com.metanoia.app.data.backup.BackupManager;
 import com.metanoia.app.data.backup.BackupScheduler;
 import com.metanoia.app.data.backup.RestoreManager;
+import com.metanoia.app.data.contacts.DeviceContactsReader;
 import com.metanoia.app.data.db.AppDatabase;
 import com.metanoia.app.data.prefs.DevicePrefs;
 import com.metanoia.app.ui.lock.AppLockController;
@@ -144,6 +145,7 @@ public final class AppContainer {
     private final SettleCommissionUseCase settleCommissionUseCase;
     private final BackupManager backupManager;
     private final RestoreManager restoreManager;
+    private final DeviceContactsReader deviceContactsReader;
 
     public AppContainer(Context context) {
         Context appContext = context.getApplicationContext();
@@ -279,6 +281,7 @@ public final class AppContainer {
                 settingsRepository, clock, idGenerator);
         this.restoreManager = new RestoreManager(
                 appContext, database, devicePrefs, backupManager);
+        this.deviceContactsReader = new DeviceContactsReader(appContext);
     }
 
     public AppExecutors executors() {
@@ -523,5 +526,9 @@ public final class AppContainer {
 
     public SyncContactsUseCase syncContactsUseCase() {
         return syncContactsUseCase;
+    }
+
+    public DeviceContactsReader deviceContactsReader() {
+        return deviceContactsReader;
     }
 }

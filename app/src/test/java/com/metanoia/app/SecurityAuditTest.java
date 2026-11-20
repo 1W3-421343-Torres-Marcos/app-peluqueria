@@ -69,6 +69,10 @@ public class SecurityAuditTest {
         assertTrue("AndroidManifest.xml debe remover INTERNET",
                 manifest.contains("android.permission.INTERNET")
                         && manifest.contains("tools:node=\"remove\""));
+        assertTrue("AndroidManifest.xml debe declarar READ_CONTACTS solo lectura",
+                manifest.contains("android.permission.READ_CONTACTS"));
+        assertTrue("AndroidManifest.xml no debe declarar WRITE_CONTACTS",
+                !manifest.contains("WRITE_CONTACTS"));
         assertTrue("AndroidManifest.xml debe desactivar allowBackup",
                 manifest.contains("android:allowBackup=\"false\""));
         assertTrue("FileProvider debe permanecer no exportado y con URI temporal",

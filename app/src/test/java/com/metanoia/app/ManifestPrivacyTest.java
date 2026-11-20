@@ -26,13 +26,21 @@ public class ManifestPrivacyTest {
         assertEquals("@xml/data_extraction_rules", app.getAttribute("android:dataExtractionRules"));
         assertEquals("@xml/backup_rules", app.getAttribute("android:fullBackupContent"));
 
+        boolean hasReadContacts = false;
         NodeList permissions = doc.getElementsByTagName("uses-permission");
         for (int i = 0; i < permissions.getLength(); i++) {
             Element perm = (Element) permissions.item(i);
-            if ("android.permission.INTERNET".equals(perm.getAttribute("android:name"))) {
+            String name = perm.getAttribute("android:name");
+            if ("android.permission.INTERNET".equals(name)) {
                 assertEquals("remove", perm.getAttribute("tools:node"));
             }
+            if ("android.permission.READ_CONTACTS".equals(name)) {
+                hasReadContacts = true;
+            }
+            assertFalse("No se permite WRITE_CONTACTS",
+                    "android.permission.WRITE_CONTACTS".equals(name));
         }
+        assertTrue("El manifiesto debe declarar READ_CONTACTS solo lectura", hasReadContacts);
     }
 
     @Test
@@ -50,11 +58,22 @@ public class ManifestPrivacyTest {
             Element app = (Element) doc.getElementsByTagName("application").item(0);
             assertEquals("false", app.getAttribute("android:allowBackup"));
 
+            boolean hasReadContacts = false;
             NodeList permissions = doc.getElementsByTagName("uses-permission");
             for (int i = 0; i < permissions.getLength(); i++) {
                 Element perm = (Element) permissions.item(i);
+                String name = perm.getAttribute("android:name");
                 assertFalse("El manifiesto fusionado no debe declarar INTERNET: " + candidate,
-                        "android.permission.INTERNET".equals(perm.getAttribute("android:name")));
+                        "android.permission.INTERNET".equals(name));
+                assertFalse("El manifiesto fusionado no debe declarar WRITE_CONTACTS: " + candidate,
+                        "android.permission.WRITE_CONTACTS".equals(name));
+                if ("android.permission.READ_CONTACTS".equals(name)) {
+                    hasReadContacts = true;
+                }
+            }
+            if (candidate.contains("debug")) {
+                assertTrue("El manifiesto fusionado debug debe conservar READ_CONTACTS: " + candidate,
+                        hasReadContacts);
             }
         }
     }
