@@ -133,6 +133,16 @@ public class SchemaExportTest {
         assertTrue(content.contains("index_commission_settlement_entries_appointment_id"));
     }
 
+    @Test
+    public void roomSchemaV14_isExportedWithContactSyncColumnsAndIndex() throws Exception {
+        String content = readSchema(14);
+        assertTrue(content.contains("\"tableName\": \"clients\""));
+        assertTrue(content.contains("contact_lookup_key"));
+        assertTrue(content.contains("\"origin\""));
+        assertTrue(content.contains("created_from_contact_at"));
+        assertTrue(content.contains("index_clients_contact_lookup_key"));
+    }
+
     private static String readSchema(int version) throws Exception {
         File schemaFile = resolveSchemaFile(
                 "schemas/com.metanoia.app.data.db.AppDatabase/" + version + ".json");

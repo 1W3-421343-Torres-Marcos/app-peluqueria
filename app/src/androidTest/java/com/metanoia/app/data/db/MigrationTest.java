@@ -23,6 +23,7 @@ import com.metanoia.app.data.db.migration.Migration_9_10;
 import com.metanoia.app.data.db.migration.Migration_10_11;
 import com.metanoia.app.data.db.migration.Migration_11_12;
 import com.metanoia.app.data.db.migration.Migration_12_13;
+import com.metanoia.app.data.db.migration.Migration_13_14;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -391,14 +392,48 @@ public class MigrationTest {
     }
 
     @Test
-    public void migrate1To13_allMigrations_passValidation() throws IOException {
+    public void migrate13To14_addsContactSyncColumnsWithManualDefault() throws IOException {
+        try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 13)) {
+            db.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-13', 'Sofía', 'sofia', '5491122334455', 10, 4, NULL, "
+                    + "'', 0, 1, 1000, 1000)");
+        }
+
+        try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
+                TEST_DB, 14, true, Migration_13_14.INSTANCE)) {
+            migrated.execSQL("INSERT INTO clients VALUES ("
+                    + "'cli-14', 'Lucía', 'lucia', '5491199887766', NULL, NULL, NULL, "
+                    + "'', 0, 1, 2000, 2000, 'lk-lucia', 'CONTACT_SYNC', 2000)");
+            try (Cursor cursor = migrated.query(
+                    "SELECT origin, contact_lookup_key, created_from_contact_at "
+                            + "FROM clients WHERE id = 'cli-13'")) {
+                assertEquals(1, cursor.getCount());
+                cursor.moveToFirst();
+                assertEquals("MANUAL", cursor.getString(0));
+                assertEquals(true, cursor.isNull(1));
+                assertEquals(true, cursor.isNull(2));
+            }
+            try (Cursor syncCursor = migrated.query(
+                    "SELECT origin, contact_lookup_key, created_from_contact_at "
+                            + "FROM clients WHERE contact_lookup_key = 'lk-lucia'")) {
+                assertEquals(1, syncCursor.getCount());
+                syncCursor.moveToFirst();
+                assertEquals("CONTACT_SYNC", syncCursor.getString(0));
+                assertEquals("lk-lucia", syncCursor.getString(1));
+                assertEquals(2000L, syncCursor.getLong(2));
+            }
+        }
+    }
+
+    @Test
+    public void migrate1To14_allMigrations_passValidation() throws IOException {
         try (SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 1)) {
             db.execSQL("INSERT INTO audit_logs VALUES ('log-1', 1000, 'Dueño', 'INIT', 'APP', '1', NULL, 'Init')");
         }
 
         try (SupportSQLiteDatabase migrated = helper.runMigrationsAndValidate(
                 TEST_DB,
-                13,
+                14,
                 true,
                 AppDatabase.allMigrations()
         )) {
@@ -408,7 +443,7 @@ public class MigrationTest {
                     + "'pro-all', 'Ana', '', '', 4000, 1, 1000, 1000)");
             migrated.execSQL("INSERT INTO clients VALUES ("
                     + "'cli-all', 'Sofía Gómez', 'sofia gomez', '5491144556677', NULL, NULL, NULL, "
-                    + "'Notas', 1, 1, 1000, 1000)");
+                    + "'Notas', 1, 1, 1000, 1000, NULL, 'MANUAL', NULL)");
             migrated.execSQL("INSERT INTO appointments VALUES ("
                     + "'apt-all', 'cli-all', 'pro-all', 20500, 540, 570, 'PAID', 0, '', "
                     + "NULL, NULL, 1000, 1000, 'Dueño')");

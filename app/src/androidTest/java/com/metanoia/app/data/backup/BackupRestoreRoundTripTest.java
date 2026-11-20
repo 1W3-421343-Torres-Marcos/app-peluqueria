@@ -74,6 +74,10 @@ public class BackupRestoreRoundTripTest {
         db.clientDao().upsert(new ClientEntity(
                 "cli-backup-1", "Sofía Gómez", "sofia gomez", "5491144556677",
                 12, 5, null, "Sin amoníaco", 0, true, 1_000L, 1_000L));
+        db.clientDao().upsert(new ClientEntity(
+                "cli-sync-1", "Lucía Contacto", "lucia contacto", "5491133445566",
+                21, 8, null, "", 0, true, 1_500L, 1_500L,
+                "lk-lucia-1", "CONTACT_SYNC", 1_500L));
 
         Result<File> zipResult = backupManager.createBackupInCacheDir(
                 "test_roundtrip", BackupTrigger.MANUAL);
@@ -85,7 +89,8 @@ public class BackupRestoreRoundTripTest {
 
         Result<ValidatedBackup> inspected = restoreManager.inspectBackupFile(zipResult.getValue());
         assertTrue(inspected.isSuccess());
-        assertEquals(1, inspected.getValue().manifest.clientsCount());
+        assertEquals(2, inspected.getValue().manifest.clientsCount());
+        assertEquals(14, inspected.getValue().manifest.schemaVersion());
 
         Result<BackupManifest> restored = restoreManager.performRestore(inspected.getValue());
         assertTrue(restored.isSuccess());
@@ -94,7 +99,14 @@ public class BackupRestoreRoundTripTest {
                 .addMigrations(AppDatabase.allMigrations())
                 .allowMainThreadQueries()
                 .build();
-        assertEquals("Sofía Gómez", db.clientDao().findByIdSync("cli-backup-1").name);
+        ClientEntity sofia = db.clientDao().findByIdSync("cli-backup-1");
+        ClientEntity lucia = db.clientDao().findByIdSync("cli-sync-1");
+        assertEquals("Sofía Gómez", sofia.name);
+        assertEquals("MANUAL", sofia.origin);
+        assertEquals("Lucía Contacto", lucia.name);
+        assertEquals("CONTACT_SYNC", lucia.origin);
+        assertEquals("lk-lucia-1", lucia.contactLookupKey);
+        assertEquals(Long.valueOf(1_500L), lucia.createdFromContactAt);
         assertEquals(null, db.clientDao().findByIdSync("cli-extra-temp"));
     }
 }

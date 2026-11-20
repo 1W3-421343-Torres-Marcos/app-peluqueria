@@ -19,8 +19,8 @@
 | F10 | Comisiones | [x] | 4/4 | 100 % |
 | F11 | Reportes | [x] | 6/6 | 100 % |
 | F12 | Seguridad y pulido final | [x] | 7/7 | 100 % |
-| F13 | Clientes desde contactos | [~] | 1/7 | 14 % |
-| **Total** | | | **87/93** | **94 %** |
+| F13 | Clientes desde contactos | [~] | 2/7 | 29 % |
+| **Total** | | | **88/93** | **95 %** |
 
 ---
 
@@ -323,7 +323,7 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 1. [x] **F13.1 Dominio de importación, cumpleaños y sincronización de contactos**
    - Archivos: `domain/.../model/{Client,ClientOrigin,DeviceContactCandidate,ContactImportPreview,ContactSyncOutcome}`, `domain/.../rules/{ContactPhoneSelector,ContactBirthdayParser,ClientContactSyncPlanner}`, `domain/.../usecase/{PreviewContactImportUseCase,ImportAllContactsUseCase,SyncNewContactsUseCase}`, tests en `domain/src/test/...`
    - Hecho: selección de teléfono principal (primer móvil válido o primero disponible), normalización `+54`/espacios/guiones/`0`/`15`, parseo de cumpleaños con y sin año (`--MM-DD`), nombre recortado 2–80 caracteres o teléfono si falta, deduplicación por `contactLookupKey` y teléfono normalizado, protección contra sobrescritura y reactivación de inactivos, idempotencia y `AuditLog` sin PII; 100 % de los tests unitarios obligatorios en verde (`./gradlew.bat :domain:test`).
-2. [ ] **F13.2 Migración Room v14, DAOs y backup/restauración v14**
+2. [x] **F13.2 Migración Room v14, DAOs y backup/restauración v14**
    - Archivos: `ClientEntity`, `ClientMapper`, `ClientDao`, `ClientRepositoryImpl`, `AppDatabase` (`version = 14`), `Migration_13_14`, `app/schemas/.../14.json`, `BackupManager`, `RestoreManager`, `MigrationTest`, `SchemaExportTest`, test de backup round-trip
    - Hecho: columnas `contact_lookup_key` (indexada), `origin` (default `MANUAL`) y `created_from_contact_at` en `clients` con migración sin pérdida de datos; consultas SQL para clientes sin cumpleaños, contador de pendientes e importados en los últimos 7 días; `SchemaExportTest` (v14) y test de ida y vuelta del backup verde; `MigrationTest` compilado en `androidTest`.
 3. [ ] **F13.3 Permiso `READ_CONTACTS` y lector de solo lectura del dispositivo**
@@ -439,3 +439,4 @@ Entregable: importación masiva inicial desde agenda, filtros "Sin cumpleaños" 
 | 19/11/2026 | F12.7 | Cierre F12 y lanzamiento `v1.0.0`: todos los `skills.md` al 100 % (0 ítems pendientes tras marcar `configuracion/skills.md`), entrada `1.0.0` en `docs/changelog.md`; `./gradlew.bat check assembleDebug assembleRelease compileDebugAndroidTestJavaWithJavac` OK (`:domain:test` 155/155, `:app:testDebugUnitTest` 38/38, `:app:testReleaseUnitTest` 38/38, total 193 tests JVM únicos con 0 fallos, `:app:lintDebug` y `:app:lint` OK); checks §12 OK (`0` `.kt`/`.kts`, `0` `TODO`/`FIXME`, `0` `Log.*`, `allowBackup="false"` y `internetCount=0` en manifiestos `debug` y `release`), `androidTest` compilados (sin ejecución en dispositivo/emulador); `git status` sin secretos; merge `--no-ff fase/F12` en `main` con tags `fase-F12` y `v1.0.0`. | Proyecto v1.0.0 completado |
 | 19/11/2026 | — | Documentación Paso 0 para F13 "Clientes desde contactos": habilitado `READ_CONTACTS` en solo lectura en `docs/agents.md` §6 (manteniendo prohibido `INTERNET`), agregada especificación y criterios de importación/sincronización en `docs/modules/clientes/skills.md` y planificados 7 pasos (`F13.1`–`F13.7`) en `docs/plan.md` (total `86/93`, 92 %). | F13.1 |
 | 19/11/2026 | F13.1 | Rama `fase/F13`; `Client` ampliado (`contactLookupKey`, `origin`, `createdFromContactAt`) y `SaveClientUseCase` preservando metadatos de origen; modelos `ClientOrigin`, `ContactPhone`, `DeviceContactCandidate`, `ContactBirthday`, `ContactImportPreview` y `ContactSyncOutcome`; reglas `ContactPhoneSelector`, `ContactBirthdayParser` (con año y `--MM-DD`), `ContactClientNameResolver` (2–80 chars / teléfono) y `ClientContactSyncPlanner` (deduplicación multi-cuenta, no sobrescritura ni reactivación de inactivos, idempotencia); casos de uso `PreviewContactImportUseCase` y `SyncContactsUseCase` (`AuditLog` sin PII); `:domain:test` 165/165 OK (`PhoneNormalizerTest`, `ContactPhoneSelectorTest`, `ContactBirthdayParserTest`, `ContactSyncUseCaseTest`) y `assembleDebug` OK. | F13.2 |
+| 19/11/2026 | F13.2 | Room `v14`: `ClientEntity` con columnas `contact_lookup_key` (indexada), `origin` (`DEFAULT 'MANUAL'`) y `created_from_contact_at`, `Migration_13_14`, `AppDatabase` v14, esquema `14.json` exportado, `ClientRowProjection`/`ClientMapper`/`ClientDao` (`observeSummariesFiltered`, `observeMissingBirthdayCount`, `observeActiveCount`, `upsert` seguro), `ClientRepositoryImpl` transaccional, `BackupManager` v14, `SchemaExportTest` (v14 OK), `MigrationTest` (`13→14` y `1→14`) y `BackupRestoreRoundTripTest` compilados en `androidTest`; `:domain:test` 165/165 y `:app:testDebugUnitTest` 39/39 OK. | F13.3 |
