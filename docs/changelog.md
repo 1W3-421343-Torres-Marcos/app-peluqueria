@@ -2,6 +2,10 @@
 
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
 
+## [1.1.2] — 20/11/2026 — Corrección U1.1 del cierre al cobrar
+- **Causa real confirmada por `logcat`:** el resultado exitoso de un cobro ejecutaba `result.getError()` dentro de `handleResult`, y `Result.getError()` lanzaba `IllegalStateException: No hay error porque el resultado fue exitoso`.
+- **Corrección:** `ChargeAppointmentViewModel` ahora recibe el `Result<ChargeResult>` completo y consulta `getError()` únicamente dentro de la rama de fallo, tanto para cobrar como para “Completar y cobrar”.
+
 ## [1.1.1] — 20/11/2026 — Actualización U1
 - **Estabilidad de confirmaciones y cobros:** confirmar/completar/revertir/cancelar y cobrar ahora capturan excepciones de persistencia en los ViewModels y devuelven un error de base de datos, evitando que una excepción Room termine el proceso.
 - **Atomicidad:** el cambio de estado y su auditoría se guardan en una transacción común; los cobros y "Completar y cobrar" continúan dentro de una transacción Room y ahora convierten fallos inesperados en `DATABASE_ERROR`.

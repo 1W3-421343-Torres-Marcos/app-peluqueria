@@ -8,7 +8,7 @@
 
 | ID | Estado | Cambio |
 |---|---|---|
-| U1.1 | [~] | Registrar el cierre real con `adb logcat` y adjuntar la excepcion raiz al registro de avance. |
+| U1.1 | [x] | Capturado con `adb logcat`: un cobro exitoso lanzaba `IllegalStateException: No hay error porque el resultado fue exitoso`. |
 | U1.2 | [x] | Aislar confirmar/cancelar/completar/cobrar de excepciones Room no controladas. |
 | U1.3 | [x] | Ejecutar transacciones atomicas para turno + auditoría en cambios de estado. |
 | U1.4 | [x] | Traducir fallos de persistencia a `DomainError.DATABASE_ERROR` y mostrarlos sin cerrar la app. |
@@ -21,7 +21,8 @@
 | U2.1 | [x] | `./gradlew.bat test` verde. |
 | U2.2 | [x] | `./gradlew.bat lint assembleDebug` verde. |
 | U2.3 | [x] | Tests instrumentados de caja y agenda compilados. |
-| U2.4 | [ ] | Prueba manual: confirmar, completar, cobrar, revertir y cancelar. |
+| U2.4 | [x] | Prueba manual: confirmar, completar, cobrar, revertir y cancelar. |
+| U2.4.1 | [x] | Prueba manual `1.1.2` en Motorola edge 40: confirmar, completar, cobrar, revertir y cancelar permanecieron abiertos sin reinicio. |
 | U2.5 | [x] | `assembleRelease` y verificacion `apksigner` verde. |
 
 ## U3 — Entrega
