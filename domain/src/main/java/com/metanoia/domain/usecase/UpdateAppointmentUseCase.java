@@ -118,7 +118,7 @@ public final class UpdateAppointmentUseCase {
                 blocksOnDay,
                 existing.id()
         );
-        if (!availability.isAvailable()) {
+        if (!availability.allowsAssignment()) {
             return Result.failure(DomainError.CONFLICT,
                     AppointmentSupport.unavailabilityMessage(availability));
         }

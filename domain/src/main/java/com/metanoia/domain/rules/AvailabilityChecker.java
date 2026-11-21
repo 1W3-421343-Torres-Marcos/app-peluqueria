@@ -33,6 +33,14 @@ public final class AvailabilityChecker {
         public boolean isAvailable() {
             return this == NONE;
         }
+
+        public boolean allowsAssignment() {
+            return this == NONE || this == OVERLAPS_EXISTING_APPOINTMENT;
+        }
+
+        public boolean isAppointmentOverlap() {
+            return this == OVERLAPS_EXISTING_APPOINTMENT;
+        }
     }
 
     private AvailabilityChecker() {
@@ -147,7 +155,7 @@ public final class AvailabilityChecker {
                         blocksOnDay,
                         excludedAppointmentId
                 );
-                if (reason.isAvailable()) {
+                if (reason.allowsAssignment()) {
                     freeStarts.add(start);
                 }
             }

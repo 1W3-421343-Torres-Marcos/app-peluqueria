@@ -29,10 +29,20 @@ public final class SlotAvailabilityLoader {
     public static final class SlotLoadResult {
         public final List<SlotOption> options;
         public final List<Integer> freeStartMinutes;
+        public final List<Integer> overlapStartMinutes;
 
         public SlotLoadResult(List<SlotOption> options, List<Integer> freeStartMinutes) {
+            this(options, freeStartMinutes, Collections.emptyList());
+        }
+
+        public SlotLoadResult(
+                List<SlotOption> options,
+                List<Integer> freeStartMinutes,
+                List<Integer> overlapStartMinutes
+        ) {
             this.options = options;
             this.freeStartMinutes = freeStartMinutes;
+            this.overlapStartMinutes = overlapStartMinutes;
         }
     }
 
@@ -72,8 +82,6 @@ public final class SlotAvailabilityLoader {
                 blocks,
                 excludedAppointmentId
         );
-        Set<Integer> freeSet = new LinkedHashSet<>(freeList);
-
         int dayOfWeek = LocalDate.ofEpochDay(dayEpoch).getDayOfWeek().getValue();
         List<TimeRange> proDayRanges = new ArrayList<>();
         for (TimeRange range : professional.workSchedules()) {
@@ -84,16 +92,37 @@ public final class SlotAvailabilityLoader {
         Collections.sort(proDayRanges);
 
         Set<Integer> seenStarts = new LinkedHashSet<>();
+        Set<Integer> overlapSet = new LinkedHashSet<>();
         List<SlotOption> options = new ArrayList<>();
         for (TimeRange range : proDayRanges) {
             for (int start = range.startMin();
                     start + durationMin <= range.endMin();
                     start += slotMinutes) {
                 if (seenStarts.add(start)) {
-                    options.add(new SlotOption(start, freeSet.contains(start)));
+                    AvailabilityChecker.UnavailabilityReason reason =
+                            AvailabilityChecker.check(
+                                    professional,
+                                    dayEpoch,
+                                    start,
+                                    start + durationMin,
+                                    settings.generalSchedule(),
+                                    existing,
+                                    blocks,
+                                    excludedAppointmentId
+                            );
+                    boolean assignable = reason.allowsAssignment();
+                    boolean overlaps = reason.isAppointmentOverlap();
+                    if (overlaps) {
+                        overlapSet.add(start);
+                    }
+                    options.add(new SlotOption(start, assignable, overlaps));
                 }
             }
         }
-        return new SlotLoadResult(options, freeList);
+        return new SlotLoadResult(
+                options,
+                freeList,
+                new ArrayList<>(overlapSet)
+        );
     }
 }

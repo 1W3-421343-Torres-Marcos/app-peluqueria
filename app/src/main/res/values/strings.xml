@@ -290,6 +290,9 @@
     <string name="appointment_error_validation">Completá cliente, al menos un servicio, profesional y horario.</string>
     <string name="appointment_error_conflict">El horario o estado ya no está disponible.</string>
     <string name="appointment_error_unexpected">No se pudo guardar el turno.</string>
+    <string name="appointment_overlap_title">Horario superpuesto</string>
+    <string name="appointment_overlap_confirm">Este horario coincide con otro turno del profesional. ¿Querés asignarlo igual?</string>
+    <string name="appointment_overlap_accept">Asignar igual</string>
 
     <!-- Detalle y gestión de turno (F3.8) -->
     <string name="appointment_detail_title">Detalle de turno</string>
@@ -363,6 +366,7 @@
     <string name="appointment_recurring_saved">Serie de turnos creada</string>
     <string name="appointment_recurring_created_title">Serie creada con conflictos</string>
     <string name="appointment_recurring_created_with_conflicts">Se crearon %1$d turnos y se omitieron %2$d fechas ocupadas o bloqueadas:\n%3$s</string>
+    <string name="appointment_recurring_overlap_warning">Se asignaron %1$d ocurrencias superpuestas con otros turnos.</string>
     <string name="appointment_cancel_scope_only_this">Solo este turno</string>
     <string name="appointment_cancel_scope_following">Este y los siguientes</string>
     <string name="appointment_detail_recurring_badge">Serie recurrente</string>

@@ -207,7 +207,7 @@ public class CreateAppointmentUseCaseTest {
     }
 
     @Test
-    public void execute_overlappingSlot_returnsConflict() {
+    public void execute_overlappingSlot_isAllowed() {
         useCase.execute(new CreateAppointmentUseCase.Request(
                 "cli-1", "pro-1", MONDAY, 600,
                 Collections.singletonList("svc-cut"), "", true));
@@ -216,8 +216,7 @@ public class CreateAppointmentUseCaseTest {
                 "cli-1", "pro-1", MONDAY, 615,
                 Collections.singletonList("svc-cut"), "", false));
 
-        assertFalse(overlap.isSuccess());
-        assertEquals(DomainError.CONFLICT, overlap.getError());
+        assertTrue(overlap.isSuccess());
     }
 
     @Test

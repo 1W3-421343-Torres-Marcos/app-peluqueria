@@ -171,9 +171,8 @@ public class AvailabilityCheckerTest {
         List<Integer> slots = AvailabilityChecker.suggestFreeStartMinutes(
                 simplePro, MONDAY, 30, 30, salonSchedule, existing, Collections.emptyList(), null);
 
-        // 09:00 (540), 10:00 (600), 10:30 (630); 09:30 (570) ocupado
-        assertEquals(Arrays.asList(540, 600, 630), slots);
-        assertFalse(slots.contains(570));
+        // Los horarios superpuestos siguen disponibles y quedan marcados para la UI.
+        assertEquals(Arrays.asList(540, 570, 600, 630), slots);
     }
 
     private static Appointment appointment(

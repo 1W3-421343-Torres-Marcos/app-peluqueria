@@ -208,6 +208,7 @@ public final class GenerateRecurringAppointmentsUseCase {
         List<Appointment> created = new ArrayList<>();
         List<ColorFormula> copiedFormulas = new ArrayList<>();
         List<SkippedOccurrence> conflicts = new ArrayList<>();
+        List<SkippedOccurrence> overlaps = new ArrayList<>();
 
         for (long candidateDay : candidateDays) {
             UnavailabilityReason reason = AvailabilityChecker.check(
@@ -220,7 +221,9 @@ public final class GenerateRecurringAppointmentsUseCase {
                     blocksInRange,
                     null
             );
-            if (!reason.isAvailable()) {
+            if (reason.isAppointmentOverlap()) {
+                overlaps.add(new SkippedOccurrence(candidateDay, reason));
+            } else if (!reason.isAvailable()) {
                 conflicts.add(new SkippedOccurrence(candidateDay, reason));
                 continue;
             }
@@ -280,7 +283,7 @@ public final class GenerateRecurringAppointmentsUseCase {
                 .concept("Serie recurrente (" + created.size() + " turnos)")
                 .build());
 
-        return Result.success(new RecurringResult(rule, created, conflicts));
+        return Result.success(new RecurringResult(rule, created, conflicts, overlaps));
     }
 
     private List<AppointmentItem> cloneItemsForAppointment(
@@ -402,16 +405,27 @@ public final class GenerateRecurringAppointmentsUseCase {
         private final RecurrenceRule rule;
         private final List<Appointment> createdAppointments;
         private final List<SkippedOccurrence> conflicts;
+        private final List<SkippedOccurrence> overlaps;
 
         public RecurringResult(
                 RecurrenceRule rule,
                 List<Appointment> createdAppointments,
                 List<SkippedOccurrence> conflicts
         ) {
+            this(rule, createdAppointments, conflicts, Collections.emptyList());
+        }
+
+        public RecurringResult(
+                RecurrenceRule rule,
+                List<Appointment> createdAppointments,
+                List<SkippedOccurrence> conflicts,
+                List<SkippedOccurrence> overlaps
+        ) {
             this.rule = Objects.requireNonNull(rule, "rule");
             this.createdAppointments = Collections.unmodifiableList(
                     new ArrayList<>(createdAppointments));
             this.conflicts = Collections.unmodifiableList(new ArrayList<>(conflicts));
+            this.overlaps = Collections.unmodifiableList(new ArrayList<>(overlaps));
         }
 
         public RecurrenceRule rule() {
@@ -424,6 +438,10 @@ public final class GenerateRecurringAppointmentsUseCase {
 
         public List<SkippedOccurrence> conflicts() {
             return conflicts;
+        }
+
+        public List<SkippedOccurrence> overlaps() {
+            return overlaps;
         }
     }
 }

@@ -3,6 +3,12 @@
 > Una entrada por fase cerrada, escrita en el paso de verificación de fase (ver `agents.md` §11). Formato: versión · fecha (dd/MM/yyyy) · fase · qué se agregó. La más reciente arriba.
 > Documentación completa por versión: `docs/releases/`.
 
+## [1.1.4] — 21/11/2026 — Turnos superpuestos con advertencia
+- **Asignación simultánea:** altas normales, recurrencias y reprogramaciones permiten solapamientos entre turnos del mismo profesional.
+- **Advertencia visual:** los horarios superpuestos quedan seleccionables y se marcan en la grilla; antes de guardar se pide confirmación explicita.
+- **Bloqueos conservados:** horarios fuera de rango, días libres y bloqueos de agenda siguen impidiendo la asignación.
+- **Excepción de lista de espera:** una asignación desde lista de espera continúa rechazando solapamientos.
+
 ## [1.1.3] — 20/11/2026 — Corrección al agregar el primer servicio a profesionales
 - **Persistencia:** reemplazo de `OnConflictStrategy.REPLACE` por `INSERT IGNORE` + `UPDATE` al guardar profesionales existentes, evitando borrar físicamente la fila padre y activar relaciones `RESTRICT`.
 - **Robustez:** el ViewModel captura excepciones inesperadas de Room y devuelve un error controlado.
