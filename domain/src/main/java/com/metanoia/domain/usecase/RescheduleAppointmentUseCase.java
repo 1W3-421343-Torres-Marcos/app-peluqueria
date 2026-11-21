@@ -108,7 +108,7 @@ public final class RescheduleAppointmentUseCase {
                 blocksOnDay,
                 existing.id()
         );
-        if (!availability.isAvailable()) {
+        if (!availability.allowsAssignment()) {
             return Result.failure(DomainError.CONFLICT,
                     AppointmentSupport.unavailabilityMessage(availability));
         }

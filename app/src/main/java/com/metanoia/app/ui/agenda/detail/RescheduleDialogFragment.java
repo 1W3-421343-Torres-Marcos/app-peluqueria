@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.metanoia.app.data.db.entity.ProfessionalServiceCrossRef;
 import com.metanoia.app.data.db.pojo.ProfessionalWithDetails;
 import com.metanoia.app.databinding.DialogRescheduleAppointmentBinding;
@@ -99,8 +100,7 @@ public class RescheduleDialogFragment extends BottomSheetDialogFragment {
                 binding.rescheduleSlotGrid.setSlots(current.options, selectedStartMin);
             }
         });
-        binding.btnConfirmReschedule.setOnClickListener(v -> viewModel.reschedule(
-                appointmentId, selectedProId, selectedDayEpoch, selectedStartMin));
+        binding.btnConfirmReschedule.setOnClickListener(v -> confirmReschedule());
 
         viewModel.observeActiveProfessionals().observe(getViewLifecycleOwner(), this::renderPros);
         viewModel.observeRescheduleSlots().observe(getViewLifecycleOwner(), this::renderSlots);
@@ -161,6 +161,26 @@ public class RescheduleDialogFragment extends BottomSheetDialogFragment {
             selectedStartMin = result.freeStartMinutes.get(0);
         }
         binding.rescheduleSlotGrid.setSlots(result.options, selectedStartMin);
+    }
+
+    private void confirmReschedule() {
+        SlotLoadResult result = viewModel.observeRescheduleSlots().getValue();
+        boolean overlap = result != null
+                && selectedStartMin != null
+                && result.overlapStartMinutes.contains(selectedStartMin);
+        if (overlap) {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(com.metanoia.app.R.string.appointment_overlap_title)
+                    .setMessage(com.metanoia.app.R.string.appointment_overlap_confirm)
+                    .setNegativeButton(com.metanoia.app.R.string.common_cancel, null)
+                    .setPositiveButton(com.metanoia.app.R.string.appointment_overlap_accept,
+                            (dialog, which) -> viewModel.reschedule(
+                                    appointmentId, selectedProId, selectedDayEpoch, selectedStartMin))
+                    .show();
+            return;
+        }
+        viewModel.reschedule(
+                appointmentId, selectedProId, selectedDayEpoch, selectedStartMin);
     }
 
     private void openDatePicker() {

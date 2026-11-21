@@ -512,6 +512,32 @@ public class AppointmentCreateFragment extends Fragment {
         boolean repeatLastColorFormula = !isEdit
                 && binding.aptColorFormulaRepeatCard.getVisibility() == View.VISIBLE
                 && binding.chipRepeatLastFormula.isChecked();
+        if (!isEdit && isSelectedSlotOverlap()) {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.appointment_overlap_title)
+                    .setMessage(R.string.appointment_overlap_confirm)
+                    .setNegativeButton(R.string.common_cancel, null)
+                    .setPositiveButton(R.string.appointment_overlap_accept,
+                            (dialog, which) -> submitValidatedForm(
+                                    isEdit, notes, repeatLastColorFormula))
+                    .show();
+            return;
+        }
+        submitValidatedForm(isEdit, notes, repeatLastColorFormula);
+    }
+
+    private boolean isSelectedSlotOverlap() {
+        SlotLoadResult result = viewModel.observeSlotOptions().getValue();
+        return result != null
+                && selectedStartMin != null
+                && result.overlapStartMinutes.contains(selectedStartMin);
+    }
+
+    private void submitValidatedForm(
+            boolean isEdit,
+            @NonNull String notes,
+            boolean repeatLastColorFormula
+    ) {
         if (isEdit && editingAppointmentId != null) {
             viewModel.updateAppointment(editingAppointmentId, new ArrayList<>(selectedServiceIds),
                     notes);
@@ -570,6 +596,11 @@ public class AppointmentCreateFragment extends Fragment {
                 result.conflicts().size(),
                 skippedDates.toString()
         );
+        if (!result.overlaps().isEmpty()) {
+            message += "\n\n" + getString(
+                    R.string.appointment_recurring_overlap_warning,
+                    result.overlaps().size());
+        }
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.appointment_recurring_created_title)
                 .setMessage(message)

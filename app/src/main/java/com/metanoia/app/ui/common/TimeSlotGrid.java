@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Grilla reutilizable de bloques horarios según {@code docs/design.md} §7:
- * libre con borde, ocupado en {@code colorSurfaceVariant} y seleccionado en {@code colorPrimary}.
+ * libre con borde, superpuesto con otro turno marcado con advertencia y seleccionado en {@code colorPrimary}.
  */
 public class TimeSlotGrid extends LinearLayout {
 
@@ -30,10 +30,16 @@ public class TimeSlotGrid extends LinearLayout {
     public static final class SlotOption {
         public final int startMin;
         public final boolean available;
+        public final boolean overlapsExisting;
 
         public SlotOption(int startMin, boolean available) {
+            this(startMin, available, false);
+        }
+
+        public SlotOption(int startMin, boolean available, boolean overlapsExisting) {
             this.startMin = startMin;
             this.available = available;
+            this.overlapsExisting = overlapsExisting;
         }
     }
 
@@ -112,7 +118,9 @@ public class TimeSlotGrid extends LinearLayout {
     private TextView buildSlotView(@NonNull SlotOption slot, boolean selected) {
         Context context = getContext();
         TextView view = new TextView(context);
-        view.setText(Formats.formatTime(slot.startMin));
+        view.setText(slot.overlapsExisting
+                ? Formats.formatTime(slot.startMin) + " !"
+                : Formats.formatTime(slot.startMin));
         view.setGravity(Gravity.CENTER);
         view.setMinHeight(getResources().getDimensionPixelSize(R.dimen.touch_target_min));
         TextViewCompat.setTextAppearance(view, R.style.TextAppearance_Metanoia_Money);
@@ -143,9 +151,15 @@ public class TimeSlotGrid extends LinearLayout {
             view.setTextColor(colorOnPrimary);
             view.setAlpha(1f);
         } else if (slot.available) {
-            bg.setColor(colorSurface);
-            bg.setStroke(stroke, colorOutline);
-            view.setTextColor(colorOnSurface);
+            if (slot.overlapsExisting) {
+                bg.setColor(context.getColor(R.color.accent_container));
+                bg.setStroke(stroke, context.getColor(R.color.accent));
+                view.setTextColor(context.getColor(R.color.accent));
+            } else {
+                bg.setColor(colorSurface);
+                bg.setStroke(stroke, colorOutline);
+                view.setTextColor(colorOnSurface);
+            }
             view.setAlpha(1f);
         } else {
             bg.setColor(colorSurfaceVariant);

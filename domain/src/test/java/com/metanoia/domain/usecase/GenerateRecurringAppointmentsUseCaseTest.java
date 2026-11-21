@@ -239,6 +239,40 @@ public class GenerateRecurringAppointmentsUseCaseTest {
         assertEquals(0, appointmentRepo.store.size());
     }
 
+    @Test
+    public void execute_overlappingOccurrence_isCreatedAndReportedAsOverlap() {
+        Appointment existing = new Appointment.Builder()
+                .id("existing")
+                .clientId("cli-1")
+                .professionalId("pro-1")
+                .day(START_MONDAY)
+                .startMin(600)
+                .endMin(660)
+                .status(AppointmentStatus.CONFIRMED)
+                .items(Collections.singletonList(new AppointmentItem.Builder()
+                        .id("existing-item")
+                        .appointmentId("existing")
+                        .serviceId("svc-1")
+                        .serviceNameSnapshot("Color")
+                        .priceSnapshot(Money.ofCents(3_000_000L))
+                        .durationMinSnapshot(60)
+                        .build()))
+                .createdAt(1000L)
+                .updatedAt(1000L)
+                .build();
+        appointmentRepo.save(existing);
+
+        Result<RecurringResult> result = generateUseCase.execute(
+                new GenerateRecurringAppointmentsUseCase.Request(
+                        "cli-1", "pro-1", START_MONDAY, 615,
+                        Collections.singletonList("svc-1"), "", false, 1, null, 1));
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, result.getValue().createdAppointments().size());
+        assertEquals(1, result.getValue().overlaps().size());
+        assertEquals(START_MONDAY, result.getValue().overlaps().get(0).dayEpoch());
+    }
+
     private static final class FakeAppointmentRepo implements AppointmentRepository {
         final Map<String, Appointment> store = new LinkedHashMap<>();
         final List<RecurrenceRule> rules = new ArrayList<>();

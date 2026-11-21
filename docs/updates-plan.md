@@ -42,6 +42,7 @@ El índice global `docs/changelog.md` contiene entradas breves. Este archivo `do
 | 1.1.1 | Estabilidad general de confirmaciones y persistencia | Prueba de rollback y suite verde | `docs/releases/1.1.1/` |
 | 1.1.2 | Cierre al cobrar un resultado exitoso | `IllegalStateException` confirmado por `adb logcat` | `docs/releases/1.1.2/` |
 | 1.1.3 | Agregar el primer servicio a un profesional | Persistencia segura y prueba física aprobada | `docs/releases/1.1.3/` |
+| 1.1.4 | Permitir turnos superpuestos con advertencia | Suite, lint y APKs verdes; prueba física pendiente | `docs/releases/1.1.4/` |
 
 ## Flujo obligatorio de una actualización
 
@@ -277,3 +278,13 @@ Si falta el dispositivo o no se puede reproducir, dejar el estado como pendiente
 | U4.3 | [x] | Agregar prueba instrumentada con horario existente y primer servicio; suite Android compilada. |
 | U4.4 | [x] | Suite completa, lint y APK `1.1.3` generados; firma v2 verificada. |
 | U4.5 | [x] | Prueba física exitosa: editar el profesional sin servicios, agregar el primer servicio y guardar conservó la asignación sin cerrar la app. |
+
+## U5 — Turnos superpuestos con advertencia
+
+| ID | Estado | Cambio |
+|---|---|---|
+| U5.1 | [x] | Permitir solapamientos entre turnos en alta normal, recurrencias y reprogramacion. |
+| U5.2 | [x] | Mantener bloqueados horarios fuera de rango, dias libres y bloqueos de agenda. |
+| U5.3 | [x] | Marcar horarios superpuestos y confirmar antes de guardar. |
+| U5.4 | [x] | Agregar pruebas de alta, recurrencia, reprogramacion y bloqueos reales. |
+| U5.5 | [~] | Suite, lint, APK debug/release y firma verificadas; falta prueba fisica. |

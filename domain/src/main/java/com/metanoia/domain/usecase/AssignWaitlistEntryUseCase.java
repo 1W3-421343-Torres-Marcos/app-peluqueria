@@ -70,7 +70,9 @@ public final class AssignWaitlistEntryUseCase {
                         slot.startMin(),
                         entry.serviceIds(),
                         entry.notes(),
-                        true
+                        true,
+                        false,
+                        false
                 ));
         if (createdResult.isFailure()) {
             return Result.failure(createdResult.getError(), createdResult.getErrorMessage());

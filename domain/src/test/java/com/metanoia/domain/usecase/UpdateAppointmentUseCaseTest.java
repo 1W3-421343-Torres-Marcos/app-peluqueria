@@ -178,14 +178,13 @@ public class UpdateAppointmentUseCaseTest {
     }
 
     @Test
-    public void execute_expandedDurationOverlapsNextAppointment_returnsConflict() {
+    public void execute_expandedDurationOverlapsNextAppointment_isAllowed() {
         appointmentRepo.save(sampleAppointment("apt-next", 630, 660, AppointmentStatus.PENDING));
 
         Result<Appointment> result = useCase.execute(new UpdateAppointmentUseCase.Request(
                 "apt-1", Arrays.asList("svc-cut", "svc-brush"), ""));
 
-        assertFalse(result.isSuccess());
-        assertEquals(DomainError.CONFLICT, result.getError());
+        assertTrue(result.isSuccess());
     }
 
     @Test

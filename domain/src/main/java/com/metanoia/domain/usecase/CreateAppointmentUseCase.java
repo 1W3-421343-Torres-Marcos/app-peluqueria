@@ -152,7 +152,9 @@ public final class CreateAppointmentUseCase {
                 blocksOnDay,
                 null
         );
-        if (!availability.isAvailable()) {
+        if (!availability.isAvailable()
+                && !(request.allowOverlappingAppointments
+                        && availability.isAppointmentOverlap())) {
             return Result.failure(DomainError.CONFLICT,
                     AppointmentSupport.unavailabilityMessage(availability));
         }
@@ -238,6 +240,7 @@ public final class CreateAppointmentUseCase {
         private final String notes;
         private final boolean confirmed;
         private final boolean repeatLastColorFormula;
+        private final boolean allowOverlappingAppointments;
 
         public Request(
                 String clientId,
@@ -261,6 +264,21 @@ public final class CreateAppointmentUseCase {
                 boolean confirmed,
                 boolean repeatLastColorFormula
         ) {
+            this(clientId, professionalId, day, startMin, serviceIds, notes, confirmed,
+                    repeatLastColorFormula, true);
+        }
+
+        public Request(
+                String clientId,
+                String professionalId,
+                long day,
+                int startMin,
+                List<String> serviceIds,
+                String notes,
+                boolean confirmed,
+                boolean repeatLastColorFormula,
+                boolean allowOverlappingAppointments
+        ) {
             this.clientId = clientId;
             this.professionalId = professionalId;
             this.day = day;
@@ -271,6 +289,7 @@ public final class CreateAppointmentUseCase {
             this.notes = notes;
             this.confirmed = confirmed;
             this.repeatLastColorFormula = repeatLastColorFormula;
+            this.allowOverlappingAppointments = allowOverlappingAppointments;
         }
     }
 }
